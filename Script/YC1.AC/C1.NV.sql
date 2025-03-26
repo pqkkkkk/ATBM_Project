@@ -1,0 +1,56 @@
+-- Chuyển sang PDB nếu đang dùng CDB$ROOT
+-- ALTER SESSION SET CONTAINER = ORCLPDB1;
+
+-- Tạo các role (bỏ file riêng cho các tác vụ liên quan đến role)
+-- CREATE ROLE NVCB;
+-- CREATE ROLE TRGDV;
+-- CREATE ROLE NVTCHC;
+-- CREATE ROLE GV;
+-- CREATE ROLE NVPDT;
+-- CREATE ROLE NVPKT;
+-- CREATE ROLE NVCTSV;
+-- CREATE ROLE SV;
+
+-- Tạo view chỉ xem được thông tin của chính bản thân cho NVCB
+CREATE OR REPLACE VIEW view_NVCB_NV AS 
+SELECT * FROM NHANVIEN where MANV = SYS_CONTEXT('USERENV', 'SESSION_USER')
+
+-- Gán quyền SELECT, UPDATE(DT) trên view_NVCB cho NVCB và gán role NVCB cho tất cả các vai trò khác
+ GRANT SELECT, UPDATE(DT) ON sys.view_NVCB_NV TO NVCB;
+ GRANT NVCB TO TRGDV, NVTCHC, GV, NVPDT, NVPKT, NVCTSV;
+
+-- Tạo view quản lý nhân viên cho trưởng đơn vị và cấp quyền SELECT trên view này cho TRGDV
+CREATE OR REPLACE VIEW view_TRGDV_NV AS 
+SELECT MANV, HOTEN, PHAI, NGSINH, DT, VAITRO, MADV
+FROM NHANVIEN 
+WHERE MADV = (SELECT MADV FROM NHANVIEN WHERE MANV = SYS_CONTEXT('USERENV', 'SESSION_USER') );
+GRANT SELECT ON sys.view_TRGDV_NV TO TRGDV;
+
+-- Cấp toàn quyền trên bảng NHANVIEN cho NVTCHC
+GRANT SELECT, UPDATE, INSERT, DELETE ON NHANVIEN TO NVTCHC;
+
+
+-- Test
+-- NV0001 - NVPDT
+-- NV0005 - NVTCHC
+-- NV0009 - GV
+-- NV0018 - TRGDV
+-- SV0001 - CNTT
+
+-------------------------------------------
+-- TEST XEM ĐƯỢC THÔNG TIN CỦA CHÍNH MÌNH
+-- SELECT * FROM sys.VIEW_NVCB_NV;
+-- SELECT * FROM sys.NHANVIEN; -- Thông báo không tìm thấy bảng
+
+-- TEST XEM CÁC GIẢNG VIÊN THUỘC ĐƠN VỊ CỦA BẢN THÂN (nếu đăng nhập với TRGDV)
+-- SELECT * FROM sys.VIEW_TRGDV_NV;
+
+-- -- TEST TOÀN QUYỀN VỚI VAI TRÒ NV TCHC
+-- SELECT * FROM sys.NHANVIEN;
+-- INSERT INTO sys.NHANVIEN (MANV, HOTEN, PHAI, NGSINH, LUONG, PHUCAP, DT, VAITRO, MADV)
+-- VALUES ('NV0020', 'Nguyễn Quang Thông', 'Nam', TO_DATE('2004-08-04', 'YYYY-MM-DD'), 15000000, 2000000, '0901234567', 'NVPDT', 'PDT');
+-- UPDATE sys.NHANVIEN SET LUONG = 20000000 WHERE MANV = 'NV0020';
+-- DELETE FROM sys.NHANVIEN WHERE MANV = 'NV0020';
+
+-- SELECT SYS_CONTEXT('USERENV', 'SESSION_USER') FROM dual; -- Xem người dùng hiện tại là ai
+-- SELECT SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA') FROM dual; // Xem schema hiện tại
