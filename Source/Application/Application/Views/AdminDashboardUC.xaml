@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="Application.Views.AdminDashboardUC"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Application.Views"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:components="using:Application.Views.Components"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:converter="using:Application.Converts"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <converter:TabViewBGConverter x:Key="TabViewBGConverter"/>
+    </UserControl.Resources>
+    
+    <Grid Background="{ThemeResource SystemControlAcrylicWindowBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Sidebar Navigation -->
+        <Grid Grid.Column="0" Background="#F0F0F0" Width="200" Padding="10">
+            <StackPanel>
+                <TextBlock Text="DataAdminPro" 
+                           FontSize="20" 
+                           FontWeight="Bold" 
+                           Margin="0,0,0,20" 
+                           Foreground="#333"/>
+
+                <StackPanel Spacing="10">
+                    <Button Content="Users" 
+                            Click="OnTabViewChanged"
+                            Tag="Users"
+                            Foreground="Black"
+                            Style="{x:Bind userViewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='Users'}" 
+                            HorizontalAlignment="Stretch"/>
+                    <Button Content="Tables &amp; Views"
+                            Tag="TablesAndViews"
+                            Foreground="Black"
+                            Click="OnTabViewChanged"
+                            Style="{x:Bind userViewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='TablesAndViews'}"
+                            HorizontalAlignment="Stretch"/>
+                    <Button Content="Roles"
+                            Tag="Roles"
+                            Click="OnTabViewChanged"
+                            Foreground="Black"
+                            Style="{x:Bind userViewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='Roles'}" 
+                            HorizontalAlignment="Stretch"/>
+                    <Button Content="Procedures"
+                            Tag="Procedures"
+                            Click="OnTabViewChanged"
+                            Foreground="Black"
+                            Style="{x:Bind userViewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='Procedures'}"
+                            HorizontalAlignment="Stretch"/>
+                    <Button Content="Functions" 
+                            Tag="Functions"
+                            Click="OnTabViewChanged"
+                            Foreground="Black"
+                            Style="{x:Bind userViewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='Functions'}"
+                            HorizontalAlignment="Stretch"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+
+        <!-- Main Content Area -->
+        <Grid Grid.Column="1" Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock
+                FontSize="20"
+                FontWeight="Bold"
+                Margin="0 0 0 30"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Left">
+                <Run
+                    Foreground="LightGray"
+                    FontWeight="Bold"
+                    Text="Database Administrator >"/>
+                <Run
+                    Foreground="White"
+                    FontWeight="Bold"
+                    Text="{x:Bind userViewModel.selectedTabView, Mode=OneWay}"/>
+            </TextBlock>
+
+            <local:ObjectUC
+                Grid.Row="1"
+                x:Name="objectUC"
+                userDataViewModel="{x:Bind userDataViewModel}" roleDataViewModel="{x:Bind roleDataViewModel}"/>
+        </Grid>
+    </Grid>
+    
+</UserControl>
