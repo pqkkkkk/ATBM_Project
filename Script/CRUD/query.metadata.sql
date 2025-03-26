@@ -1,0 +1,44 @@
+-- select all tables which this user created
+SELECT * FROM ALL_ALL_TABLES WHERE OWNER = 'C##ADMIN1' ORDER BY TABLE_NAME;
+
+-- select all users
+SELECT * FROM ALL_USERS;
+
+-- select all views
+SELECT VIEW_NAME FROM ALL_VIEWS WHERE OWNER = 'c##admin';
+-- select all stored procedures
+SELECT OBJECT_NAME FROM ALL_OBJECTS WHERE OBJECT_TYPE = 'PROCEDURE' AND OWNER = 'c##admin';
+
+-- select all users (only for dba)
+SELECT username FROM dba_users ORDER BY username;
+
+-- select all tables which this user created (only for dba)
+SELECT * FROM dba_tables WHERE  OWNER = 'C##ADMIN1';
+SELECT * FROM user_tables WHERE table_name = 'NHANVIEN';
+-- select all role which this user created (only for dba)
+SELECT * FROM dba_roles WHERE ORACLE_MAINTAINED = 'N' ORDER BY role;
+
+-- select all role which this user has (only for dba)
+SELECT * FROM user_role_privs;
+
+-- select all privileges which this user has
+SELECT *
+FROM user_sys_privs WHERE privilege LIKE '%ANY%';
+--  select all privileges which this user has on tables
+SELECT * FROM user_tab_privs;
+
+-- select all privileges which specific role has
+SELECT *
+FROM role_tab_privs WHERE OWNER = 'C##ADMIN1';
+
+
+-- DBA Views
+SELECT * FROM DBA_USERS;
+SELECT * FROM DBA_SYS_PRIVS;
+SELECT * FROM DBA_ROLES;
+SELECT * FROM DBA_ROLE_PRIVS;
+SELECT * FROM DBA_TAB_PRIVS WHERE GRANTEE = 'C##ADMIN1';
+SELECT * FROM ROLE_TAB_PRIVS;
+
+SELECT * FROM v$database;
+SELECT * FROM v$pdbs;

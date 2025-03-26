@@ -15,36 +15,61 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
+using Microsoft.Extensions.DependencyInjection;
+using Oracle.ManagedDataAccess.Client;
+using System.Threading.Tasks;
+using Application.DataAccess.MetaData;
+using Application.ViewModels;
 
 namespace Application
 {
-    /// <summary>
-    /// Provides application-specific behavior to supplement the default Application class.
-    /// </summary>
     public partial class App : Microsoft.UI.Xaml.Application
     {
-        /// <summary>
-        /// Initializes the singleton application object.  This is the first line of authored code
-        /// executed, and as such is the logical equivalent of main() or WinMain().
-        /// </summary>
+        public IServiceProvider? serviceProvider { get; private set; }
+
         public App()
         {
             this.InitializeComponent();
         }
 
-        /// <summary>
-        /// Invoked when the application is launched.
-        /// </summary>
-        /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             m_window = new MainWindow();
+            m_window.signInClicked += OnSignInClicked;
             m_window.Activate();
         }
 
-        private Window? m_window;
+        private async  void OnSignInClicked(string username, string password)
+        {
+            try
+            {
+                string connectionString = $"User Id={username};Password={password};Data Source=localhost:1521/XEPDB1";
+
+                using (var sqlConnection = new OracleConnection(connectionString))
+                {
+                    await sqlConnection.OpenAsync();
+
+                    var services = new ServiceCollection();
+                    services.AddSingleton<OracleConnection>(sqlConnection);
+                    services.AddSingleton<IMetaDataDao, MetaDataOracleDao>();
+
+                    serviceProvider = services.BuildServiceProvider();
+                    m_window.SignInSuccessHandler();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                m_window.SignInFailedHandler();
+                Console.WriteLine(ex.Message);
+
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine(ex.InnerException.Message);
+                }
+            }
+        }
+
+        private MainWindow? m_window;
     }
 }
