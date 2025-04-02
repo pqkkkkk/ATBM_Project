@@ -24,15 +24,15 @@ namespace Application.Views
 {
     public sealed partial class AdminDashboardUC : UserControl
     {
-        public DataViewModel<User> userDataViewModel { get; set; }
-        public DataViewModel<Role> roleDataViewModel { get; set; }
-        public UserViewModel userViewModel { get; set; }
+        public RoleDataViewModel roleDataViewModel { get; set; }
+        public UserDataViewModel userDataViewModel { get; set; }
+        public MainViewModel mainViewModel { get; set; }
         public string? selectedTab { get; set; }
         public AdminDashboardUC()
         {
-            userDataViewModel = new DataViewModel<User>();
-            roleDataViewModel = new DataViewModel<Role>();
-            userViewModel = new UserViewModel();
+            userDataViewModel = new UserDataViewModel();
+            roleDataViewModel = new RoleDataViewModel();
+            mainViewModel = new MainViewModel();
             selectedTab = "Users";
             
             this.InitializeComponent();
@@ -48,10 +48,24 @@ namespace Application.Views
             {
                 selectedTab = button.Tag.ToString();
 
-                userViewModel.UpdateSelectedTabView(selectedTab);
+                mainViewModel.UpdateSelectedTabView(selectedTab);
 
                 objectUC.SetDataSource(selectedTab);
             }
+        }
+
+        private void ViewPrivsDetailOfSelectedObject()
+        {
+            mainViewModel.UpdateCanBack(true);
+            objectUC.Visibility = Visibility.Collapsed;
+            objectDetailUC.Visibility = Visibility.Visible;
+        }
+
+        private void Back_Click(object sender, RoutedEventArgs e)
+        {
+            mainViewModel.UpdateCanBack(false);
+            objectDetailUC.Visibility = Visibility.Collapsed;
+            objectUC.Visibility = Visibility.Visible;
         }
     }
 }

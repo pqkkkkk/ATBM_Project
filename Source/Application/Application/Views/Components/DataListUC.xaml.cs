@@ -24,28 +24,36 @@ namespace Application.Views.Components
     {
         public static readonly DependencyProperty userDataViewModelProperty = DependencyProperty.Register(
             nameof(userViewModel),
-            typeof(DataViewModel<User>),
+            typeof(UserDataViewModel),
             typeof(DataListUC),
             new PropertyMetadata(null));
 
         public static readonly DependencyProperty roleDataViewModelProperty = DependencyProperty.Register(
             nameof(roleViewModel),
-            typeof(DataViewModel<Role>),
+            typeof(RoleDataViewModel),
             typeof(DataListUC),
             new PropertyMetadata(null));
-
-        public DataViewModel<User> userViewModel
+        public static readonly DependencyProperty mainViewModelProperty = DependencyProperty.Register(
+            nameof(mainViewModel),
+            typeof(MainViewModel),
+            typeof(DataListUC),
+            new PropertyMetadata(null));
+        public UserDataViewModel userViewModel
         {
-            get => (DataViewModel<User>)GetValue(userDataViewModelProperty);
+            get => (UserDataViewModel)GetValue(userDataViewModelProperty);
             set => SetValue(userDataViewModelProperty, value);
         }
 
-        public DataViewModel<Role> roleViewModel
+        public RoleDataViewModel roleViewModel
         {
-            get => (DataViewModel<Role>)GetValue(roleDataViewModelProperty);
+            get => (RoleDataViewModel)GetValue(roleDataViewModelProperty);
             set => SetValue(roleDataViewModelProperty, value);
         }
-
+        public MainViewModel mainViewModel
+        {
+            get => (MainViewModel)GetValue(mainViewModelProperty);
+            set => SetValue(mainViewModelProperty, value);
+        }
         public DataListUC()
         {
             this.InitializeComponent();
@@ -59,6 +67,39 @@ namespace Application.Views.Components
                     break;
                 case "Roles":
                     this.DataContext = roleViewModel;
+                    break;
+                default:
+                    break;
+            }
+        }
+        private void SelectedChangedHandler(object sender, SelectionChangedEventArgs e)
+        {
+            var selectedItem = dataList.SelectedItem;
+            if(selectedItem == null)
+            {
+                return;
+            }
+
+            CommonInfo newCommonInfo = new CommonInfo();
+
+            switch (mainViewModel.selectedTabView)
+            {
+                case "Users":
+                    User selectedUser = (User)selectedItem;
+                    userViewModel.UpdateSelectedItem(selectedUser);
+
+                    newCommonInfo.name = selectedUser.username;
+                    newCommonInfo.objectType = "User";
+                    mainViewModel.UpdateSelectedItem(newCommonInfo);
+
+                    break;
+                case "Roles":
+                    Role selectedRole = (Role)selectedItem;
+                    roleViewModel.UpdateSelectedItem(selectedRole);
+
+                    newCommonInfo.name = selectedRole.name;
+                    newCommonInfo.objectType = "Role";
+                    mainViewModel.UpdateSelectedItem(newCommonInfo);
                     break;
                 default:
                     break;

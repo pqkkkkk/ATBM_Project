@@ -22,7 +22,7 @@
         </Grid.ColumnDefinitions>
 
         <!-- Sidebar Navigation -->
-        <Grid Grid.Column="0" Background="#F0F0F0" Width="200" Padding="10">
+        <Grid Grid.Column="0" Background="#F0F0F0" Width="200" Padding="3">
             <StackPanel>
                 <TextBlock Text="DataAdminPro" 
                            FontSize="20" 
@@ -35,31 +35,31 @@
                             Click="OnTabViewChanged"
                             Tag="Users"
                             Foreground="Black"
-                            Style="{x:Bind userViewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='Users'}" 
+                            Style="{x:Bind mainViewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='Users'}" 
                             HorizontalAlignment="Stretch"/>
                     <Button Content="Tables &amp; Views"
                             Tag="TablesAndViews"
                             Foreground="Black"
                             Click="OnTabViewChanged"
-                            Style="{x:Bind userViewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='TablesAndViews'}"
+                            Style="{x:Bind mainViewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='TablesAndViews'}"
                             HorizontalAlignment="Stretch"/>
                     <Button Content="Roles"
                             Tag="Roles"
                             Click="OnTabViewChanged"
                             Foreground="Black"
-                            Style="{x:Bind userViewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='Roles'}" 
+                            Style="{x:Bind mainViewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='Roles'}" 
                             HorizontalAlignment="Stretch"/>
                     <Button Content="Procedures"
                             Tag="Procedures"
                             Click="OnTabViewChanged"
                             Foreground="Black"
-                            Style="{x:Bind userViewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='Procedures'}"
+                            Style="{x:Bind mainViewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='Procedures'}"
                             HorizontalAlignment="Stretch"/>
                     <Button Content="Functions" 
                             Tag="Functions"
                             Click="OnTabViewChanged"
                             Foreground="Black"
-                            Style="{x:Bind userViewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='Functions'}"
+                            Style="{x:Bind mainViewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='Functions'}"
                             HorizontalAlignment="Stretch"/>
                 </StackPanel>
             </StackPanel>
@@ -72,26 +72,65 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <TextBlock
-                FontSize="20"
-                FontWeight="Bold"
-                Margin="0 0 0 30"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Left">
-                <Run
-                    Foreground="LightGray"
-                    FontWeight="Bold"
-                    Text="Database Administrator >"/>
-                <Run
-                    Foreground="White"
-                    FontWeight="Bold"
-                    Text="{x:Bind userViewModel.selectedTabView, Mode=OneWay}"/>
-            </TextBlock>
+            <Grid
+                Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
+                <Button 
+                    IsEnabled="{x:Bind mainViewModel.canBack, Mode=OneWay}"
+                    Grid.Column="0"
+                    Style="{ThemeResource ButtonRevealStyle}"
+                    ToolTipService.ToolTip="Back"
+                    Click="Back_Click"
+                    
+                    Margin="0,0,15,30">
+                    <FontIcon 
+                        Glyph="&#xE72B;" 
+                        FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                        FontSize="16"/>
+                </Button>
+                
+                <TextBlock
+                    Grid.Column="1"
+                    FontSize="20"
+                    FontWeight="Bold"
+                    Margin="0 0 0 30"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Left">
+                    <Run
+                        Foreground="LightGray"
+                        FontWeight="Bold"
+                        Text="Database Administrator >"/>
+                    <Run
+                        Foreground="White"
+                        FontWeight="Bold"
+                        Text="{x:Bind mainViewModel.selectedTabView, Mode=OneWay}"/>
+                    <Run 
+                        Foreground="LightGray"
+                        FontWeight="Bold"
+                        Text=" > "/>
+                    <Run
+                        Foreground="White"
+                        FontWeight="Bold"
+                        Text="{x:Bind mainViewModel.selectedItem.name, Mode=OneWay}"/>
+                    
+                </TextBlock>
+            </Grid>
+            
             <local:ObjectUC
                 Grid.Row="1"
                 x:Name="objectUC"
+                Visibility="Visible"
+                DetailClickedEvent="ViewPrivsDetailOfSelectedObject"
+                mainViewModel="{x:Bind mainViewModel}"
                 userDataViewModel="{x:Bind userDataViewModel}" roleDataViewModel="{x:Bind roleDataViewModel}"/>
+            <local:ObjectDetailUC
+                Grid.Row="1"
+                x:Name="objectDetailUC"
+                Visibility="Collapsed"/>
         </Grid>
     </Grid>
     

@@ -22,21 +22,28 @@
                Margin="0,0,0,20">
             <Button 
                 Content="Detail"
+                Click="DetailClickHandler"
                 Background="#9C27B0" 
                 Foreground="White" 
                 Width="100"/>
-            <Button Content="Add" 
-               Background="#9C27B0" 
-               Foreground="White" 
-               Width="100"/>
-            <Button Content="Update" 
-               Background="#9C27B0" 
-               Foreground="White" 
-               Width="100"/>
-            <Button Content="Delete" 
-               Background="#9C27B0" 
-               Foreground="White" 
-               Width="100"/>
+            <Button 
+                Content="Add" 
+                Click="AddClickHandler" 
+                Background="#9C27B0" 
+                Foreground="White" 
+                Width="100"/>
+            <Button
+                Click="UpdateClickHandler"
+                Content="Update" 
+                Background="#9C27B0" 
+                Foreground="White" 
+                Width="100"/>
+            <Button
+                Click="DeleteClickHandler"
+                Content="Delete" 
+                Background="#9C27B0" 
+                Foreground="White" 
+                Width="100"/>
 
             <AutoSuggestBox PlaceholderText="Type username..." 
                        Width="250" 
@@ -51,7 +58,83 @@
         <components:DataListUC
             x:Name="dataList"
             Grid.Row="1"
+            mainViewModel="{x:Bind mainViewModel}"
             userViewModel="{x:Bind userDataViewModel}"
             roleViewModel="{x:Bind roleDataViewModel}"/>
+        
+        <!-- Create user dialog -->
+        <ContentDialog
+            x:Name="createUserDialog">
+            <ContentDialog.CloseButtonText> Cancel </ContentDialog.CloseButtonText>
+            <ContentDialog.PrimaryButtonText> Create </ContentDialog.PrimaryButtonText>
+            <ContentDialog.Title>Create User</ContentDialog.Title>
+
+            <ContentDialog.Content>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBox
+                        Grid.Row="0"
+                        x:Name="UsernameTextBox" 
+                        Header="Username" 
+                        PlaceholderText="Enter username" 
+                        Width="300"/>
+                    <PasswordBox
+                        x:Name="PasswordTextBox"
+                        Grid.Row="1"
+                        Header="Password" 
+                        PlaceholderText="Enter password" 
+                        Width="300"/>
+                </Grid>
+            </ContentDialog.Content>
+        </ContentDialog>
+        
+        <!-- Create role dialog-->
+        <ContentDialog
+            x:Name="createRoleDialog">
+            <ContentDialog.CloseButtonText>Cancel</ContentDialog.CloseButtonText>
+            <ContentDialog.PrimaryButtonText>Create</ContentDialog.PrimaryButtonText>
+            <ContentDialog.Title>Create Role</ContentDialog.Title>
+
+            <ContentDialog.Content>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBox
+                        Grid.Row="0"
+                        x:Name="roleTextBox" 
+                        Header="Role name" 
+                        PlaceholderText="Enter role name" 
+                        Width="300"/>
+                </Grid>
+            </ContentDialog.Content>
+        </ContentDialog>
+        
+        <!-- Delete warning dialog-->
+        <!-- Create role dialog-->
+        <ContentDialog
+            x:Name="deleteWarningDialog">
+            <ContentDialog.CloseButtonText>No</ContentDialog.CloseButtonText>
+            <ContentDialog.PrimaryButtonText>Yes</ContentDialog.PrimaryButtonText>
+            <ContentDialog.Title>Delete</ContentDialog.Title>
+
+            <ContentDialog.Content>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Grid.Row="0"
+                        Text="Are you sure you want to delete selected item?"
+                        Width="300"/>
+                </Grid>
+            </ContentDialog.Content>
+        </ContentDialog>
     </Grid>
 </UserControl>
