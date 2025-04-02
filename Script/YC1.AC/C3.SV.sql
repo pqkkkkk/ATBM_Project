@@ -45,7 +45,7 @@ end SV_UPDATE;
         policy_name     => 'SV_UPDATE',
         function_schema => 'DAIHOCX',
         policy_function => 'SV_UPDATE',
-        statement_types => ‘UPDATE',
+        statement_types => 'UPDATE',
         update_check    => TRUE
     );
 

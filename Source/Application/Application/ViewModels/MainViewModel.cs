@@ -12,14 +12,23 @@ using Windows.UI.Core;
 
 namespace Application.ViewModels
 {
-    public class UserViewModel : INotifyPropertyChanged
+    public class MainViewModel : INotifyPropertyChanged
     {
         public UserMetaData userMetaData { get; set; }
         private IMetaDataDao? metaDataDao;
         public string? selectedTabView { get; set; }
-        public UserViewModel()
+        public bool canBack { get; set; }
+        public CommonInfo? selectedItem { get; set; }
+        public MainViewModel()
         {
+            canBack = false;
             selectedTabView = "Users";
+            selectedItem = new CommonInfo()
+            {
+                name ="",
+                objectType = ""
+            };
+
             userMetaData = new UserMetaData()
             {
                 roles = new List<string>(),
@@ -31,6 +40,14 @@ namespace Application.ViewModels
         {
             string? selectedTab = tabView;
             selectedTabView = selectedTab;
+        }
+        public void UpdateSelectedItem(CommonInfo? item)
+        {
+            selectedItem = item;
+        }
+        public void UpdateCanBack(bool canBack)
+        {
+            this.canBack = canBack;
         }
         public event PropertyChangedEventHandler? PropertyChanged;
 

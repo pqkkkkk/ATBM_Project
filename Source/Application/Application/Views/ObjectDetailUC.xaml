@@ -4,11 +4,272 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Application.Views"
+    xmlns:components="using:Application.Views.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid>
+    <Grid Background="{ThemeResource SystemControlAcrylicWindowBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel
+            Margin="0 0 0 10"
+            Grid.Row="0" Orientation="Vertical" Spacing="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+            </Grid>
+
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <ComboBox
+                    Grid.Column="0"
+                    Width="200"
+                    PlaceholderText="Current roles...">
+                    <ComboBoxItem Content="Role 1"/>
+                    <ComboBoxItem Content="Role 2"/>
+                    <ComboBoxItem Content="Role 3"/>
+                </ComboBox>
+
+                <StackPanel
+                    HorizontalAlignment="Right"
+                    Grid.Column="1"
+                    Orientation="Horizontal" Spacing="10">
+                    <Button Content="Grant role" 
+                            Background="#9C27B0"
+                            Click="GrantRole_Click"/>
+                    <Button Content="Revoke role" 
+                            Style="{ThemeResource ButtonRevealStyle}"
+                            Click="RevokeRole_Click"/>
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <ComboBox
+                    SelectionChanged="ChangeSelectedObjectType"
+                    Grid.Column="0"
+                    Width="200"
+                    x:Name="selectObjectTypeComboBox"
+                    PlaceholderText="Privs on...">
+                    <ComboBoxItem Content="Table"/>
+                    <ComboBoxItem Content="View"/>
+                    <ComboBoxItem Content="Procedure"/>
+                    <ComboBoxItem Content="Function"/>
+                    <ComboBoxItem Content="System privilege"/>
+                </ComboBox>
+
+                <StackPanel
+                    HorizontalAlignment="Right"
+                    Grid.Column="1"
+                    Orientation="Horizontal" Spacing="10">
+                    <Button Content="Grant privs" 
+                            Background="#9C27B0"
+                            Click="GrantPrivs_Click"/>
+                    <Button Content="Revoke privs" 
+                            Style="{ThemeResource ButtonRevealStyle}"
+                            Click="RevokePrivs_Click"/>
+                </StackPanel>
+            </Grid>
+
+        </StackPanel>
+
+        <components:DataListUC
+            Grid.Row="1"/>
+        
+        <!-- Grant Priv On Table Dialog -->
+        <ContentDialog
+            x:Name="grantPrivOnTableDialog">
+            
+            <ContentDialog.Title>
+                Grant privs on table
+            </ContentDialog.Title>
+            
+            <ContentDialog.CloseButtonText>
+                Cancel
+            </ContentDialog.CloseButtonText>
+
+            <ContentDialog.PrimaryButtonText>
+                Grant
+            </ContentDialog.PrimaryButtonText>
+            
+            <ContentDialog.Content>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel 
+                        Spacing="10">
+                        <!-- Table Dropdown -->
+                        <ComboBox 
+                            x:Name="TableComboBox" 
+                            Header="Table"
+                            PlaceholderText="Select table"
+                            Width="300"/>
+
+                        <!-- Action Dropdown -->
+                        <ComboBox 
+                            x:Name="ActionComboBox" 
+                            Header="Action"
+                            PlaceholderText="Select action"
+                            Width="300"/>
+                    </StackPanel>
+
+                    <!-- MSSV Column Checkbox -->
+                    <StackPanel 
+                        Grid.Row="1" 
+                        Margin="0,10,0,0">
+                        <CheckBox 
+                        Content="MSSV" 
+                        x:Name="MSSVCheckBox"/>
+                    </StackPanel>
+                </Grid>
+            </ContentDialog.Content>
+        </ContentDialog>
+
+        <!-- Grant Priv On View Dialog -->
+        <ContentDialog
+            x:Name="grantPrivOnViewDialog">
+
+            <ContentDialog.Title>
+                Grant privs on view
+            </ContentDialog.Title>
+
+            <ContentDialog.CloseButtonText>
+                Cancel
+            </ContentDialog.CloseButtonText>
+
+            <ContentDialog.PrimaryButtonText>
+                Grant
+            </ContentDialog.PrimaryButtonText>
+
+            <ContentDialog.Content>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel 
+                        Spacing="10">
+                        <!-- View Dropdown -->
+                        <ComboBox 
+                            x:Name="ViewComboBox" 
+                            Header="View"
+                            PlaceholderText="Select view"
+                            Width="300"/>
+
+                        <!-- Action Dropdown -->
+                        <ComboBox 
+                            x:Name="ActionOnViewComboBox" 
+                            Header="Action"
+                            PlaceholderText="Select action"
+                            Width="300"/>
+                    </StackPanel>
+                </Grid>
+            </ContentDialog.Content>
+        </ContentDialog>
+        
+        <!-- Grant role dialog-->
+        <ContentDialog
+            x:Name="grantRoleDialog">
+            <ContentDialog.Title>
+                Grant role
+            </ContentDialog.Title>
+
+            <ContentDialog.CloseButtonText>
+                Cancel
+            </ContentDialog.CloseButtonText>
+
+            <ContentDialog.PrimaryButtonText>
+                Grant
+            </ContentDialog.PrimaryButtonText>
+
+            <ContentDialog.Content>
+                <ComboBox
+                    x:Name="RoleComboBox"
+                    PlaceholderText="Select role"
+                    Width="300">
+                </ComboBox>
+            </ContentDialog.Content>
+        </ContentDialog>
+
+        <!-- Revoke role dialog-->
+        <ContentDialog
+            x:Name="revokeRoleDialog">
+            <ContentDialog.Title>
+                Revoke role
+            </ContentDialog.Title>
+
+            <ContentDialog.CloseButtonText>
+                Cancel
+            </ContentDialog.CloseButtonText>
+
+            <ContentDialog.PrimaryButtonText>
+                Revoke
+            </ContentDialog.PrimaryButtonText>
+
+            <ContentDialog.Content>
+                <ComboBox
+                    x:Name="roleInRevokeDialogComboBox"
+                    PlaceholderText="Select role"
+                    Width="300">
+                </ComboBox>
+            </ContentDialog.Content>
+        </ContentDialog>
+        <!-- Grant priv on procedure dialog-->
+        <ContentDialog
+            x:Name="grantPrivOnProcedureDialog">
+            <ContentDialog.Title>
+                Grant Privileges on Procedure
+            </ContentDialog.Title>
+
+            <ContentDialog.CloseButtonText>
+                Cancel
+            </ContentDialog.CloseButtonText>
+
+            <ContentDialog.PrimaryButtonText>
+                Grant
+            </ContentDialog.PrimaryButtonText>
+
+            <ContentDialog.Content>
+                <StackPanel 
+                    Spacing="10">
+                    <!-- Procedure Dropdown -->
+                    <ComboBox 
+                         x:Name="ProcedureComboBox" 
+                         Header="Procedure"
+                         PlaceholderText="Select procedure"
+                         Width="300"/>
+
+                    <!-- Action Dropdown -->
+                    <ComboBox 
+                         x:Name="ActionOnProcedureComboBox" 
+                         Header="Action"
+                         PlaceholderText="Select action"
+                         Width="300"/>
+                </StackPanel>
+            </ContentDialog.Content>
+        </ContentDialog>
 
     </Grid>
+    
 </UserControl>

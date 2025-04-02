@@ -25,9 +25,9 @@ namespace Application.Views
 {
     public sealed partial class UserDashboardUC : UserControl
     {
-        public UserViewModel userViewModel { get; set; }
+        public MainViewModel userViewModel { get; set; }
         public UserDashboardUC() {
-            userViewModel = new UserViewModel();
+            userViewModel = new MainViewModel();
             this.InitializeComponent();
         }
 
