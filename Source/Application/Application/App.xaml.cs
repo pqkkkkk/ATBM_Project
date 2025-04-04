@@ -51,7 +51,6 @@ namespace Application
 
                     var services = new ServiceCollection();
                     services.AddSingleton<OracleConnection>(sqlConnection);
-                    services.AddSingleton<IMetaDataDao, MetaDataOracleDao>();
 
                     serviceProvider = services.BuildServiceProvider();
                     m_window.SignInSuccessHandler();

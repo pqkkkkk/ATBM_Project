@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.ViewModels
 {
-    public class PrivilegeViewModel : INotifyPropertyChanged
+    public class PrivilegeViewModel : BaseViewModel, INotifyPropertyChanged
     {
         public string selectObjectType { get; set; }
         public PrivilegeViewModel()
@@ -18,6 +18,32 @@ namespace Application.ViewModels
         {
             selectObjectType = objectType;
         }
+
+        public List<object> LoadData()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateSelectedItem(object selectedItem)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool CreateItem(object item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool UpdateItem(object item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool DeleteItem(object item)
+        {
+            throw new NotImplementedException();
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
     }
 }
