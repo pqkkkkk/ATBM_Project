@@ -15,7 +15,6 @@ namespace Application.ViewModels
     public class MainViewModel : INotifyPropertyChanged
     {
         public UserMetaData userMetaData { get; set; }
-        private IMetaDataDao? metaDataDao;
         public string? selectedTabView { get; set; }
         public bool canBack { get; set; }
         public CommonInfo? selectedItem { get; set; }
