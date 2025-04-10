@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Application.ViewModels;
 using System.Threading.Tasks;
+using Application.Views.Components;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -33,14 +34,23 @@ namespace Application.Views
             get => (MainViewModel)GetValue(mainViewModelProperty);
             set => SetValue(mainViewModelProperty, value);
         }
-        public PrivilegeViewModel privilegeViewModel { get; set; }
+        public PrivilegeDataViewModel privilegeViewModel { get; set; }
         public ObjectDetailUC()
         {
-            privilegeViewModel = new PrivilegeViewModel();
-
             this.InitializeComponent();
+            this.Loaded += ObjectDetailUC_Loaded;
         }
-
+        private void ObjectDetailUC_Loaded(object sender, RoutedEventArgs e)
+        {
+           if(mainViewModel != null)
+            {
+                privilegeViewModel = new PrivilegeDataViewModel(mainViewModel.selectedItem);
+            }
+        }
+        public void SetDataSourceForDataList()
+        {
+            dataList.SetDataSource("Privileges");
+        }
         private async void GrantRole_Click(object sender, RoutedEventArgs e)
         {
             await grantRoleDialog.ShowAsync();
@@ -67,7 +77,7 @@ namespace Application.Views
                 case "Function":
                     // Implement revoke cell privilege logic
                     break;
-                case "System priv":
+                case "System privilege":
                     // Implement revoke system privilege logic
                     break;
                 default:
@@ -84,9 +94,9 @@ namespace Application.Views
             }
         }
 
-        private void RevokePrivs_Click(object sender, RoutedEventArgs e)
+        private async void RevokePrivs_Click(object sender, RoutedEventArgs e)
         {
-           
+           await revokePrivilgeDialog.ShowAsync();
         }
 
         private void ChangeSelectedObjectType(object sender, SelectionChangedEventArgs e)
@@ -96,6 +106,28 @@ namespace Application.Views
                 string selectedObjectType = selectedItem.Content?.ToString() ?? "";
 
                 privilegeViewModel.UpdateSelectedObjectType(selectedObjectType);
+            }
+        }
+
+        private void OnChangeSelectedObjectWhenGrantPriv(object sender, SelectionChangedEventArgs e)
+        {
+            if(sender is ComboBox comboBox)
+            {
+                if (comboBox.SelectedItem is Model.OracleObject selectedObject)
+                {
+                    privilegeViewModel.UpdateSelectedItemWhenSelectionChange(selectedObject);
+                }
+            }
+        }
+
+        private void OnChangeSelectedRole(object sender, SelectionChangedEventArgs e)
+        {
+            if (sender is ComboBox comboBox)
+            {
+                if (comboBox.SelectedItem is Model.Role selectedObject)
+                {
+                    privilegeViewModel.UpdateSelectedRole(selectedObject);
+                }
             }
         }
     }

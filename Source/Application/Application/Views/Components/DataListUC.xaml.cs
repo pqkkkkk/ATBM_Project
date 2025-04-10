@@ -27,7 +27,11 @@ namespace Application.Views.Components
             typeof(UserDataViewModel),
             typeof(DataListUC),
             new PropertyMetadata(null));
-
+        public static readonly DependencyProperty privilegeDataViewModelProperty = DependencyProperty.Register(
+            nameof(userViewModel),
+            typeof(PrivilegeDataViewModel),
+            typeof(DataListUC),
+            new PropertyMetadata(null));
         public static readonly DependencyProperty roleDataViewModelProperty = DependencyProperty.Register(
             nameof(roleViewModel),
             typeof(RoleDataViewModel),
@@ -43,7 +47,11 @@ namespace Application.Views.Components
             get => (UserDataViewModel)GetValue(userDataViewModelProperty);
             set => SetValue(userDataViewModelProperty, value);
         }
-
+        public PrivilegeDataViewModel privilegeViewModel
+        {
+            get => (PrivilegeDataViewModel)GetValue(privilegeDataViewModelProperty);
+            set => SetValue(privilegeDataViewModelProperty, value);
+        }
         public RoleDataViewModel roleViewModel
         {
             get => (RoleDataViewModel)GetValue(roleDataViewModelProperty);
@@ -67,6 +75,9 @@ namespace Application.Views.Components
                     break;
                 case "Roles":
                     this.DataContext = roleViewModel;
+                    break;
+                case "Privileges":
+                    this.DataContext = privilegeViewModel;
                     break;
                 default:
                     break;

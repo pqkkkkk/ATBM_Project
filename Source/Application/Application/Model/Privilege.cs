@@ -7,11 +7,14 @@ using System.Threading.Tasks;
 
 namespace Application.Model
 {
-    public class UserPrivilege : INotifyPropertyChanged
+    public class Privilege : INotifyPropertyChanged
     {
-        public int? objectName { get; set; }
-        public string? objectType { get; set; }
+        public string? grantee { get; set; }
+        public string? owner { get; set; }
+        public string? tableName { get; set; }
+        public string? grantor { get; set; }
         public string? privilege { get; set; }
+        public string? type { get; set; }
 
         public event PropertyChangedEventHandler? PropertyChanged;
     }

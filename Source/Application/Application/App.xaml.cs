@@ -20,6 +20,8 @@ using Oracle.ManagedDataAccess.Client;
 using System.Threading.Tasks;
 using Application.DataAccess.MetaData;
 using Application.ViewModels;
+using Application.DataAccess.MetaData.Privilege;
+using Application.DataAccess.MetaData.Role;
 
 namespace Application
 {
@@ -43,18 +45,23 @@ namespace Application
         {
             try
             {
-                string connectionString = $"User Id={username};Password={password};Data Source=localhost:1521/XEPDB1";
+                string connectionString = $"User Id={username};Password={password};Data Source=localhost:1521/XEPDB1;DBA Privilege=SYSDBA";
 
-                using (var sqlConnection = new OracleConnection(connectionString))
-                {
-                    await sqlConnection.OpenAsync();
+                var sqlConnection = new OracleConnection(connectionString);
+                await sqlConnection.OpenAsync();
+                
+                var services = new ServiceCollection();
 
-                    var services = new ServiceCollection();
-                    services.AddSingleton<OracleConnection>(sqlConnection);
+                // Đăng ký OracleConnection
+                services.AddSingleton(sqlConnection);
 
-                    serviceProvider = services.BuildServiceProvider();
-                    m_window.SignInSuccessHandler();
-                }
+                // Đăng ký PrivilegeOracleDao
+                services.AddSingleton<IPrivilegeDao, PrivilegeOracleDao>();
+                services.AddSingleton<IRoleDao, RoleOracleDao>();
+
+                serviceProvider = services.BuildServiceProvider();
+
+                m_window.SignInSuccessHandler();
 
             }
             catch (Exception ex)
@@ -65,6 +72,17 @@ namespace Application
                 if (ex.InnerException != null)
                 {
                     Console.WriteLine(ex.InnerException.Message);
+                }
+            }
+            finally
+            {
+                if (serviceProvider != null)
+                {
+                    var sqlConnection = serviceProvider.GetService<OracleConnection>();
+                    if (sqlConnection != null && sqlConnection.State == System.Data.ConnectionState.Open)
+                    {
+                        sqlConnection.Close();
+                    }
                 }
             }
         }

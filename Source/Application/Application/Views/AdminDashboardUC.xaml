@@ -130,6 +130,7 @@
             <local:ObjectDetailUC
                 Grid.Row="1"
                 x:Name="objectDetailUC"
+                mainViewModel="{x:Bind mainViewModel, Mode=OneWay}"
                 Visibility="Collapsed"/>
         </Grid>
     </Grid>

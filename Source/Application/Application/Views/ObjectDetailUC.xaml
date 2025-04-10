@@ -5,17 +5,19 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Application.Views"
     xmlns:components="using:Application.Views.Components"
+    xmlns:models="using:Application.Model"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource SystemControlAcrylicWindowBrush}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="3*"/>
         </Grid.RowDefinitions>
 
         <StackPanel
+            Height="Auto"
             Margin="0 0 0 10"
             Grid.Row="0" Orientation="Vertical" Spacing="10">
             <Grid>
@@ -33,12 +35,19 @@
                 </Grid.ColumnDefinitions>
 
                 <ComboBox
+                    SelectionChanged="OnChangeSelectedRole"
+                    ItemsSource="{x:Bind privilegeViewModel.roleOfUsers, Mode=OneWay}"
                     Grid.Column="0"
                     Width="200"
                     PlaceholderText="Current roles...">
-                    <ComboBoxItem Content="Role 1"/>
-                    <ComboBoxItem Content="Role 2"/>
-                    <ComboBoxItem Content="Role 3"/>
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate x:DataType="models:Role">
+                            <TextBlock
+                                Text="{x:Bind name}"
+                                FontSize="14"
+                                Foreground="White"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
                 </ComboBox>
 
                 <StackPanel
@@ -80,19 +89,22 @@
                     <Button Content="Grant privs" 
                             Background="#9C27B0"
                             Click="GrantPrivs_Click"/>
-                    <Button Content="Revoke privs" 
+                    <Button Content="Revoke privs"
                             Style="{ThemeResource ButtonRevealStyle}"
                             Click="RevokePrivs_Click"/>
                 </StackPanel>
             </Grid>
-
         </StackPanel>
 
         <components:DataListUC
+            x:Name="dataList"
+            privilegeViewModel="{x:Bind privilegeViewModel, Mode=OneWay}"
             Grid.Row="1"/>
         
         <!-- Grant Priv On Table Dialog -->
         <ContentDialog
+            Width="400"
+            Height="300"
             x:Name="grantPrivOnTableDialog">
             
             <ContentDialog.Title>
@@ -119,22 +131,44 @@
                         Margin="0 0 20 0"
                         Spacing="10">
                         <!-- Table Dropdown -->
-                        <ComboBox 
+                        <ComboBox
+                            SelectionChanged="OnChangeSelectedObjectWhenGrantPriv"
+                            ItemsSource="{x:Bind privilegeViewModel.tableList, Mode=OneWay}"
                             x:Name="TableComboBox" 
                             Header="Table"
                             PlaceholderText="Select table"
-                            Width="200"/>
+                            Width="200">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate
+                                    x:DataType="models:OracleObject">
+                                    <TextBlock
+                                        Text="{x:Bind objectName, Mode=OneWay}"
+                                        FontSize="14"
+                                        Foreground="White"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
 
-                        <!-- Action Dropdown -->
-                        <ComboBox 
-                            x:Name="ActionComboBox" 
+                        <!-- Action List -->
+                        <ListView
                             Header="Action"
-                            PlaceholderText="Select action"
-                            Width="200"/>
+                            SelectionMode="Multiple"
+                            ItemsSource="{x:Bind privilegeViewModel.tableActions, Mode=OneWay}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="models:TableAction">
+                                    <TextBlock
+                                        Text="{x:Bind actionName, Mode=OneWay}" 
+                                        x:Name="actionCheckBox"/>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                        
+                        <CheckBox Content="WITH GRANT OPTION"/>
                     </StackPanel>
 
-                    <!-- MSSV Column Checkbox -->
-                    <StackPanel 
+                    <!--  Column List -->
+                    <StackPanel
+                        Height="300"
                         Grid.Column="1"
                         Orientation="Vertical"
                         Spacing="10">
@@ -142,12 +176,18 @@
                             Text="Column"/>
 
                         <ListView
-                            BorderBrush="White"
-                            BorderThickness="1">
-                            
-                            <CheckBox 
-                                Content="MSSV" 
-                                x:Name="MSSVCheckBox"/>
+                            VerticalAlignment="Stretch"
+                            ScrollViewer.VerticalScrollMode="Enabled"
+                            ScrollViewer.VerticalScrollBarVisibility="Visible"
+                            ItemsSource="{x:Bind privilegeViewModel.columnListOfSelectedObject, Mode=OneWay}"
+                            x:Name="columnListOfSelectedTableListView">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="models:ColumnOfObject">
+                                    <CheckBox 
+                                        Content="{x:Bind columnName, Mode=OneWay}" 
+                                        x:Name="MSSVCheckBox"/>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
                         </ListView>
                         
                     </StackPanel>
@@ -157,6 +197,8 @@
 
         <!-- Grant Priv On View Dialog -->
         <ContentDialog
+            Width="400"
+            Height="300"
             x:Name="grantPrivOnViewDialog">
 
             <ContentDialog.Title>
@@ -173,27 +215,73 @@
 
             <ContentDialog.Content>
                 <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
                     <StackPanel 
+                        Margin="0 0 20 0"
+                        Grid.Column="0"
                         Spacing="10">
                         <!-- View Dropdown -->
-                        <ComboBox 
+                        <ComboBox
+                            SelectionChanged="OnChangeSelectedObjectWhenGrantPriv"
+                            ItemsSource="{x:Bind privilegeViewModel.viewList, Mode=OneWay}"
                             x:Name="ViewComboBox" 
                             Header="View"
                             PlaceholderText="Select view"
-                            Width="300"/>
+                            Width="200">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate
+                                    x:DataType="models:OracleObject">
+                                    <TextBlock
+                                        Text="{x:Bind objectName, Mode=OneWay}"
+                                        FontSize="14"
+                                        Foreground="White"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
 
-                        <!-- Action Dropdown -->
-                        <ComboBox 
-                            x:Name="ActionOnViewComboBox" 
+                        <!-- Action List -->
+                        <ListView
                             Header="Action"
-                            PlaceholderText="Select action"
-                            Width="300"/>
+                            SelectionMode="Multiple"
+                            ItemsSource="{x:Bind privilegeViewModel.tableActions, Mode=OneWay}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="models:TableAction">
+                                    <TextBlock
+                                        Text="{x:Bind actionName, Mode=OneWay}" 
+                                        x:Name="actionOnViewCheckBox"/>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+
+                        <CheckBox Content="WITH GRANT OPTION"/>
+                    </StackPanel>
+
+                    <StackPanel
+                        Height="300"
+                        Grid.Column="1"
+                        Orientation="Vertical"
+                        Spacing="10">
+                        <TextBlock 
+                            Text="Column"/>
+
+                        <ListView
+                            VerticalAlignment="Stretch"
+                            ScrollViewer.VerticalScrollMode="Enabled"
+                            ScrollViewer.VerticalScrollBarVisibility="Visible"
+                            ItemsSource="{x:Bind privilegeViewModel.columnListOfSelectedObject, Mode=OneWay}"
+                            x:Name="columnListOfSelectedViewListView">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="models:ColumnOfObject">
+                                    <CheckBox 
+                                        Content="{x:Bind columnName, Mode=OneWay}" 
+                                        x:Name="MSSVCheckBox"/>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
                     </StackPanel>
                 </Grid>
             </ContentDialog.Content>
@@ -215,11 +303,26 @@
             </ContentDialog.PrimaryButtonText>
 
             <ContentDialog.Content>
-                <ComboBox
-                    x:Name="RoleComboBox"
-                    PlaceholderText="Select role"
-                    Width="300">
-                </ComboBox>
+                <StackPanel Spacing="10">
+                    <ComboBox 
+                        ItemsSource="{x:Bind privilegeViewModel.roleList, Mode=OneWay}"
+                        x:Name="RoleComboBox" 
+                        Header="Role"
+                        PlaceholderText="Select role"
+                        Width="200">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate
+                                x:DataType="models:Role">
+                                <TextBlock
+                                    Text="{x:Bind name, Mode=OneWay}"
+                                    FontSize="14"
+                                    Foreground="White"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
+                    <CheckBox Content="WITH GRANT OPTION"/>
+                </StackPanel>
             </ContentDialog.Content>
         </ContentDialog>
 
@@ -239,18 +342,21 @@
             </ContentDialog.PrimaryButtonText>
 
             <ContentDialog.Content>
-                <ComboBox
-                    x:Name="roleInRevokeDialogComboBox"
-                    PlaceholderText="Select role"
-                    Width="300">
-                </ComboBox>
+                <TextBlock
+                    Foreground="Red">
+                    <Run Text="Are you sure to revoke role "/>
+                    <Run
+                        FontWeight="Bold"
+                        Text="{x:Bind privilegeViewModel.selectedRole.name, Mode=OneWay}"/>
+                    <Run Text="?"/>
+                </TextBlock>
             </ContentDialog.Content>
         </ContentDialog>
         <!-- Grant priv on procedure dialog-->
         <ContentDialog
             x:Name="grantPrivOnProcedureDialog">
             <ContentDialog.Title>
-                Grant Privileges on Procedure
+                Grant execute on Procedure
             </ContentDialog.Title>
 
             <ContentDialog.CloseButtonText>
@@ -266,18 +372,49 @@
                     Spacing="10">
                     <!-- Procedure Dropdown -->
                     <ComboBox 
-                         x:Name="ProcedureComboBox" 
-                         Header="Procedure"
-                         PlaceholderText="Select procedure"
-                         Width="300"/>
+                        SelectionChanged="OnChangeSelectedObjectWhenGrantPriv"
+                        ItemsSource="{x:Bind privilegeViewModel.procedureList, Mode=OneWay}"
+                        x:Name="ProcedureComboBox" 
+                        Header="Procedure"
+                        PlaceholderText="Select procedure"
+                        Width="300">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate
+                                x:DataType="models:OracleObject">
+                                <TextBlock
+                                    Text="{x:Bind objectName,Mode=OneWay}"
+                                    FontSize="14"
+                                    Foreground="White"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
 
-                    <!-- Action Dropdown -->
-                    <ComboBox 
-                         x:Name="ActionOnProcedureComboBox" 
-                         Header="Action"
-                         PlaceholderText="Select action"
-                         Width="300"/>
+                    <CheckBox Content="WITH GRANT OPTION"/>
                 </StackPanel>
+            </ContentDialog.Content>
+        </ContentDialog>
+
+        <!-- Revoke privilege dialog-->
+        <ContentDialog
+            x:Name="revokePrivilgeDialog">
+            <ContentDialog.Title>
+                Revoke Privilege
+            </ContentDialog.Title>
+
+            <ContentDialog.CloseButtonText>
+                Cancel
+            </ContentDialog.CloseButtonText>
+
+            <ContentDialog.PrimaryButtonText>
+                Revoke
+            </ContentDialog.PrimaryButtonText>
+
+            <ContentDialog.Content>
+                <TextBlock
+             Foreground="Red">
+             <Run Text="Are you sure to revoke selected privilege "/>
+             <Run Text="?"/>
+                </TextBlock>
             </ContentDialog.Content>
         </ContentDialog>
 

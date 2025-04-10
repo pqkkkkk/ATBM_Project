@@ -27,6 +27,7 @@ FROM user_sys_privs WHERE privilege LIKE '%ANY%';
 --  select all privileges which this user has on tables
 SELECT * FROM user_tab_privs;
 
+SELECT * FROM user_col_privs;
 -- select all privileges which specific role has
 SELECT *
 FROM role_tab_privs WHERE OWNER = 'C##ADMIN1';
@@ -37,8 +38,11 @@ SELECT * FROM DBA_USERS;
 SELECT * FROM DBA_SYS_PRIVS;
 SELECT * FROM DBA_ROLES;
 SELECT * FROM DBA_ROLE_PRIVS;
-SELECT * FROM DBA_TAB_PRIVS WHERE GRANTEE = 'C##ADMIN1';
+SELECT * FROM DBA_TAB_PRIVS WHERE TABLE_NAME = 'DBA_TAB_PRIVS';
 SELECT * FROM ROLE_TAB_PRIVS;
-
+SELECT * FROM DBA_COL_PRIVS;
+-- get all procedures of a user
+SELECT * FROM DBA_OBJECTS WHERE OBJECT_TYPE = UPPER('Table') AND OBJECT_NAME LIKE '%Privilege%';
 SELECT * FROM v$database;
 SELECT * FROM v$pdbs;
+

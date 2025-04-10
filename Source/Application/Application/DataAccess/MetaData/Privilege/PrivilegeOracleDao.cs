@@ -4,6 +4,8 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
+using Application.Model;
 using Oracle.ManagedDataAccess.Client;
 
 namespace Application.DataAccess.MetaData.Privilege
@@ -21,7 +23,10 @@ namespace Application.DataAccess.MetaData.Privilege
             Dictionary<string, List<string>> userPrivileges = new Dictionary<string, List<string>>();
             try
             {
-                sqlConnection.Open();
+                if(sqlConnection.State == ConnectionState.Closed)
+                {
+                    sqlConnection.Open();
+                }
                 using (OracleCommand cmd = new OracleCommand("GetUserPrivileges", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
@@ -110,13 +115,15 @@ namespace Application.DataAccess.MetaData.Privilege
                 throw new Exception(e.Message);
             }
         }
-        public List<string> GetPrivilegesObjectType(string name, string objectType)
+        public List<Model.Privilege> GetPrivilegesOfUserOnSpecificObjectType(string name, string objectType)
         {
-            List<string> privileges = new List<string>();
+            List<Model.Privilege> privileges = new List<Model.Privilege>();
             try
             {
-                sqlConnection.Open();
-                using (OracleCommand cmd = new OracleCommand("getPrivilegesObjectType", sqlConnection))
+                if (sqlConnection.State == ConnectionState.Closed)
+                    sqlConnection.Open();
+
+                using (OracleCommand cmd = new OracleCommand("getPrivilegesOnObjectType", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("name_", OracleDbType.Varchar2).Value = name;
@@ -125,7 +132,15 @@ namespace Application.DataAccess.MetaData.Privilege
                     OracleDataReader reader = cmd.ExecuteReader();
                     while (reader.Read())
                     {
-                        string privilege = reader.GetString(4);
+                        Model.Privilege privilege = new Model.Privilege()
+                        {
+                            grantee = reader["GRANTEE"].ToString(),
+                            owner = reader["OWNER"].ToString(),
+                            tableName = reader["TABLE_NAME"].ToString(),
+                            grantor = reader["GRANTOR"].ToString(),
+                            privilege = reader["PRIVILEGE"].ToString(),
+                            type = reader["TYPE"].ToString(),
+                        };
                         privileges.Add(privilege);
                     }
                     reader.Close();
@@ -137,13 +152,15 @@ namespace Application.DataAccess.MetaData.Privilege
                 throw new Exception(e.Message);
             }
         }
-        public List<string> GetColumns(string objectName)
+        public List<Model.ColumnOfObject> GetColumns(string objectName)
         {
-            List<string> colums = new List<string>();
+            List<Model.ColumnOfObject> colums = new List<Model.ColumnOfObject>();
             try
             {
-                sqlConnection.Open();
-                using (OracleCommand cmd = new OracleCommand("getColums", sqlConnection))
+                if (sqlConnection.State == ConnectionState.Closed)
+                    sqlConnection.Open();
+
+                using (OracleCommand cmd = new OracleCommand("getColumns", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("object_name", OracleDbType.Varchar2).Value = objectName;
@@ -151,11 +168,116 @@ namespace Application.DataAccess.MetaData.Privilege
                     OracleDataReader reader = cmd.ExecuteReader();
                     while (reader.Read())
                     {
-                        string column = reader.GetString(0);
+                        Model.ColumnOfObject column = new ColumnOfObject()
+                        {
+                            columnName = reader["COLUMN_NAME"].ToString(),
+                        };
+
                         colums.Add(column);
                     }
                     reader.Close();
                     return colums;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public List<Model.Role> GetAllRolesOfUser(string username)
+        {
+            List<Application.Model.Role> userRoles = new List<Model.Role>();
+            try
+            {
+                if (sqlConnection.State == ConnectionState.Closed)
+                    sqlConnection.Open();
+
+                using (OracleCommand cmd = new OracleCommand("GetUserRoles", sqlConnection))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("p_username", OracleDbType.Varchar2).Value = username;
+                    cmd.Parameters.Add("role_", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                    OracleDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        string role = reader["GRANTED_ROLE"].ToString();
+
+                        userRoles.Add(new Model.Role()
+                        {
+                            name = role,
+                        });
+                    }
+                    reader.Close();
+                    return userRoles;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public List<Model.Privilege> GetSystemPrivilegesOfUser(string name)
+        {
+            List<Model.Privilege> privileges = new List<Model.Privilege>();
+            try
+            {
+                if (sqlConnection.State == ConnectionState.Closed)
+                    sqlConnection.Open();
+
+                using (OracleCommand cmd = new OracleCommand("GetSystemPrivilegesOfUser", sqlConnection))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("name_", OracleDbType.Varchar2).Value = name;
+                    cmd.Parameters.Add("result_", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                    OracleDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        Model.Privilege privilege = new Model.Privilege()
+                        {
+                            grantee = reader["GRANTEE"].ToString(),
+                            privilege = reader["PRIVILEGE"].ToString(),
+                        };
+                        privileges.Add(privilege);
+                    }
+                    reader.Close();
+                    return privileges;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public List<OracleObject> GetAllInstanceOfSpecificObject(string objectType)
+        {
+            List<Model.OracleObject> result = new List<Model.OracleObject>();
+            try
+            {
+                if (sqlConnection.State == ConnectionState.Closed)
+                    sqlConnection.Open();
+
+                using (OracleCommand cmd = new OracleCommand("GetAllInstanceOfSpecificObject", sqlConnection))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("type", OracleDbType.Varchar2).Value = objectType;
+                    cmd.Parameters.Add("result_", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                    OracleDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        Model.OracleObject oracleObject = new Model.OracleObject()
+                        {
+                            owner = reader["OWNER"].ToString(),
+                            objectName = reader["OBJECT_NAME"].ToString(),
+                            objectId = reader["OBJECT_ID"] != DBNull.Value ? Convert.ToInt32(reader["OBJECT_ID"]) : (int?)null,
+                            objectType = reader["OBJECT_TYPE"].ToString(),
+                        };
+                        result.Add(oracleObject);
+                    }
+                    reader.Close();
+                    return result;
                 }
             }
             catch (Exception e)

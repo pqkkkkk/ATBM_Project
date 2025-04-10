@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
 
 namespace Application.Model
 {
-    public class UserMetaData : INotifyPropertyChanged
+    public class TableAction : INotifyPropertyChanged
     {
-        public List<string>? roles { get; set; }
-        public string? username { get; set; }
-        public List<Privilege>? privileges { get; set; }
-
+        public string? actionName { get; set; }
+        public bool isSelected { get; set; }
         public event PropertyChangedEventHandler? PropertyChanged;
     }
 }

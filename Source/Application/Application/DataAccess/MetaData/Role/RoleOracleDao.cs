@@ -107,12 +107,49 @@ namespace Application.DataAccess.MetaData.Role
                 throw new Exception(e.Message);
             }
         }
+
+        public List<Model.Role> GetAllRolesWithRoleClass()
+        {
+            List<Model.Role> roles = new List<Model.Role>();
+            try
+            {
+                if(sqlConnection.State == ConnectionState.Closed)
+                {
+                    sqlConnection.Open();
+                }
+                using (OracleCommand cmd = new OracleCommand("getAllRoles", sqlConnection))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("role_list", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                    OracleDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        Model.Role role = new Model.Role()
+                        {
+                            name = reader.GetString(0),
+                        };
+
+                        roles.Add(role);
+                    }
+                    reader.Close();
+                    return roles;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
         public List<string> GetUserRoles(string username)
         {
             List<string> userRoles = new List<string>();
             try
             {
-                sqlConnection.Open();
+                if (sqlConnection.State == ConnectionState.Closed)
+                {
+                    sqlConnection.Open();
+                }
                 using (OracleCommand cmd = new OracleCommand("GetUserRoles", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;

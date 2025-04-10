@@ -7,12 +7,9 @@ using System.Threading.Tasks;
 
 namespace Application.Model
 {
-    public class UserMetaData : INotifyPropertyChanged
+    public class ColumnOfObject : INotifyPropertyChanged
     {
-        public List<string>? roles { get; set; }
-        public string? username { get; set; }
-        public List<Privilege>? privileges { get; set; }
-
+        public string? columnName { get; set; }
         public event PropertyChangedEventHandler? PropertyChanged;
     }
 }

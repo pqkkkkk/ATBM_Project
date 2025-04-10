@@ -125,10 +125,6 @@ BEGIN
 END;
 /
 
--- VAR v_roles REFCURSOR;
--- EXEC GetUserRoles('NV0001', :v_roles);
--- PRINT v_roles;
-
 -- Lấy danh sách các role đang có trong hệ thống
 CREATE OR REPLACE PROCEDURE getAllRoles(role_list out SYS_REFCURSOR)
 AS 
@@ -283,6 +279,22 @@ BEGIN
         DBMS_OUTPUT.PUT_LINE('ERROR:' || SQLERRM);
 END;
 /
+-- Get system privileges of a user
+    CREATE OR REPLACE PROCEDURE GetSystemPrivilegesOfUser(
+        name_ IN VARCHAR2,  
+        result_ OUT SYS_REFCURSOR
+    )
+    AS
+    BEGIN
+        OPEN result_ FOR
+        SELECT *
+        FROM DBA_SYS_PRIVS 
+        WHERE GRANTEE = UPPER(name_);
+        EXCEPTION
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('ERROR:' || SQLERRM);
+    END;
+    /
 
 -- VAR v_roles REFCURSOR;
 -- EXECUTE getPrivilegesOnObjectType( 'NVCB', 'VIEW' ,:v_roles);
@@ -297,7 +309,7 @@ AS
 BEGIN
     OPEN result FOR
         SELECT COLUMN_NAME
-        FROM USER_TAB_COLUMNS
+        FROM DBA_TAB_COLUMNS
         WHERE TABLE_NAME = UPPER(object_name)
         ORDER BY COLUMN_ID;
 EXCEPTION
@@ -310,3 +322,24 @@ END;
 -- VAR v_roles REFCURSOR;
 -- EXECUTE getColumns( 'NHANVIEN' ,:v_roles);
 -- PRINT v_roles;
+
+CREATE OR REPLACE PROCEDURE GetAllInstanceOfSpecificObject(
+    type IN VARCHAR2, 
+    result_ OUT SYS_REFCURSOR
+)
+AS
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('>> Đã nhận tham số object_type: ' || UPPER(type));
+
+    OPEN result_ FOR
+    SELECT *
+    FROM DBA_OBJECTS
+    WHERE OBJECT_TYPE = UPPER(type);
+
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Lỗi: ' || SQLERRM);
+END;
+/
+
+COMMIT;
