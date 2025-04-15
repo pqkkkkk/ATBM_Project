@@ -20,9 +20,9 @@ namespace Application.ViewModels
 
         public RoleDataViewModel()
         {
-            var app = (App)App.Current;
-            var connection = app.serviceProvider.GetRequiredService<OracleConnection>();
-            roleDao = new RoleOracleDao(connection);
+            var serviceProvider = (Microsoft.UI.Xaml.Application.Current as App)?.serviceProvider;
+
+            roleDao = serviceProvider?.GetService<IRoleDao>();
             itemList = new ObservableCollection<Role>(LoadData().Cast<Role>());
             selectedRole = null;
         }
@@ -36,7 +36,7 @@ namespace Application.ViewModels
             return false;
         }
 
-        public int DeleteItem(object item)
+        public bool DeleteItem(object item)
         {
             if (roleDao.DropRole(selectedRole.name))
             {
@@ -93,6 +93,11 @@ namespace Application.ViewModels
             {
                 itemList = new ObservableCollection<Role>(LoadData().Cast<Role>());
             }
+        }
+
+        int BaseViewModel.DeleteItem(object item)
+        {
+            throw new NotImplementedException();
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

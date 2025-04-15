@@ -22,6 +22,7 @@ using Application.DataAccess.MetaData;
 using Application.ViewModels;
 using Application.DataAccess.MetaData.Privilege;
 using Application.DataAccess.MetaData.Role;
+using Application.DataAccess.MetaData.User;
 
 namespace Application
 {
@@ -63,8 +64,11 @@ namespace Application
                 // Đăng ký PrivilegeOracleDao
                 services.AddSingleton<IPrivilegeDao, PrivilegeOracleDao>();
                 services.AddSingleton<IRoleDao, RoleOracleDao>();
+                services.AddSingleton<IUserDao, UserOracleDao>();
 
                 serviceProvider = services.BuildServiceProvider();
+
+                m_window.SignInSuccessHandler();
             }
             catch (Exception ex)
             {
@@ -85,6 +89,7 @@ namespace Application
                     {
                         sqlConnection.Close();
                     }
+
                 }
             }
         }
