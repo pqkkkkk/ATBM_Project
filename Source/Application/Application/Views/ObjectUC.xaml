@@ -136,5 +136,28 @@
                 </Grid>
             </ContentDialog.Content>
         </ContentDialog>
+
+        <!-- Update user dialog -->
+        <ContentDialog
+            x:Name="updateUserDialog">
+            <ContentDialog.CloseButtonText>Cancel</ContentDialog.CloseButtonText>
+            <ContentDialog.PrimaryButtonText>Update</ContentDialog.PrimaryButtonText>
+            <ContentDialog.Title>Update User</ContentDialog.Title>
+
+            <ContentDialog.Content>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <PasswordBox
+                        x:Name="UpdatePasswordTextBox"
+                        Grid.Row="1"
+                        Header="Password" 
+                        PlaceholderText="Enter password" 
+                        Width="300"/>   
+                    </Grid>
+            </ContentDialog.Content>
+        </ContentDialog>
     </Grid>
 </UserControl>

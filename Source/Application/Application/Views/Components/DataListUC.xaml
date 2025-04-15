@@ -12,6 +12,7 @@
     <controls:DataGrid 
         x:Name="dataList" ItemsSource="{Binding itemList, Mode=OneWay}"
         SelectionChanged="SelectedChangedHandler"
+        SelectedItem="{Binding selectedUser, Mode=TwoWay}"
         HeadersVisibility="Column" AutoGenerateColumns="True">
         
     </controls:DataGrid>
