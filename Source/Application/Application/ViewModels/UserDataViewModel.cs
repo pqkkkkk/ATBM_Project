@@ -24,7 +24,7 @@ namespace Application.ViewModels
             throw new NotImplementedException();
         }
 
-        public bool DeleteItem(object item)
+        public int DeleteItem(object item)
         {
             throw new NotImplementedException();
         }

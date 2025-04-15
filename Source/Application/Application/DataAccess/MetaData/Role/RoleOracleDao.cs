@@ -174,7 +174,10 @@ namespace Application.DataAccess.MetaData.Role
         {
             try
             {
-                sqlConnection.Open();
+                if (sqlConnection.State == ConnectionState.Closed)
+                {
+                    sqlConnection.Open();
+                }
                 using (OracleCommand cmd = new OracleCommand("grantRole", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
@@ -193,7 +196,10 @@ namespace Application.DataAccess.MetaData.Role
         {
             try
             {
-                sqlConnection.Open();
+                if (sqlConnection.State == ConnectionState.Closed)
+                {
+                    sqlConnection.Open();
+                }
                 using (OracleCommand cmd = new OracleCommand("revokeRoleFromUser", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;

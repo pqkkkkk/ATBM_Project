@@ -12,6 +12,7 @@ namespace Application.Model
         public string? grantee { get; set; }
         public string? owner { get; set; }
         public string? tableName { get; set; }
+        public string? columnName { get; set; }
         public string? grantor { get; set; }
         public string? privilege { get; set; }
         public string? type { get; set; }

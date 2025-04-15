@@ -45,7 +45,12 @@ namespace Application
         {
             try
             {
-                string connectionString = $"User Id={username};Password={password};Data Source=localhost:1521/XEPDB1;DBA Privilege=SYSDBA";
+                string connectionString = "";
+
+                if(username.Equals("sys"))
+                    connectionString = $"User Id={username};Password={password};Data Source=localhost:1521/XEPDB1;DBA Privilege=SYSDBA";
+                else
+                    connectionString = $"User Id={username};Password={password};Data Source=localhost:1521/XEPDB1";
 
                 var sqlConnection = new OracleConnection(connectionString);
                 await sqlConnection.OpenAsync();

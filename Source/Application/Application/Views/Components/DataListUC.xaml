@@ -9,9 +9,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <controls:DataGrid 
+    <controls:DataGrid
+        IsReadOnly="True"
         x:Name="dataList" ItemsSource="{Binding itemList, Mode=OneWay}"
-        SelectionChanged="SelectedChangedHandler"
+        SelectionChanged="OnSelectedItemChanged"
         HeadersVisibility="Column" AutoGenerateColumns="True">
         
     </controls:DataGrid>

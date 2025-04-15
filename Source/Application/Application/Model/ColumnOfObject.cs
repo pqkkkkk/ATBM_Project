@@ -10,6 +10,7 @@ namespace Application.Model
     public class ColumnOfObject : INotifyPropertyChanged
     {
         public string? columnName { get; set; }
+        public bool isSelected { get; set; }
         public event PropertyChangedEventHandler? PropertyChanged;
     }
 }

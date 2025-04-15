@@ -13,6 +13,6 @@ namespace Application.ViewModels
         public void UpdateSelectedItem(object selectedItem);
         public bool CreateItem(object item);
         public bool UpdateItem(object item);
-        public bool DeleteItem(object item);
+        public int DeleteItem(object item);
     }
 }

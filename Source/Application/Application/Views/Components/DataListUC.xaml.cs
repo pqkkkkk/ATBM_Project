@@ -22,6 +22,9 @@ namespace Application.Views.Components
 {
     public sealed partial class DataListUC : UserControl
     {
+        public delegate void SelectedItemChangedHandler(object selectedItem);
+        public event SelectedItemChangedHandler? selectedItemChanged;
+
         public static readonly DependencyProperty userDataViewModelProperty = DependencyProperty.Register(
             nameof(userViewModel),
             typeof(UserDataViewModel),
@@ -115,6 +118,11 @@ namespace Application.Views.Components
                 default:
                     break;
             }
+        }
+
+        private void OnSelectedItemChanged(object sender, SelectionChangedEventArgs e)
+        {
+            selectedItemChanged?.Invoke(dataList.SelectedItem);
         }
     }
 }

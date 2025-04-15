@@ -181,8 +181,37 @@ END;
 
 -- EXECUTE GRANTPRIVILEGES('SELECT', 'NV0001', 'NHANVIEN', 'NO');
 
+
+CREATE OR REPLACE TYPE string_list AS TABLE OF VARCHAR2(4000);
+
+CREATE OR REPLACE PROCEDURE GrantPrivilegesOnSpecificColumnsOfTableOrView (
+    p_withGrantOption IN VARCHAR2,
+    p_privilege IN VARCHAR2,
+    p_user    IN VARCHAR2,
+    p_columns IN VARCHAR2,
+    p_object  IN VARCHAR2 
+)
+AS
+    sqlQuery VARCHAR2(4000);
+BEGIN
+    sqlQuery := 'GRANT ' || p_privilege || ' (' || p_columns || ') ON ' || p_object || ' TO ' || p_user;
+    IF p_withGrantOption = 'YES' THEN
+        sqlQuery := sqlQuery || ' WITH GRANT OPTION';
+    END IF;
+
+    DBMS_OUTPUT.PUT_LINE('Executing SQL: ' || sqlQuery);
+
+    EXECUTE IMMEDIATE sqlQuery;
+    DBMS_OUTPUT.PUT_LINE('Grant privileges on specific columns successfully.');
+EXCEPTION
+    WHEN OTHERS THEN
+       RAISE;
+END;
+/
+EXECUTE GrantPrivilegesOnSpecificColumnsOfTableOrView('YES', 'UPDATE', 'sys', 'MADT,MAGV,VAITRO', 'QLDT_THAMGIA');
+
 -- Cấp role cho user (with grant option)
-CREATE OR REPLACE PROCEDURE grantRoles(
+CREATE OR REPLACE PROCEDURE grantRole(
     role_name in VARCHAR2,
     user_name in VARCHAR2,
     withGrantOption in VARCHAR2 -- Nếu có truyền 'YES', không truyền 'NO'
@@ -192,7 +221,7 @@ AS
 BEGIN
     sqlQuery := 'GRANT ' || role_name || ' TO ' || user_name;
     IF withGrantOption = 'YES' THEN
-        sqlQuery:= sqlQuery || ' WITH GRANT OPTION';
+        sqlQuery:= sqlQuery || ' WITH ADMIN OPTION';
     END IF;
     EXECUTE IMMEDIATE sqlQuery;
     DBMS_OUTPUT.PUT_LINE('Grant priviledges succesfully');
@@ -204,7 +233,7 @@ END;
 /
 -- EXECUTE grantRoles('NVPDT', 'NV0002', 'NO');
 -- thu hồi quyền của User/Role
-CREATE OR REPLACE PROCEDURE revokePrivilegesFromUser(
+CREATE OR REPLACE PROCEDURE RevokePrivilegesOfUserOnSpecificObjectType(
     privilege_ IN VARCHAR2,    -- Quyền cần thu hồi
     name_ IN VARCHAR2,         -- Tên user/role muốn thu hồi quyền
     object_ IN VARCHAR2        -- Tên object (table, view, ...)
@@ -218,6 +247,39 @@ BEGIN
         DBMS_OUTPUT.PUT_LINE('ERROR: ' || SQLERRM);
 END;
 /
+CREATE OR REPLACE PROCEDURE RevokeSystemPrivilegesFromUser(
+    privilege_ IN VARCHAR2,    -- Quyền cần thu hồi
+    name_ IN VARCHAR2          -- Tên user/role muốn thu hồi quyền
+)
+AS
+BEGIN
+    EXECUTE IMMEDIATE 'REVOKE ' || privilege_ || ' FROM ' || name_;
+    DBMS_OUTPUT.PUT_LINE('Revoke system privilege successfully from' || name_ );
+    EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('ERROR: ' || SQLERRM);
+END;
+/
+CREATE OR REPLACE PROCEDURE RevokePrivilegesFromUserOnSpecificColumnsOfTableOrView(
+    p_privilege IN VARCHAR2,
+    p_user    IN VARCHAR2,
+    p_columns IN VARCHAR2,
+    p_object  IN VARCHAR2 
+)
+AS
+    sqlQuery VARCHAR2(4000);
+BEGIN
+    sqlQuery := 'REVOKE ' || p_privilege || ' (' || p_columns || ') ON ' || p_object || ' FROM ' || p_user;
+    DBMS_OUTPUT.PUT_LINE('Executing SQL: ' || sqlQuery);
+
+    EXECUTE IMMEDIATE sqlQuery;
+    DBMS_OUTPUT.PUT_LINE('Revoke privileges on specific columns successfully.');
+EXCEPTION
+    WHEN OTHERS THEN
+       RAISE;
+END;
+/
+
 -- EXECUTE REVOKEPRIVILEGESFROMUSER('SELECT', 'NV0001', 'NHANVIEN')
 -- thu hồi role khỏi user
 CREATE OR REPLACE PROCEDURE revokeRoleFromUser(
@@ -279,23 +341,36 @@ BEGIN
         DBMS_OUTPUT.PUT_LINE('ERROR:' || SQLERRM);
 END;
 /
--- Get system privileges of a user
-    CREATE OR REPLACE PROCEDURE GetSystemPrivilegesOfUser(
-        name_ IN VARCHAR2,  
-        result_ OUT SYS_REFCURSOR
-    )
-    AS
-    BEGIN
-        OPEN result_ FOR
-        SELECT *
-        FROM DBA_SYS_PRIVS 
-        WHERE GRANTEE = UPPER(name_);
-        EXCEPTION
-        WHEN OTHERS THEN
-            DBMS_OUTPUT.PUT_LINE('ERROR:' || SQLERRM);
-    END;
-    /
 
+CREATE OR REPLACE PROCEDURE GetSystemPrivilegesOfUser(
+    name_ IN VARCHAR2,  
+    result_ OUT SYS_REFCURSOR
+)
+AS
+BEGIN
+    OPEN result_ FOR
+    SELECT *
+    FROM DBA_SYS_PRIVS 
+    WHERE GRANTEE = UPPER(name_);
+    EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('ERROR:' || SQLERRM);
+END;
+/
+CREATE OR REPLACE PROCEDURE GetColumnPrivilegesOfUser(
+    name_ IN VARCHAR2,  
+    result_ OUT SYS_REFCURSOR
+)
+AS
+BEGIN
+    OPEN result_ FOR
+    SELECT * 
+    FROM DBA_COL_PRIVS 
+    WHERE GRANTEE = UPPER(name_);
+    EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('ERROR:' || SQLERRM);
+END;
 -- VAR v_roles REFCURSOR;
 -- EXECUTE getPrivilegesOnObjectType( 'NVCB', 'VIEW' ,:v_roles);
 -- PRINT v_roles;
