@@ -17,6 +17,10 @@ using Application.ViewModels;
 using Application.Views.Components;
 using Microsoft.VisualBasic.FileIO;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
+using Microsoft.UI.Xaml.Controls;
+using Windows.Gaming.Input.ForceFeedback;
+using Windows.Graphics.Printing.OptionDetails;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -63,6 +67,7 @@ namespace Application.Views
         public ObjectUC()
         {
             this.InitializeComponent();
+            notificationDialog.DataContext = this;
 
         }
         public void SetDataSource(string? objectType)
@@ -87,7 +92,7 @@ namespace Application.Views
 
         private async void AddClickHandler(object sender, RoutedEventArgs e)
         {
-            switch(mainViewModel.selectedTabView)
+            switch (mainViewModel.selectedTabView)
             {
                 case "Users":
                     await createUserDialog.ShowAsync();
@@ -102,12 +107,79 @@ namespace Application.Views
 
         private void UpdateClickHandler(object sender, RoutedEventArgs e)
         {
-
+            DetailClickedEvent?.Invoke();
         }
 
         private async void DeleteClickHandler(object sender, RoutedEventArgs e)
         {
-            await deleteWarningDialog.ShowAsync();
+            if(roleDataViewModel.selectedRole != null)
+            {
+                deleteWarningDialog.ShowAsync();
+            }
+        }
+
+        public string notificationTitle { get; set; } = string.Empty;
+        public string notificationMessage { get; set; } = string.Empty;
+        private async void createRoleDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            bool created = roleDataViewModel.CreateItem(roleTextBox.Text.Trim());
+            if (created)
+            {
+
+                roleDataViewModel.itemList = new ObservableCollection<Role>(roleDataViewModel.LoadData().Cast<Role>());
+                createRoleDialog.Hide();
+                notificationDialog.Title = "Success";
+                notificationTextBlock.Text = $"{roleTextBox.Text.Trim()} was created successfully";
+                await notificationDialog.ShowAsync();
+            }
+            else
+            {
+                createRoleDialog.Hide();
+                notificationDialog.Title = "Error";
+                notificationTextBlock.Text = "There was something wrong in creating";
+                await notificationDialog.ShowAsync();
+
+            }
+            roleTextBox.Text = string.Empty;
+        }
+        private async void deleteWarning_click(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            switch (mainViewModel.selectedTabView)
+            {
+                case "Roles":
+                    if (roleDataViewModel.DeleteItem(roleDataViewModel.selectedRole))
+                    {
+                        deleteWarningDialog.Hide();
+                        notificationDialog.Title = "Success";
+                        notificationTextBlock.Text = $"{roleDataViewModel.selectedRole.name} was deleted successfully";
+                        await notificationDialog.ShowAsync();
+                    }
+                    else
+                    {
+                        deleteWarningDialog.Hide();
+                        notificationDialog.Title = "Error";
+                        notificationTextBlock.Text = "There was something wrong in deleting";
+                        await notificationDialog.ShowAsync();
+                    }
+                    roleDataViewModel.LoadData();
+                    break;
+            };
+
+            mainViewModel.UpdateSelectedItem(new CommonInfo { name = "", objectType = "" });
+        }
+
+        private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        {
+            if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+            {
+                var suggestions = roleDataViewModel.GetSuggestions(sender.Text);
+                sender.ItemsSource = suggestions;
+            }
+        }
+
+        private void searchBox_Click(object sender, RoutedEventArgs e)
+        {
+            roleDataViewModel.search(searchBox.Text.ToLower().Trim());
         }
     }
 }

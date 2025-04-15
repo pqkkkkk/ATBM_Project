@@ -43,18 +43,18 @@ namespace Application
         {
             try
             {
-                string connectionString = $"User Id={username};Password={password};Data Source=localhost:1521/XEPDB1";
+                string connectionString = $"User Id={username};Password={password};Data Source=localhost:11521/ORCLPDB1";
 
-                using (var sqlConnection = new OracleConnection(connectionString))
-                {
-                    await sqlConnection.OpenAsync();
+                var sqlConnection = new OracleConnection(connectionString);
+                
+                await sqlConnection.OpenAsync();
 
-                    var services = new ServiceCollection();
-                    services.AddSingleton<OracleConnection>(sqlConnection);
+                var services = new ServiceCollection();
+                services.AddSingleton<OracleConnection>(sqlConnection);
 
-                    serviceProvider = services.BuildServiceProvider();
-                    m_window.SignInSuccessHandler();
-                }
+                serviceProvider = services.BuildServiceProvider();
+                m_window.SignInSuccessHandler();
+                
 
             }
             catch (Exception ex)
