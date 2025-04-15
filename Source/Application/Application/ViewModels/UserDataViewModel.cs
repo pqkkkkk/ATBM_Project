@@ -45,7 +45,7 @@ namespace Application.ViewModels
             return userOracleDao.CreateUser(user.username, user.password);
         }
 
-        public bool DeleteItem(object item)
+        public int DeleteItem(object item)
         {
             var serviceProvider = ((App)App.Current).serviceProvider;
             if (serviceProvider == null)

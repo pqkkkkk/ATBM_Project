@@ -15,5 +15,6 @@ namespace Application.DataAccess.MetaData.Role
         public List<string>? GetUserRoles(string name);
         public void GrantRole(string username, string rolename, string withGrantOption);
         public void RevokeRoleFromUser(string username, string rolename);
+        public List<Model.Role> GetAllRolesWithRoleClass();
     }
 }

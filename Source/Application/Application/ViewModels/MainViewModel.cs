@@ -24,14 +24,14 @@ namespace Application.ViewModels
             selectedTabView = "Users";
             selectedItem = new CommonInfo()
             {
-                name ="",
-                objectType = ""
+                name ="SYS",
+                objectType = "user"
             };
 
             userMetaData = new UserMetaData()
             {
                 roles = new List<string>(),
-                privileges = new List<UserPrivilege>(),
+                privileges = new List<Privilege>(),
                 username = "pqkiet854"
             };
         }

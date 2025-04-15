@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Application.Model
 {
-    public class UserMetaData : INotifyPropertyChanged
+    public class OracleObject : INotifyPropertyChanged
     {
-        public List<string>? roles { get; set; }
-        public string? username { get; set; }
-        public List<Privilege>? privileges { get; set; }
-
+        public string? owner { get; set; }
+        public string? objectName { get; set; }
+        public int? objectId { get; set; }
+        public string? objectType { get; set; }
         public event PropertyChangedEventHandler? PropertyChanged;
     }
 }

@@ -36,7 +36,7 @@ namespace Application.ViewModels
             return false;
         }
 
-        public bool DeleteItem(object item)
+        public int DeleteItem(object item)
         {
             if (roleDao.DropRole(selectedRole.name))
             {

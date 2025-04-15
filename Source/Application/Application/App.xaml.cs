@@ -20,6 +20,8 @@ using Oracle.ManagedDataAccess.Client;
 using System.Threading.Tasks;
 using Application.DataAccess.MetaData;
 using Application.ViewModels;
+using Application.DataAccess.MetaData.Privilege;
+using Application.DataAccess.MetaData.Role;
 
 namespace Application
 {
@@ -43,18 +45,26 @@ namespace Application
         {
             try
             {
+                string connectionString = "";
 
-                string connectionString = $"User Id={username};Password={password};Data Source=localhost:1521/ORCLPDB";
+                if(username.Equals("sys"))
+                    connectionString = $"User Id={username};Password={password};Data Source=localhost:1521/XEPDB1;DBA Privilege=SYSDBA";
+                else
+                    connectionString = $"User Id={username};Password={password};Data Source=localhost:1521/XEPDB1";
+
                 var sqlConnection = new OracleConnection(connectionString);
-                
                 await sqlConnection.OpenAsync();
-
+                
                 var services = new ServiceCollection();
-                services.AddSingleton<OracleConnection>(sqlConnection);
+
+                // Đăng ký OracleConnection
+                services.AddSingleton(sqlConnection);
+
+                // Đăng ký PrivilegeOracleDao
+                services.AddSingleton<IPrivilegeDao, PrivilegeOracleDao>();
+                services.AddSingleton<IRoleDao, RoleOracleDao>();
 
                 serviceProvider = services.BuildServiceProvider();
-                m_window.SignInSuccessHandler();
-
             }
             catch (Exception ex)
             {
@@ -64,6 +74,17 @@ namespace Application
                 if (ex.InnerException != null)
                 {
                     Console.WriteLine(ex.InnerException.Message);
+                }
+            }
+            finally
+            {
+                if (serviceProvider != null)
+                {
+                    var sqlConnection = serviceProvider.GetService<OracleConnection>();
+                    if (sqlConnection != null && sqlConnection.State == System.Data.ConnectionState.Open)
+                    {
+                        sqlConnection.Close();
+                    }
                 }
             }
         }

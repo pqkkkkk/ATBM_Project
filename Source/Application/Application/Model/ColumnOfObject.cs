@@ -7,12 +7,10 @@ using System.Threading.Tasks;
 
 namespace Application.Model
 {
-    public class UserPrivilege : INotifyPropertyChanged
+    public class ColumnOfObject : INotifyPropertyChanged
     {
-        public int? objectName { get; set; }
-        public string? objectType { get; set; }
-        public string? privilege { get; set; }
-
+        public string? columnName { get; set; }
+        public bool isSelected { get; set; }
         public event PropertyChangedEventHandler? PropertyChanged;
     }
 }

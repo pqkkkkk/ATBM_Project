@@ -59,6 +59,7 @@ namespace Application.Views
             mainViewModel.UpdateCanBack(true);
             objectUC.Visibility = Visibility.Collapsed;
             objectDetailUC.Visibility = Visibility.Visible;
+            objectDetailUC.SetDataSourceForDataList();
         }
 
         private void Back_Click(object sender, RoutedEventArgs e)
