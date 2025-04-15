@@ -90,7 +90,14 @@ namespace Application.Views
             switch(mainViewModel.selectedTabView)
             {
                 case "Users":
-                    await createUserDialog.ShowAsync();
+                    ContentDialogResult result = await createUserDialog.ShowAsync();
+                    if(result == ContentDialogResult.Primary)
+                    {
+                        string username = UsernameTextBox.Text;
+                        string password = PasswordTextBox.Password;
+                        var user = new User(username, password);
+                        userDataViewModel.CreateItem(user);
+                    }
                     break;
                 case "Roles":
                     await createRoleDialog.ShowAsync();
@@ -100,14 +107,50 @@ namespace Application.Views
             }
         }
 
-        private void UpdateClickHandler(object sender, RoutedEventArgs e)
+        private async void UpdateClickHandler(object sender, RoutedEventArgs e)
         {
-
+            switch (mainViewModel.selectedTabView)
+            {
+                case "Users":
+                    var selectedUser = userDataViewModel.selectedUser;
+                    if (selectedUser != null && !string.IsNullOrEmpty(selectedUser.username))
+                    {
+                        ContentDialogResult result = await updateUserDialog.ShowAsync();
+                        if (result == ContentDialogResult.Primary)
+                        {
+                            string newpassword = UpdatePasswordTextBox.Password;
+                            var user = new User(selectedUser.username, newpassword);
+                            userDataViewModel.UpdateItem(user);
+                        }
+                    }
+                    break;
+                case "Roles":
+                    break;
+                default:
+                    break;
+            }
         }
 
         private async void DeleteClickHandler(object sender, RoutedEventArgs e)
         {
-            await deleteWarningDialog.ShowAsync();
+            switch (mainViewModel.selectedTabView)
+            {
+                case "Users":
+                    var selectedUser = userDataViewModel.selectedUser;
+                    if (selectedUser != null)
+                    {
+                        ContentDialogResult result = await deleteWarningDialog.ShowAsync();
+                        if (result == ContentDialogResult.Primary)
+                        {
+                            userDataViewModel.DeleteItem(selectedUser);
+                        }
+                    }
+                    break;
+                case "Roles":
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
