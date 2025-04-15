@@ -9,8 +9,9 @@ namespace Application.DataAccess.MetaData.User
     public interface IUserDao
     {
         public bool CheckExist(string type, string name);
-        public void CreateUser(string username, string password);
-        public void DeleteUser(string username);
-        public void UpdatePassword(string username, string password);
+        public bool CreateUser(string username, string password);
+        public bool DeleteUser(string username);
+        public bool UpdatePassword(string username, string password);
+        public List<object> LoadData();
     }
 }

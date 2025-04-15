@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Oracle.ManagedDataAccess.Client;
+using Oracle.ManagedDataAccess.Types;
 
 namespace Application.DataAccess.MetaData.Role
 {
@@ -22,7 +24,7 @@ namespace Application.DataAccess.MetaData.Role
             bool check = false;
             try
             {
-                sqlConnection.Open();
+                //sqlConnection.Open();
                 using (OracleCommand cmd = new OracleCommand("CheckExist", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
@@ -30,7 +32,7 @@ namespace Application.DataAccess.MetaData.Role
                     cmd.Parameters.Add("name_", OracleDbType.Varchar2).Value = name;
                     cmd.Parameters.Add("exist", OracleDbType.Int32).Direction = ParameterDirection.Output;
                     cmd.ExecuteNonQuery();
-                    check = Convert.ToBoolean(cmd.Parameters["exist"].Value);
+                    check = Convert.ToBoolean(((OracleDecimal)cmd.Parameters["exist"].Value).ToInt32());
                     return check;
                 }
             }
@@ -40,46 +42,49 @@ namespace Application.DataAccess.MetaData.Role
             }
         }
 
-        public void CreateRole(string roleName)
+        public bool CreateRole(string roleName)
         {
             if (CheckExist("ROLE", roleName))
             {
-                throw new Exception("Role already exists");
+                return false;
             }
             try
             {
-                sqlConnection.Open();
+                //sqlConnection.Open();
                 using (OracleCommand cmd = new OracleCommand("createRole", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("user_role", OracleDbType.Varchar2).Value = roleName;
                     cmd.ExecuteNonQuery();
                 }
+                return true;
             }
             catch (Exception e)
             {
                 throw new Exception(e.Message);
             }
         }
-        public void DropRole(string roleName)
+        public bool DropRole(string roleName)
         {
             if (!CheckExist("ROLE", roleName))
             {
-                throw new Exception("Role does not exist");
+                return false;
             }
             try
             {
-                sqlConnection.Open();
+                //sqlConnection.Open();
                 using (OracleCommand cmd = new OracleCommand("dropRole", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("user_role", OracleDbType.Varchar2).Value = roleName;
                     cmd.ExecuteNonQuery();
                 }
+                return true;
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                Console.WriteLine($"[DropRole] Lỗi khi xóa role '{roleName}': {e.Message}");
+                return false;
             }
         }
         public List<string> GetAllRoles()
@@ -87,7 +92,7 @@ namespace Application.DataAccess.MetaData.Role
             List<string> roles = new List<string>();
             try
             {
-                sqlConnection.Open();
+                //sqlConnection.Open();
                 using (OracleCommand cmd = new OracleCommand("getAllRoles", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
@@ -98,7 +103,7 @@ namespace Application.DataAccess.MetaData.Role
                         string role = reader.GetString(0);
                         roles.Add(role);
                     }
-                    reader.Close();
+                    //reader.Close();
                     return roles;
                 }
             }

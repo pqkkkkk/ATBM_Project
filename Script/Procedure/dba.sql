@@ -59,13 +59,13 @@ END;
 /
 
 -- Sửa (Hiệu chỉnh người dùng) - sửa password
-CREATE OR REPLACE PROCEDURE updatePassword(
+create or replace PROCEDURE updatePassword(
     username in VARCHAR2,
     new_pwd in VARCHAR2
     )
 AS
 BEGIN
-    EXECUTE IMMEDIATE 'ALTER USER ' || username || 'IDENTIFIED BY' || new_pwd;
+    EXECUTE IMMEDIATE 'ALTER USER ' || username || ' IDENTIFIED BY ' || new_pwd;
     EXCEPTION 
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
@@ -393,7 +393,7 @@ EXCEPTION
     WHEN OTHERS THEN
         OPEN result FOR SELECT 'Error: ' AS COLUMN_NAME FROM DUAL;
 END;
-
+/
 -- VAR v_roles REFCURSOR;
 -- EXECUTE getColumns( 'NHANVIEN' ,:v_roles);
 -- PRINT v_roles;
@@ -414,6 +414,15 @@ BEGIN
 EXCEPTION
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Lỗi: ' || SQLERRM);
+END;
+/
+
+COMMIT;
+CREATE OR REPLACE PROCEDURE getAllUsers(user_list OUT SYS_REFCURSOR)
+AS
+BEGIN
+    OPEN user_list FOR
+    SELECT * FROM DBA_USERS;
 END;
 /
 

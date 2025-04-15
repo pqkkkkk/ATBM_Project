@@ -5,7 +5,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.DataAccess.MetaData.User;
 using Application.Model;
+using Microsoft.Extensions.DependencyInjection;
+using Oracle.ManagedDataAccess.Client;
 
 namespace Application.ViewModels
 {
@@ -21,17 +24,60 @@ namespace Application.ViewModels
         }
         public bool CreateItem(object item)
         {
-            throw new NotImplementedException();
+            var user = (User)item;
+            if (user.username == null)
+            {
+                throw new ArgumentNullException(nameof(user.username), "Username cannot be null.");
+            }
+            if (user.password == null)
+            {
+                throw new ArgumentNullException(nameof(user.password), "Password cannot be null.");
+            }
+
+            var serviceProvider = ((App)App.Current).serviceProvider;
+            if (serviceProvider == null)
+            {
+                throw new InvalidOperationException("Service provider is not initialized.");
+            }
+
+            var connection = serviceProvider.GetRequiredService<OracleConnection>();
+            var userOracleDao = new UserOracleDao(connection);
+            return userOracleDao.CreateUser(user.username, user.password);
         }
 
         public int DeleteItem(object item)
         {
-            throw new NotImplementedException();
+            var serviceProvider = ((App)App.Current).serviceProvider;
+            if (serviceProvider == null)
+            {
+                throw new InvalidOperationException("Service provider is not initialized.");
+            }
+            var connection = serviceProvider.GetRequiredService<OracleConnection>();
+            if (connection == null)
+            {
+                throw new InvalidOperationException("Oracle connection is not initialized.");
+            }
+            UserOracleDao userOracleDao = new UserOracleDao(connection);
+            var user = (User)item;
+            return userOracleDao.DeleteUser(user.username);
         }
 
         public bool UpdateItem(object item)
         {
-            throw new NotImplementedException();
+            var serviceProvider = ((App)App.Current).serviceProvider;
+            if (serviceProvider == null)
+            {
+                throw new InvalidOperationException("Service provider is not initialized.");
+            }
+
+            var connection = serviceProvider.GetRequiredService<OracleConnection>();
+            if (connection == null)
+            {
+                throw new InvalidOperationException("Oracle connection is not initialized.");
+            }
+            UserOracleDao userOracleDao = new UserOracleDao(connection);
+            var user = (User)item;
+            return userOracleDao.UpdatePassword(user.username, user.password);
         }
 
         public void UpdateSelectedItem(object selectedItem)
@@ -39,23 +85,36 @@ namespace Application.ViewModels
             selectedItem = (User)selectedItem;
         }
 
-        public List<object> LoadData()
+        public List<User> LoadData()
         {
-            List<User> userList = new List<User>();
-
-            userList.Add(new User()
+            var serviceProvider = ((App)App.Current).serviceProvider;
+            if (serviceProvider == null)
             {
-                username = "admin",
-                password = "admin"
-            });
-            userList.Add(new User()
+                throw new InvalidOperationException("Service provider is not initialized.");
+            }
+
+            var connection = serviceProvider.GetRequiredService<OracleConnection>();
+            if (connection == null)
             {
-                username = "user",
-                password = "user"
-            });
+                throw new InvalidOperationException("Oracle connection is not initialized.");
+            }
+            UserOracleDao userOracleDao = new UserOracleDao(connection);
+            var users = userOracleDao.LoadData().Select(obj =>
+            {
+                dynamic x = obj;
+                return new User
+                {
+                    username = x.Username,
+                    password = x.Password
+                };
+            })
+            .ToList();
+            return users;
+        }
 
-            return userList.Cast<object>().ToList();
-
+        List<object> BaseViewModel.LoadData()
+        {
+            throw new NotImplementedException();
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Oracle.ManagedDataAccess.Client;
+using Application.Model;
+using Oracle.ManagedDataAccess.Types;
 
 namespace Application.DataAccess.MetaData.User
 {
@@ -21,7 +23,10 @@ namespace Application.DataAccess.MetaData.User
             bool check = false;
             try
             {
-                sqlConnection.Open();
+                if (sqlConnection.State != ConnectionState.Open)
+                {
+                    sqlConnection.Open();
+                }
                 using (OracleCommand cmd = new OracleCommand("CheckExist", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
@@ -29,24 +34,30 @@ namespace Application.DataAccess.MetaData.User
                     cmd.Parameters.Add("name_", OracleDbType.Varchar2).Value = name;
                     cmd.Parameters.Add("exist", OracleDbType.Int32).Direction = ParameterDirection.Output;
                     cmd.ExecuteNonQuery();
-                    check = Convert.ToBoolean(cmd.Parameters["exist"].Value);
+                    var oracleValue = (OracleDecimal)cmd.Parameters["exist"].Value;
+                    check = oracleValue.ToInt32() == 1;
+                    sqlConnection.Close();
                     return check;
                 }
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                sqlConnection.Close();
+                return false;
             }
         }
-        public void CreateUser(string username, string password)
+        public bool CreateUser(string username, string password)
         {
             if (CheckExist("USER", username))
             {
-                throw new Exception("User already exists");
+                return false;
             }
             try
             {
-                sqlConnection.Open();
+                if (sqlConnection.State != ConnectionState.Open)
+                {
+                    sqlConnection.Open();
+                }
                 using (OracleCommand cmd = new OracleCommand("createUser", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
@@ -54,42 +65,54 @@ namespace Application.DataAccess.MetaData.User
                     cmd.Parameters.Add("pwd", OracleDbType.Varchar2).Value = password;
                     cmd.ExecuteNonQuery();
                 }
+                sqlConnection.Close();
+                return true;
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                sqlConnection.Close();
+                return false;
             }
         }
-        public void DeleteUser(string username)
+        public bool DeleteUser(string username)
         {
             if (!CheckExist("USER", username))
             {
-                throw new Exception("User does not exist");
+                return false;
             }
             try
             {
-                sqlConnection.Open();
+                if (sqlConnection.State != ConnectionState.Open)
+                {
+                    sqlConnection.Open();
+                }
                 using (OracleCommand cmd = new OracleCommand("deleteUser", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("user_name", OracleDbType.Varchar2).Value = username;
                     cmd.ExecuteNonQuery();
                 }
+                sqlConnection.Close();
+                return true;
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                sqlConnection.Close();
+                return false;
             }
         }
-        public void UpdatePassword(string username, string password)
+        public bool UpdatePassword(string username, string password)
         {
             if (!CheckExist("USER", username))
             {
-                throw new Exception("User does not exist");
+                return false;
             }
             try
             {
-                sqlConnection.Open();
+                if (sqlConnection.State != ConnectionState.Open)
+                {
+                    sqlConnection.Open();
+                }
                 using (OracleCommand cmd = new OracleCommand("updatePassword", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
@@ -97,11 +120,48 @@ namespace Application.DataAccess.MetaData.User
                     cmd.Parameters.Add("new_pwd", OracleDbType.Varchar2).Value = password;
                     cmd.ExecuteNonQuery();
                 }
+                sqlConnection.Close();
+                return true;
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                sqlConnection.Close();
+                return false;
             }
+        }
+
+        public List<object> LoadData()
+        {
+            List<object> userList = new List<object>();
+            try
+            {
+                if (sqlConnection.State != ConnectionState.Open)
+                {
+                    sqlConnection.Open();
+                }
+                using (OracleCommand cmd = new OracleCommand("getAllUsers", sqlConnection))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("user_list", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                    using (OracleDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string username = reader.GetString(0);
+                            string password = "null";
+                            userList.Add(new { Username = username, Password = password });
+                        }
+                        reader.Close();
+                    }
+                }
+                sqlConnection.Close();
+            }
+            catch (Exception e)
+            {
+                sqlConnection.Close();
+                return userList;
+            }
+            return userList;
         }
     }
 }

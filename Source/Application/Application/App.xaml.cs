@@ -65,9 +65,6 @@ namespace Application
                 services.AddSingleton<IRoleDao, RoleOracleDao>();
 
                 serviceProvider = services.BuildServiceProvider();
-
-                m_window.SignInSuccessHandler();
-
             }
             catch (Exception ex)
             {
