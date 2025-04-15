@@ -43,9 +43,10 @@ namespace Application
         {
             try
             {
-                string connectionString = $"User Id={username};Password={password};Data Source=localhost:1521/ORCLPDB";
 
+                string connectionString = $"User Id={username};Password={password};Data Source=localhost:1521/ORCLPDB";
                 var sqlConnection = new OracleConnection(connectionString);
+                
                 await sqlConnection.OpenAsync();
 
                 var services = new ServiceCollection();

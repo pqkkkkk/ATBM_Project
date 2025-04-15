@@ -45,10 +45,16 @@
                 Foreground="White" 
                 Width="100"/>
 
-            <AutoSuggestBox PlaceholderText="Type username..." 
-                       Width="250" 
-                       Margin="20,0,0,0"/>
-            <Button Content="Search" 
+            <AutoSuggestBox 
+                x:Name="searchBox"
+                TextChanged="AutoSuggestBox_TextChanged"
+                PlaceholderText="Type username..." 
+                Width="250" 
+                Margin="20,0,0,0"/>
+            <Button 
+               Click="searchBox_Click"
+               x:Name="searchButton" 
+               Content="Search" 
                Background="#9C27B0" 
                Foreground="White" 
                Width="100"/>
@@ -94,7 +100,8 @@
         
         <!-- Create role dialog-->
         <ContentDialog
-            x:Name="createRoleDialog">
+            x:Name="createRoleDialog"
+            PrimaryButtonClick="createRoleDialog_PrimaryButtonClick">
             <ContentDialog.CloseButtonText>Cancel</ContentDialog.CloseButtonText>
             <ContentDialog.PrimaryButtonText>Create</ContentDialog.PrimaryButtonText>
             <ContentDialog.Title>Create Role</ContentDialog.Title>
@@ -118,7 +125,8 @@
         <!-- Delete warning dialog-->
         <!-- Create role dialog-->
         <ContentDialog
-            x:Name="deleteWarningDialog">
+            x:Name="deleteWarningDialog"
+            PrimaryButtonClick="deleteWarning_click">
             <ContentDialog.CloseButtonText>No</ContentDialog.CloseButtonText>
             <ContentDialog.PrimaryButtonText>Yes</ContentDialog.PrimaryButtonText>
             <ContentDialog.Title>Delete</ContentDialog.Title>
@@ -130,10 +138,27 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock
+                        x:Name="deleteWarningDialogTextBlock"
                         Grid.Row="0"
                         Text="Are you sure you want to delete selected item?"
                         Width="300"/>
                 </Grid>
+            </ContentDialog.Content>
+        </ContentDialog>
+     
+        <ContentDialog
+            x:Name="notificationDialog"
+            Title="{Binding notificationTitle, Mode=OneWay}"
+            CloseButtonText="OK"
+            Foreground="Black">
+            
+            <ContentDialog.Content>
+                <TextBlock 
+                    x:Name="notificationTextBlock"
+                    Foreground="Black"
+                    Text="{Binding notificationMessage, Mode=OneWay}" 
+                    TextWrapping="Wrap"
+                    Width="300" />  
             </ContentDialog.Content>
         </ContentDialog>
 
