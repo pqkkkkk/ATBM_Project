@@ -43,8 +43,8 @@ namespace Application
         {
             try
             {
-                string connectionString = $"User Id={username};Password={password};Data Source=localhost:11521/ORCLPDB1";
 
+                string connectionString = $"User Id={username};Password={password};Data Source=localhost:1521/ORCLPDB";
                 var sqlConnection = new OracleConnection(connectionString);
                 
                 await sqlConnection.OpenAsync();
@@ -54,7 +54,6 @@ namespace Application
 
                 serviceProvider = services.BuildServiceProvider();
                 m_window.SignInSuccessHandler();
-                
 
             }
             catch (Exception ex)
