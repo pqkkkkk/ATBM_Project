@@ -16,6 +16,7 @@ namespace Application.ViewModels
     {
         public ObservableCollection<User> itemList { get; set; }
         public User? selectedUser { get; set; }
+        public IUserDao? userDao { get; set; }
 
         public UserDataViewModel()
         {
@@ -45,7 +46,7 @@ namespace Application.ViewModels
             return userOracleDao.CreateUser(user.username, user.password);
         }
 
-        public int DeleteItem(object item)
+        public bool DeleteItem(object item)
         {
             var serviceProvider = ((App)App.Current).serviceProvider;
             if (serviceProvider == null)
@@ -87,19 +88,11 @@ namespace Application.ViewModels
 
         public List<User> LoadData()
         {
-            var serviceProvider = ((App)App.Current).serviceProvider;
-            if (serviceProvider == null)
-            {
-                throw new InvalidOperationException("Service provider is not initialized.");
-            }
+            var serviceProvider = (Microsoft.UI.Xaml.Application.Current as App)?.serviceProvider;
 
-            var connection = serviceProvider.GetRequiredService<OracleConnection>();
-            if (connection == null)
-            {
-                throw new InvalidOperationException("Oracle connection is not initialized.");
-            }
-            UserOracleDao userOracleDao = new UserOracleDao(connection);
-            var users = userOracleDao.LoadData().Select(obj =>
+            userDao = serviceProvider?.GetService<IUserDao>();
+
+            var users = userDao.LoadData().Select(obj =>
             {
                 dynamic x = obj;
                 return new User
@@ -113,6 +106,11 @@ namespace Application.ViewModels
         }
 
         List<object> BaseViewModel.LoadData()
+        {
+            throw new NotImplementedException();
+        }
+
+        int BaseViewModel.DeleteItem(object item)
         {
             throw new NotImplementedException();
         }

@@ -24,7 +24,10 @@ namespace Application.DataAccess.MetaData.Role
             bool check = false;
             try
             {
-                //sqlConnection.Open();
+                if (sqlConnection.State == ConnectionState.Closed)
+                {
+                    sqlConnection.Open();
+                }
                 using (OracleCommand cmd = new OracleCommand("CheckExist", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
@@ -40,6 +43,13 @@ namespace Application.DataAccess.MetaData.Role
             {
                 throw new Exception(e.Message);
             }
+            finally
+            {
+                if (sqlConnection.State == ConnectionState.Open)
+                {
+                    sqlConnection.Close();
+                }
+            }
         }
 
         public bool CreateRole(string roleName)
@@ -50,7 +60,10 @@ namespace Application.DataAccess.MetaData.Role
             }
             try
             {
-                //sqlConnection.Open();
+                if (sqlConnection.State == ConnectionState.Closed)
+                {
+                    sqlConnection.Open();
+                }
                 using (OracleCommand cmd = new OracleCommand("createRole", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
@@ -63,6 +76,13 @@ namespace Application.DataAccess.MetaData.Role
             {
                 throw new Exception(e.Message);
             }
+            finally
+            {
+                if (sqlConnection.State == ConnectionState.Open)
+                {
+                    sqlConnection.Close();
+                }
+            }
         }
         public bool DropRole(string roleName)
         {
@@ -72,7 +92,10 @@ namespace Application.DataAccess.MetaData.Role
             }
             try
             {
-                //sqlConnection.Open();
+                if (sqlConnection.State == ConnectionState.Closed)
+                {
+                    sqlConnection.Open();
+                }
                 using (OracleCommand cmd = new OracleCommand("dropRole", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
@@ -86,13 +109,23 @@ namespace Application.DataAccess.MetaData.Role
                 Console.WriteLine($"[DropRole] Lỗi khi xóa role '{roleName}': {e.Message}");
                 return false;
             }
+            finally
+            {
+                if (sqlConnection.State == ConnectionState.Open)
+                {
+                    sqlConnection.Close();
+                }
+            }
         }
         public List<string> GetAllRoles()
         {
             List<string> roles = new List<string>();
             try
             {
-                //sqlConnection.Open();
+                if (sqlConnection.State == ConnectionState.Closed)
+                {
+                    sqlConnection.Open();
+                }
                 using (OracleCommand cmd = new OracleCommand("getAllRoles", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
@@ -110,6 +143,13 @@ namespace Application.DataAccess.MetaData.Role
             catch (Exception e)
             {
                 throw new Exception(e.Message);
+            }
+            finally
+            {
+                if (sqlConnection.State == ConnectionState.Open)
+                {
+                    sqlConnection.Close();
+                }
             }
         }
 
@@ -144,6 +184,13 @@ namespace Application.DataAccess.MetaData.Role
             {
                 throw new Exception(e.Message);
             }
+            finally
+            {
+                if (sqlConnection.State == ConnectionState.Open)
+                {
+                    sqlConnection.Close();
+                }
+            }
         }
 
         public List<string> GetUserRoles(string username)
@@ -174,6 +221,13 @@ namespace Application.DataAccess.MetaData.Role
             {
                 throw new Exception(e.Message);
             }
+            finally
+            {
+                if (sqlConnection.State == ConnectionState.Open)
+                {
+                    sqlConnection.Close();
+                }
+            }
         }
         public void GrantRole(string username, string rolename, string withGrantOption)
         {
@@ -196,6 +250,13 @@ namespace Application.DataAccess.MetaData.Role
             {
                 throw new Exception(e.Message);
             }
+            finally
+            {
+                if (sqlConnection.State == ConnectionState.Open)
+                {
+                    sqlConnection.Close();
+                }
+            }
         }
         public void RevokeRoleFromUser(string username, string rolename)
         {
@@ -216,6 +277,13 @@ namespace Application.DataAccess.MetaData.Role
             catch (Exception e)
             {
                 throw new Exception(e.Message);
+            }
+            finally
+            {
+                if (sqlConnection.State == ConnectionState.Open)
+                {
+                    sqlConnection.Close();
+                }
             }
         }
     }
