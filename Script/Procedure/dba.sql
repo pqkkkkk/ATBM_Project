@@ -180,10 +180,6 @@ END;
 /
 
 -- EXECUTE GRANTPRIVILEGES('SELECT', 'NV0001', 'NHANVIEN', 'NO');
-
-
-CREATE OR REPLACE TYPE string_list AS TABLE OF VARCHAR2(4000);
-
 CREATE OR REPLACE PROCEDURE GrantPrivilegesOnSpecificColumnsOfTableOrView (
     p_withGrantOption IN VARCHAR2,
     p_privilege IN VARCHAR2,
@@ -208,7 +204,6 @@ EXCEPTION
        RAISE;
 END;
 /
-EXECUTE GrantPrivilegesOnSpecificColumnsOfTableOrView('YES', 'UPDATE', 'sys', 'MADT,MAGV,VAITRO', 'QLDT_THAMGIA');
 
 -- Cấp role cho user (with grant option)
 CREATE OR REPLACE PROCEDURE grantRole(
@@ -371,6 +366,7 @@ BEGIN
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('ERROR:' || SQLERRM);
 END;
+/
 -- VAR v_roles REFCURSOR;
 -- EXECUTE getPrivilegesOnObjectType( 'NVCB', 'VIEW' ,:v_roles);
 -- PRINT v_roles;
@@ -418,6 +414,7 @@ END;
 /
 
 COMMIT;
+
 CREATE OR REPLACE PROCEDURE getAllUsers(user_list OUT SYS_REFCURSOR)
 AS
 BEGIN

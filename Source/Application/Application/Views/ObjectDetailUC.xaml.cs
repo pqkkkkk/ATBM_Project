@@ -48,6 +48,10 @@ namespace Application.Views
                 privilegeViewModel = new PrivilegeDataViewModel(mainViewModel.selectedItem);
             }
         }
+        public void UpdateAllData()
+        {
+            privilegeViewModel.UpdatedAllData(mainViewModel.selectedItem);
+        }
         public void SetDataSourceForDataList()
         {
             dataList.SetDataSource("Privileges");

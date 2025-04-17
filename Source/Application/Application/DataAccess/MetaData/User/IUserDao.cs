@@ -12,6 +12,6 @@ namespace Application.DataAccess.MetaData.User
         public bool CreateUser(string username, string password);
         public bool DeleteUser(string username);
         public bool UpdatePassword(string username, string password);
-        public List<object> LoadData();
+        public List<Model.User> LoadData();
     }
 }

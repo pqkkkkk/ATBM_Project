@@ -11,8 +11,8 @@ namespace Application.ViewModels
     {
         public List<object> LoadData();
         public void UpdateSelectedItem(object selectedItem);
-        public bool CreateItem(object item);
-        public bool UpdateItem(object item);
+        public int CreateItem(object item);
+        public int UpdateItem(object item);
         public int DeleteItem(object item);
     }
 }

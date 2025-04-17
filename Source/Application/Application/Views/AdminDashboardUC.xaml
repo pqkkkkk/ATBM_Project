@@ -119,7 +119,7 @@
                     
                 </TextBlock>
             </Grid>
-            
+
             <local:ObjectUC
                 Grid.Row="1"
                 x:Name="objectUC"

@@ -130,37 +130,44 @@ namespace Application.DataAccess.MetaData.User
             }
         }
 
-        public List<object> LoadData()
+        public List<Model.User> LoadData()
         {
-            List<object> userList = new List<object>();
-            try
+            List<Model.User> userList = new List<Model.User>();
+
+            if (sqlConnection.State != ConnectionState.Open)
             {
-                if (sqlConnection.State != ConnectionState.Open)
+                sqlConnection.Open();
+            }
+            using (OracleCommand cmd = new OracleCommand("getAllUsers", sqlConnection))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("user_list", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                using (OracleDataReader reader = cmd.ExecuteReader())
                 {
-                    sqlConnection.Open();
-                }
-                using (OracleCommand cmd = new OracleCommand("getAllUsers", sqlConnection))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.Add("user_list", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
-                    using (OracleDataReader reader = cmd.ExecuteReader())
+                    while (reader.Read())
                     {
-                        while (reader.Read())
+                        Model.User user = new Model.User()
                         {
-                            string username = reader.GetString(0);
-                            string password = "null";
-                            userList.Add(new { Username = username, Password = password });
-                        }
-                        reader.Close();
+                            username = reader["username"].ToString(),
+                            password = reader["password"].ToString(),
+                            userId = Convert.ToString(reader["user_Id"]),
+                            accountStatus = reader["account_Status"].ToString(),
+                            defaultTablespace = reader["default_Tablespace"].ToString(),
+                            created = DateOnly.FromDateTime(Convert.ToDateTime(reader["created"])),
+                            authenticationType = reader["authentication_Type"].ToString(),
+                            common = reader["common"].ToString(),
+                            passwordChangeDate = reader["password_Change_Date"] != DBNull.Value ? DateOnly.FromDateTime(Convert.ToDateTime(reader["password_Change_Date"])) : null
+                        };
+                        userList.Add(user);
                     }
+                    reader.Close();
                 }
-                sqlConnection.Close();
             }
-            catch (Exception e)
+            if (sqlConnection.State == ConnectionState.Open)
             {
                 sqlConnection.Close();
-                return userList;
             }
+          
             return userList;
         }
     }

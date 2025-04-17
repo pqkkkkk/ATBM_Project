@@ -35,6 +35,7 @@
                 </Grid.ColumnDefinitions>
 
                 <ComboBox
+                    IsEnabled="{x:Bind privilegeViewModel.selectedUserOrRole.isUser, Mode=OneWay}"
                     SelectionChanged="OnChangeSelectedRole"
                     ItemsSource="{x:Bind privilegeViewModel.roleOfUsers, Mode=OneWay}"
                     Grid.Column="0"
@@ -54,13 +55,16 @@
                     HorizontalAlignment="Right"
                     Grid.Column="1"
                     Orientation="Horizontal" Spacing="10">
-                    <Button Content="Grant role" 
-                            Background="#9C27B0"
-                            Click="GrantRole_Click"/>
-                    <Button Content="Revoke role"
-                            IsEnabled="{x:Bind privilegeViewModel.hasSelectedRole, Mode=OneWay}"
-                            Style="{ThemeResource ButtonRevealStyle}"
-                            Click="RevokeRole_Click"/>
+                    <Button
+                        IsEnabled="{x:Bind privilegeViewModel.selectedUserOrRole.isUser, Mode=OneWay}"
+                        Content="Grant role" 
+                        Background="#9C27B0"
+                        Click="GrantRole_Click"/>
+                    <Button 
+                        Content="Revoke role"
+                        IsEnabled="{x:Bind privilegeViewModel.hasSelectedRole, Mode=OneWay}"
+                        Style="{ThemeResource ButtonRevealStyle}"
+                        Click="RevokeRole_Click"/>
                 </StackPanel>
             </Grid>
 

@@ -14,7 +14,6 @@ namespace Application.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        public UserMetaData userMetaData { get; set; }
         public string? selectedTabView { get; set; }
         public bool canBack { get; set; }
         public CommonInfo? selectedItem { get; set; }
@@ -22,18 +21,7 @@ namespace Application.ViewModels
         {
             canBack = false;
             selectedTabView = "Users";
-            selectedItem = new CommonInfo()
-            {
-                name ="SYS",
-                objectType = "user"
-            };
-
-            userMetaData = new UserMetaData()
-            {
-                roles = new List<string>(),
-                privileges = new List<Privilege>(),
-                username = "pqkiet854"
-            };
+            selectedItem = null;
         }
         public void UpdateSelectedTabView(string? tabView)
         {

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Application.DataAccess.MetaData.Privilege;
 using Application.DataAccess.MetaData.Role;
+using Application.Model;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -55,7 +56,7 @@ namespace Application.ViewModels
             procedureList = new ObservableCollection<Model.OracleObject>(privilegeDao.GetAllInstanceOfSpecificObject("Procedure"));
             functionList = new ObservableCollection<Model.OracleObject>(privilegeDao.GetAllInstanceOfSpecificObject("Function"));
 
-            itemList = new ObservableCollection<Model.Privilege>(privilegeDao.GetPrivilegesOfUserOnSpecificObjectType(selectedUserOrRole.name,selectedObjectType));
+            itemList = selectedUserOrRole != null ?  new ObservableCollection<Model.Privilege>(privilegeDao.GetPrivilegesOfUserOnSpecificObjectType(selectedUserOrRole.name,selectedObjectType)): itemList = new ObservableCollection<Model.Privilege>();
             selectedItem = new Model.Privilege();
             hasSelectedItem = false;
 
@@ -69,8 +70,35 @@ namespace Application.ViewModels
                 name = ""
             };
             hasSelectedRole = false;
-            roleOfUsers = new ObservableCollection<Model.Role>(privilegeDao.GetAllRolesOfUser(selectedUserOrRole.name));
+            roleOfUsers = selectedUserOrRole != null ?  new ObservableCollection<Model.Role>(privilegeDao.GetAllRolesOfUser(selectedUserOrRole.name)) : roleOfUsers = new ObservableCollection<Model.Role>();
 
+        }
+        public void UpdatedAllData(CommonInfo selectedUserOrRole)
+        {
+            selectedObjectType = "Table";
+            this.selectedUserOrRole = selectedUserOrRole;
+
+            roleList = new ObservableCollection<Model.Role>(roleDao.GetAllRolesWithRoleClass());
+            tableList = new ObservableCollection<Model.OracleObject>(privilegeDao.GetAllInstanceOfSpecificObject("Table"));
+            viewList = new ObservableCollection<Model.OracleObject>(privilegeDao.GetAllInstanceOfSpecificObject("View"));
+            procedureList = new ObservableCollection<Model.OracleObject>(privilegeDao.GetAllInstanceOfSpecificObject("Procedure"));
+            functionList = new ObservableCollection<Model.OracleObject>(privilegeDao.GetAllInstanceOfSpecificObject("Function"));
+
+            itemList = selectedUserOrRole != null ? new ObservableCollection<Model.Privilege>(privilegeDao.GetPrivilegesOfUserOnSpecificObjectType(selectedUserOrRole.name, selectedObjectType)) : itemList = new ObservableCollection<Model.Privilege>();
+            selectedItem = new Model.Privilege();
+            hasSelectedItem = false;
+
+            selectedTable = new Model.OracleObject();
+            columnListOfSelectedObject = new ObservableCollection<Model.ColumnOfObject>();
+            selectedActionOnTableOrView = "";
+            canSelectColumnsOfTableOrView = false;
+
+            selectedRole = new Model.Role()
+            {
+                name = ""
+            };
+            hasSelectedRole = false;
+            roleOfUsers = selectedUserOrRole != null ? new ObservableCollection<Model.Role>(privilegeDao.GetAllRolesOfUser(selectedUserOrRole.name)) : roleOfUsers = new ObservableCollection<Model.Role>();
         }
         public List<Model.Role> LoadAllRolesOfUser(string username)
         {
@@ -130,12 +158,12 @@ namespace Application.ViewModels
             throw new NotImplementedException();
         }
 
-        public bool CreateItem(object item)
+        public int CreateItem(object item)
         {
             throw new NotImplementedException();
         }
 
-        public bool UpdateItem(object item)
+        public int UpdateItem(object item)
         {
             throw new NotImplementedException();
         }

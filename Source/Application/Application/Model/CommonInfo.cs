@@ -11,6 +11,7 @@ namespace Application.Model
     {
         public string? name { get; set; }
         public string? objectType { get; set; }
+        public bool isUser { get; set; }
         public event PropertyChangedEventHandler? PropertyChanged;
     }
 }

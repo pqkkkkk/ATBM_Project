@@ -11,6 +11,13 @@ namespace Application.Model
     {
         public string? username { get; set; }
         public string? password { get; set; }
+        public string? userId { get; set; }
+        public string? accountStatus { get; set; }
+        public string? defaultTablespace { get; set; }
+        public DateOnly? created { get; set; }
+        public string? authenticationType { get; set; }
+        public string? common { get; set; }
+        public DateOnly? passwordChangeDate { get; set; }
 
         public User()
         {
