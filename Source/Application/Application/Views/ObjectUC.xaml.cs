@@ -34,33 +34,14 @@ namespace Application.Views
         public string notificationTitle { get; set; } = string.Empty;
         public string notificationMessage { get; set; } = string.Empty;
 
-        public static readonly DependencyProperty userDataViewModelProperty = DependencyProperty.Register(
-            nameof(userDataViewModel),
-            typeof(UserDataViewModel),
-            typeof(ObjectUC),
-            new PropertyMetadata(null));
-
-        public static readonly DependencyProperty roleDataViewModelProperty = DependencyProperty.Register(
-            nameof(roleDataViewModel),
-            typeof(RoleDataViewModel),
-            typeof(ObjectUC),
-            new PropertyMetadata(null));
         public static readonly DependencyProperty mainViewModelProperty = DependencyProperty.Register(
             nameof(mainViewModel),
             typeof(MainViewModel),
             typeof(ObjectUC),
             new PropertyMetadata(null));
-        public UserDataViewModel userDataViewModel
-        {
-            get => (UserDataViewModel)GetValue(userDataViewModelProperty);
-            set => SetValue(userDataViewModelProperty, value);
-        }
+        public UserDataViewModel userDataViewModel { get; set; }
 
-        public RoleDataViewModel roleDataViewModel
-        {
-            get => (RoleDataViewModel)GetValue(roleDataViewModelProperty);
-            set => SetValue(roleDataViewModelProperty, value);
-        }
+        public RoleDataViewModel roleDataViewModel { get; set; }
         public MainViewModel mainViewModel
         {
             get => (MainViewModel)GetValue(mainViewModelProperty);
@@ -68,10 +49,20 @@ namespace Application.Views
         }
         public ObjectUC()
         {
+            userDataViewModel = new UserDataViewModel();
+            roleDataViewModel = new RoleDataViewModel();
+
             this.InitializeComponent();
             notificationDialog.DataContext = this;
+            this.Loaded += ObjectUC_Loaded;
 
         }
+
+        private void ObjectUC_Loaded(object sender, RoutedEventArgs e)
+        {
+            SetDataSource(mainViewModel.selectedTabView);
+        }
+
         public void SetDataSource(string? objectType)
         {
             switch (objectType)

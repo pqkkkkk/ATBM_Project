@@ -25,14 +25,10 @@ namespace Application.Views
 {
     public sealed partial class AdminDashboardUC : UserControl
     {
-        public RoleDataViewModel roleDataViewModel { get; set; }
-        public UserDataViewModel userDataViewModel { get; set; }
         public MainViewModel mainViewModel { get; set; }
         public string? selectedTab { get; set; }
         public AdminDashboardUC()
         {
-            userDataViewModel = new UserDataViewModel();
-            roleDataViewModel = new RoleDataViewModel();
             mainViewModel = new MainViewModel();
             selectedTab = "Users";
             
@@ -73,14 +69,17 @@ namespace Application.Views
             objectUC.Visibility = Visibility.Collapsed;
             objectDetailUC.Visibility = Visibility.Visible;
             objectDetailUC.UpdateAllData();
-            objectDetailUC.SetDataSourceForDataList();
+            //objectDetailUC.SetDataSourceForDataList();
             
         }
 
         private void Back_Click(object sender, RoutedEventArgs e)
         {
             mainViewModel.UpdateCanBack(false);
+
+            objectDetailUC.UpdateDataWhenBack();
             objectDetailUC.Visibility = Visibility.Collapsed;
+
             objectUC.Visibility = Visibility.Visible;
         }
     }

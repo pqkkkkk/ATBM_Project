@@ -125,8 +125,7 @@
                 x:Name="objectUC"
                 Visibility="Visible"
                 DetailClickedEvent="ViewPrivsDetailOfSelectedObject"
-                mainViewModel="{x:Bind mainViewModel}"
-                userDataViewModel="{x:Bind userDataViewModel}" roleDataViewModel="{x:Bind roleDataViewModel}"/>
+                mainViewModel="{x:Bind mainViewModel}"/>
             <local:ObjectDetailUC
                 Grid.Row="1"
                 x:Name="objectDetailUC"
