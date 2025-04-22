@@ -16,6 +16,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Application.ViewModels;
 using Application.Model;
+using System.Threading.Tasks;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -24,14 +25,10 @@ namespace Application.Views
 {
     public sealed partial class AdminDashboardUC : UserControl
     {
-        public RoleDataViewModel roleDataViewModel { get; set; }
-        public UserDataViewModel userDataViewModel { get; set; }
         public MainViewModel mainViewModel { get; set; }
         public string? selectedTab { get; set; }
         public AdminDashboardUC()
         {
-            userDataViewModel = new UserDataViewModel();
-            roleDataViewModel = new RoleDataViewModel();
             mainViewModel = new MainViewModel();
             selectedTab = "Users";
             
@@ -49,23 +46,40 @@ namespace Application.Views
                 selectedTab = button.Tag.ToString();
 
                 mainViewModel.UpdateSelectedTabView(selectedTab);
-
+                mainViewModel.UpdateSelectedItem(null);
                 objectUC.SetDataSource(selectedTab);
             }
         }
 
-        private void ViewPrivsDetailOfSelectedObject()
+        private async void ViewPrivsDetailOfSelectedObject()
         {
+            if(mainViewModel.selectedItem == null)
+            {
+                ContentDialog contentDialog = new ContentDialog
+                {
+                    XamlRoot = this.XamlRoot,
+                    Title = "Error",
+                    Content = "Please select a user or role in the list to view details.",
+                    CloseButtonText = "OK"
+                };
+                await contentDialog.ShowAsync();
+                return;
+            }
             mainViewModel.UpdateCanBack(true);
             objectUC.Visibility = Visibility.Collapsed;
             objectDetailUC.Visibility = Visibility.Visible;
-            objectDetailUC.SetDataSourceForDataList();
+            objectDetailUC.UpdateAllData();
+            //objectDetailUC.SetDataSourceForDataList();
+            
         }
 
         private void Back_Click(object sender, RoutedEventArgs e)
         {
             mainViewModel.UpdateCanBack(false);
+
+            objectDetailUC.UpdateDataWhenBack();
             objectDetailUC.Visibility = Visibility.Collapsed;
+
             objectUC.Visibility = Visibility.Visible;
         }
     }

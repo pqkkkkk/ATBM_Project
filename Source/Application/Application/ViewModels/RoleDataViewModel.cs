@@ -26,27 +26,47 @@ namespace Application.ViewModels
             itemList = new ObservableCollection<Role>(LoadData().Cast<Role>());
             selectedRole = null;
         }
-        public bool CreateItem(object item)
+        public int CreateItem(object item)
         {
-            if((item is string roleName && !string.IsNullOrEmpty(roleName)) && roleDao.CreateRole(roleName))
+            try
             {
-                itemList = new ObservableCollection<Role>(LoadData().Cast<Role>());
-                return true;
+                string roleName = (string)item;
+                if (string.IsNullOrEmpty(roleName))
+                {
+                    return (int)CreateRoleResult.InvalidRoleName;
+                }
+                if (roleDao.CheckExist("ROLE", roleName))
+                {
+                    return (int)CreateRoleResult.RoleAlreadyExists;
+                }
+                if (roleDao.CreateRole(roleName))
+                {
+                    itemList = new ObservableCollection<Role>(LoadData().Cast<Role>());
+                    return (int)CreateRoleResult.Success;
+                }
+                else
+                {
+                    return (int)CreateRoleResult.RoleCreationFailed;
+                }
             }
-            return false;
+            catch (Exception e)
+            {
+                return (int)CreateRoleResult.UnknownError;
+            }
+
         }
 
-        public bool DeleteItem(object item)
+        public int DeleteItem(object item)
         {
             if (roleDao.DropRole(selectedRole.name))
             {
                 itemList = new ObservableCollection<Role>(LoadData().Cast<Role>());
-                return true;
+                return 1;
             }
-            return false;
+            return 0;
         }
 
-        public bool UpdateItem(object item)
+        public int UpdateItem(object item)
         {
             throw new NotImplementedException();
         }
@@ -58,18 +78,10 @@ namespace Application.ViewModels
 
         public List<object> LoadData()
         {
-            List<string> roleList = roleDao.GetAllRoles();
-            List<object> list = new List<object>();
-            foreach (string roleName in roleList)
-            {
-                Role newRole = new Role()
-                {
-                    name = roleName
-                };
-                list.Add(newRole);
-            }
+            List<Model.Role> roleList = roleDao.GetAllRoles();
+           
 
-            return list;
+            return roleList.Cast<object>().ToList();
         }
 
         public List<string> GetSuggestions(string query)

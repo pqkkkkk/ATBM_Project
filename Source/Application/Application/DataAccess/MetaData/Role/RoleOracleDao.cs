@@ -117,9 +117,9 @@ namespace Application.DataAccess.MetaData.Role
                 }
             }
         }
-        public List<string> GetAllRoles()
+        public List<Model.Role> GetAllRoles()
         {
-            List<string> roles = new List<string>();
+            List<Model.Role> roles = new List<Model.Role>();
             try
             {
                 if (sqlConnection.State == ConnectionState.Closed)
@@ -133,7 +133,14 @@ namespace Application.DataAccess.MetaData.Role
                     OracleDataReader reader = cmd.ExecuteReader();
                     while (reader.Read())
                     {
-                        string role = reader.GetString(0);
+                        Model.Role role = new Model.Role()
+                        {
+                            name = reader["role"].ToString(),
+                            roleId = reader["role_id"].ToString(),
+                            passwordRequired = reader["password_required"].ToString(),
+                            authenticationType = reader["authentication_type"].ToString(),
+                            common = reader["common"].ToString()
+                        };
                         roles.Add(role);
                     }
                     //reader.Close();

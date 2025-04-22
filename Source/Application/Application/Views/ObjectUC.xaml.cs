@@ -31,34 +31,17 @@ namespace Application.Views
     {
         public delegate void DetailClickedEventHandler();
         public event DetailClickedEventHandler? DetailClickedEvent;
+        public string notificationTitle { get; set; } = string.Empty;
+        public string notificationMessage { get; set; } = string.Empty;
 
-        public static readonly DependencyProperty userDataViewModelProperty = DependencyProperty.Register(
-            nameof(userDataViewModel),
-            typeof(UserDataViewModel),
-            typeof(ObjectUC),
-            new PropertyMetadata(null));
-
-        public static readonly DependencyProperty roleDataViewModelProperty = DependencyProperty.Register(
-            nameof(roleDataViewModel),
-            typeof(RoleDataViewModel),
-            typeof(ObjectUC),
-            new PropertyMetadata(null));
         public static readonly DependencyProperty mainViewModelProperty = DependencyProperty.Register(
             nameof(mainViewModel),
             typeof(MainViewModel),
             typeof(ObjectUC),
             new PropertyMetadata(null));
-        public UserDataViewModel userDataViewModel
-        {
-            get => (UserDataViewModel)GetValue(userDataViewModelProperty);
-            set => SetValue(userDataViewModelProperty, value);
-        }
+        public UserDataViewModel userDataViewModel { get; set; }
 
-        public RoleDataViewModel roleDataViewModel
-        {
-            get => (RoleDataViewModel)GetValue(roleDataViewModelProperty);
-            set => SetValue(roleDataViewModelProperty, value);
-        }
+        public RoleDataViewModel roleDataViewModel { get; set; }
         public MainViewModel mainViewModel
         {
             get => (MainViewModel)GetValue(mainViewModelProperty);
@@ -66,10 +49,20 @@ namespace Application.Views
         }
         public ObjectUC()
         {
+            userDataViewModel = new UserDataViewModel();
+            roleDataViewModel = new RoleDataViewModel();
+
             this.InitializeComponent();
             notificationDialog.DataContext = this;
+            this.Loaded += ObjectUC_Loaded;
 
         }
+
+        private void ObjectUC_Loaded(object sender, RoutedEventArgs e)
+        {
+            SetDataSource(mainViewModel.selectedTabView);
+        }
+
         public void SetDataSource(string? objectType)
         {
             switch (objectType)
@@ -95,14 +88,7 @@ namespace Application.Views
             switch (mainViewModel.selectedTabView)
             {
                 case "Users":
-                    ContentDialogResult result = await createUserDialog.ShowAsync();
-                    if(result == ContentDialogResult.Primary)
-                    {
-                        string username = UsernameTextBox.Text;
-                        string password = PasswordTextBox.Password;
-                        var user = new User(username, password);
-                        userDataViewModel.CreateItem(user);
-                    }
+                    await createUserDialog.ShowAsync();
                     break;
                 case "Roles":
                     await createRoleDialog.ShowAsync();
@@ -114,20 +100,36 @@ namespace Application.Views
 
         private async void UpdateClickHandler(object sender, RoutedEventArgs e)
         {
+            if(mainViewModel.selectedItem == null)
+            {
+                ContentDialog contentDialog = new ContentDialog
+                {
+                    XamlRoot = this.XamlRoot,
+                    Title = "Error",
+                    Content = "No item selected",
+                    CloseButtonText = "OK"
+                };
+
+                await contentDialog.ShowAsync();
+                return;
+            }
+            else if(mainViewModel.selectedItem.objectType == "role")
+            {
+                ContentDialog contentDialog = new ContentDialog
+                {
+                    XamlRoot = this.XamlRoot,
+                    Title = "Error",
+                    Content = "You cannot update role",
+                    CloseButtonText = "OK"
+                };
+                await contentDialog.ShowAsync();
+                return;
+            }
+
             switch (mainViewModel.selectedTabView)
             {
                 case "Users":
-                    var selectedUser = userDataViewModel.selectedUser;
-                    if (selectedUser != null && !string.IsNullOrEmpty(selectedUser.username))
-                    {
-                        ContentDialogResult result = await updateUserDialog.ShowAsync();
-                        if (result == ContentDialogResult.Primary)
-                        {
-                            string newpassword = UpdatePasswordTextBox.Password;
-                            var user = new User(selectedUser.username, newpassword);
-                            userDataViewModel.UpdateItem(user);
-                        }
-                    }
+                    await updateUserDialog.ShowAsync();
                     break;
                 case "Roles":
                     break;
@@ -138,59 +140,105 @@ namespace Application.Views
 
         private async void DeleteClickHandler(object sender, RoutedEventArgs e)
         {
-            if(roleDataViewModel.selectedRole != null)
+            if (mainViewModel.selectedItem == null)
             {
-                deleteWarningDialog.ShowAsync();
+                ContentDialog noItemDialog = new ContentDialog
+                {
+                    XamlRoot = this.XamlRoot,
+                    Title = "Error",
+                    Content = "No item selected",
+                    CloseButtonText = "Ok"
+                };
+                await noItemDialog.ShowAsync();
+
+                return;
+            }
+            else if (mainViewModel.selectedItem.objectType == "user")
+            {
+                deleteWarningDialog.Title = "Delete User";
+                deleteWarningDialogTextBlock.Text = $"Are you sure you want to delete {mainViewModel.selectedItem.name}?";
+                await deleteWarningDialog.ShowAsync();
+            }
+            else if (mainViewModel.selectedItem.objectType == "role")
+            {
+                deleteWarningDialog.Title = "Delete Role";
+                deleteWarningDialogTextBlock.Text = $"Are you sure you want to delete {mainViewModel.selectedItem.name}?";
+                await deleteWarningDialog.ShowAsync();
             }
         }
-
-        public string notificationTitle { get; set; } = string.Empty;
-        public string notificationMessage { get; set; } = string.Empty;
         private async void createRoleDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            bool created = roleDataViewModel.CreateItem(roleTextBox.Text.Trim());
-            if (created)
-            {
+            int created = roleDataViewModel.CreateItem(roleTextBox.Text.Trim());
+            CreateRoleResult createRoleResult = (CreateRoleResult)created;
 
-                roleDataViewModel.itemList = new ObservableCollection<Role>(roleDataViewModel.LoadData().Cast<Role>());
-                createRoleDialog.Hide();
-                notificationDialog.Title = "Success";
-                notificationTextBlock.Text = $"{roleTextBox.Text.Trim()} was created successfully";
-                await notificationDialog.ShowAsync();
+            if (createRoleResult != CreateRoleResult.Success)
+            {
+                createRoleResultTextBlock.Text = createRoleResult.ToString();
+                args.Cancel = true;
+
+                createRoleResultTextBlock.Visibility = Visibility.Visible;
+
+                DispatcherQueue.TryEnqueue(async () =>
+                {
+                    await Task.Delay(2000);
+                    createRoleResultTextBlock.Visibility = Visibility.Collapsed;
+                });
             }
             else
             {
+                createRoleResultTextBlock.Text = "Role created successfully";
                 createRoleDialog.Hide();
-                notificationDialog.Title = "Error";
-                notificationTextBlock.Text = "There was something wrong in creating";
+                notificationDialog.Title = "Success";
+                notificationTextBlock.Text = $"{roleTextBox.Text} was created successfully";
                 await notificationDialog.ShowAsync();
-
             }
+
             roleTextBox.Text = string.Empty;
         }
         private async void deleteWarning_click(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            switch (mainViewModel.selectedTabView)
+            if (mainViewModel.selectedItem.objectType == "role")
             {
-                case "Roles":
-                    if (roleDataViewModel.DeleteItem(roleDataViewModel.selectedRole))
-                    {
-                        deleteWarningDialog.Hide();
-                        notificationDialog.Title = "Success";
-                        notificationTextBlock.Text = $"{roleDataViewModel.selectedRole.name} was deleted successfully";
-                        await notificationDialog.ShowAsync();
-                    }
-                    else
-                    {
-                        deleteWarningDialog.Hide();
-                        notificationDialog.Title = "Error";
-                        notificationTextBlock.Text = "There was something wrong in deleting";
-                        await notificationDialog.ShowAsync();
-                    }
-                    roleDataViewModel.LoadData();
-                    break;
-            };
+                string deletedRole = roleDataViewModel.selectedRole.name;
 
+                int result = roleDataViewModel.DeleteItem(roleDataViewModel.selectedRole);
+
+                if (result == 1)
+                {
+                    deleteWarningDialog.Hide();
+                    notificationDialog.Title = "Success";
+                    notificationTextBlock.Text = $"{deletedRole} was deleted successfully";
+                    await notificationDialog.ShowAsync();
+                }
+                else
+                {
+                    deleteWarningDialog.Hide();
+                    notificationDialog.Title = "Error";
+                    notificationTextBlock.Text = "There was something wrong in deleting";
+                    await notificationDialog.ShowAsync();
+                }
+                roleDataViewModel.LoadData();
+            }
+            if (mainViewModel.selectedItem.objectType == "user")
+            {
+                string deletedUser = userDataViewModel.selectedUser.username;
+                int result = userDataViewModel.DeleteItem(userDataViewModel.selectedUser);
+
+                if (result == 1)
+                {
+                    deleteWarningDialog.Hide();
+                    notificationDialog.Title = "Success";
+                    notificationTextBlock.Text = $"{deletedUser} was deleted successfully";
+                    await notificationDialog.ShowAsync();
+                }
+                else
+                {
+                    deleteWarningDialog.Hide();
+                    notificationDialog.Title = "Error";
+                    notificationTextBlock.Text = "There was something wrong in deleting";
+                    await notificationDialog.ShowAsync();
+                }
+            }
             mainViewModel.UpdateSelectedItem(new CommonInfo { name = "", objectType = "" });
         }
 
@@ -207,5 +255,95 @@ namespace Application.Views
         {
             roleDataViewModel.search(searchBox.Text.ToLower().Trim());
         }
+
+        private void SelectedItemChangeHandler(object selectedItem)
+        {
+            if (selectedItem is Model.User user)
+            {
+                mainViewModel.UpdateSelectedItem(new CommonInfo
+                {
+                    name = user.username,
+                    objectType = "user",
+                    isUser = true
+                });
+                userDataViewModel.UpdateSelectedItem(user);
+            }
+            else if (selectedItem is Model.Role role)
+            {
+                mainViewModel.UpdateSelectedItem(new CommonInfo
+                {
+                    name = role.name,
+                    objectType = "role",
+                    isUser = false
+                });
+                roleDataViewModel.UpdateSelectedItem(role);
+            }
+            else
+            {
+                mainViewModel.UpdateSelectedItem(new CommonInfo { name = "", objectType = "" });
+            }
+        }
+
+        private async void CreateUserDialogPrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            string username = usernameTextBoxWhenCreateUser.Text.Trim();
+            string password = passwordTextBoxWhenCreateUser.Password.Trim();
+
+            int result = userDataViewModel.CreateItem(new User(username, password));
+            CreateUserResult exception = (CreateUserResult)result;
+
+            if (exception != CreateUserResult.Success)
+            {
+                args.Cancel = true;
+                createUserResultTextBlockWhenCreateUser.Text = exception.ToString();
+
+                createUserResultTextBlockWhenCreateUser.Visibility = Visibility.Visible;
+
+                DispatcherQueue.TryEnqueue(async () =>
+                {
+                    await Task.Delay(2000);
+                    createUserResultTextBlockWhenCreateUser.Visibility = Visibility.Collapsed;
+                });
+            }
+            else
+            {
+                createUserResultTextBlockWhenCreateUser.Text = "User created successfully";
+                createUserDialog.Hide();
+                notificationDialog.Title = "Success";
+                notificationTextBlock.Text = $"{username} was created successfully";
+                await notificationDialog.ShowAsync();
+            }
+        }
+
+        private async void UpdateUserDialogPrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            string newPassword = passwordTextBoxWhenUpdateUser.Password.Trim();
+
+            int result = userDataViewModel.UpdateItem(new User(mainViewModel.selectedItem.name, newPassword));
+
+            if ((UpdateUserResult)result != UpdateUserResult.Success)
+            {
+                args.Cancel = true;
+
+                updateUserResultWhenUpdateUserTextBlock.Text = ((UpdateUserResult)result).ToString();
+
+                updateUserResultWhenUpdateUserTextBlock.Visibility = Visibility.Visible;
+                DispatcherQueue.TryEnqueue(async () =>
+                {
+                    await Task.Delay(2000);
+                    updateUserResultWhenUpdateUserTextBlock.Visibility = Visibility.Collapsed;
+                });
+            }
+            else
+            {
+                updateUserResultWhenUpdateUserTextBlock.Text = "User updated successfully";
+                updateUserDialog.Hide();
+                notificationDialog.Title = "Success";
+                notificationTextBlock.Text = $"{mainViewModel.selectedItem.name} was updated successfully";
+                mainViewModel.UpdateSelectedItem(new CommonInfo { name = "", objectType = "" });
+                await notificationDialog.ShowAsync();
+            }
+        }
     }
 }
+

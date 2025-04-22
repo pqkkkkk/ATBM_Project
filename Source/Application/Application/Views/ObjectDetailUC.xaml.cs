@@ -16,6 +16,7 @@ using Application.ViewModels;
 using System.Threading.Tasks;
 using Application.Views.Components;
 using System.Runtime.CompilerServices;
+using System.ComponentModel;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -38,6 +39,8 @@ namespace Application.Views
         public PrivilegeDataViewModel privilegeViewModel { get; set; }
         public ObjectDetailUC()
         {
+            privilegeViewModel = new PrivilegeDataViewModel();
+
             this.InitializeComponent();
             this.Loaded += ObjectDetailUC_Loaded;
         }
@@ -48,10 +51,14 @@ namespace Application.Views
                 privilegeViewModel = new PrivilegeDataViewModel(mainViewModel.selectedItem);
             }
         }
-        public void SetDataSourceForDataList()
+        public void UpdateAllData()
         {
-            dataList.SetDataSource("Privileges");
+            privilegeViewModel.UpdatedAllData(mainViewModel.selectedItem);
         }
+        //public void SetDataSourceForDataList()
+        //{
+        //    dataList.SetDataSource("Privileges");
+        //}
         private async void GrantRole_Click(object sender, RoutedEventArgs e)
         {
             await grantRoleDialog.ShowAsync();
@@ -79,7 +86,7 @@ namespace Application.Views
                     // Implement revoke cell privilege logic
                     break;
                 case "System privilege":
-                    // Implement revoke system privilege logic
+                    await grantSystemPrivDialog.ShowAsync();
                     break;
                 default:
                     ContentDialog noObjectTypeSelectedDialog = new ContentDialog
@@ -153,7 +160,6 @@ namespace Application.Views
             {
                 bool isWithGrantOption = withGrantOptionCheckboxInGrantRole.IsChecked == true;
                 privilegeViewModel.GrantRole(roleName, isWithGrantOption);
-                privilegeViewModel.LoadRoleOfSelectedUser();
             }
         }
 
@@ -161,7 +167,7 @@ namespace Application.Views
         {
             int result = privilegeViewModel.RevokeRole();
             if (result == 1)
-                privilegeViewModel.LoadRoleOfSelectedUser();
+                return;
             else if (result == 0)
             {
                 args.Cancel = true;
@@ -269,14 +275,44 @@ namespace Application.Views
             }
             else
             {
-                privilegeViewModel.LoadData();
                 privilegeViewModel.UpdateWhenCloseGrantPrivilegeOnTableOrViewDialog();
             }
         }
 
         private void OnGrantPrivOnViewCommand(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
+            string action = actionListOnViewCombobox.SelectedItem is ComboBoxItem selectedAction ? selectedAction.Content?.ToString() : "";
+            string tableName = viewListComboBox.SelectedItem is Model.OracleObject selectedObject ? selectedObject.objectName : "";
+            bool isWithGrantOption = isWithGrantOptionWhenGrantPrivOnTable.IsChecked == true;
 
+            int result = privilegeViewModel.GrantPrivilegeOnTableOrView(action, tableName, isWithGrantOption);
+
+            if (result == 0)
+            {
+                args.Cancel = true;
+                errorWhenGrantPrivOnTableTextBlock.Text = "No selected table or action or no selected column.";
+                errorWhenGrantPrivOnTableTextBlock.Visibility = Visibility.Visible;
+                DispatcherQueue.TryEnqueue(async () =>
+                {
+                    await Task.Delay(2000);
+                    errorWhenGrantPrivOnTableTextBlock.Visibility = Visibility.Collapsed;
+                });
+            }
+            else if (result == -1)
+            {
+                args.Cancel = true;
+                errorWhenGrantPrivOnViewTextBlock.Text = "Error when granting privilege.";
+                errorWhenGrantPrivOnViewTextBlock.Visibility = Visibility.Visible;
+                DispatcherQueue.TryEnqueue(async () =>
+                {
+                    await Task.Delay(2000);
+                    errorWhenGrantPrivOnViewTextBlock.Visibility = Visibility.Collapsed;
+                });
+            }
+            else
+            {
+                privilegeViewModel.UpdateWhenCloseGrantPrivilegeOnTableOrViewDialog();
+            }
         }
 
         private void SelectedItemChangedHandler(object selectedItem)
@@ -316,6 +352,54 @@ namespace Application.Views
                 privilegeViewModel.LoadData();
             }
 
+        }
+
+        private void SelectedItemChangedHandler(object sender, SelectionChangedEventArgs e)
+        {
+            var selectedItem = dataList.SelectedItem;
+
+            if (selectedItem is Model.Privilege selectedPrivilege)
+                privilegeViewModel.UpdateSelectedItem(selectedPrivilege);
+        }
+        public void UpdateDataWhenBack()
+        {
+            privilegeViewModel.UpdateSelectedObjectType("");
+            selectObjectTypeComboBox.SelectedItem = null;
+        }
+
+        private void OnGrantSystemPrivilege(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            string privilege = SystemPrivComboBoxInGranSystemtPriv.SelectedItem is Model.Privilege selectedObject ? selectedObject.privilege : "";
+            bool isWithAdminOption = withAdminOptionCheckboxWhenGrantSystemPriv.IsChecked == true;
+
+            int result = privilegeViewModel.GrantSystemPrivilege(privilege, isWithAdminOption);
+
+            if (result == 0)
+            {
+                args.Cancel = true;
+                errorWhenGrantSystemPrivTextBlock.Text = "Please select a system privilege to grant.";
+                errorWhenGrantSystemPrivTextBlock.Visibility = Visibility.Visible;
+                DispatcherQueue.TryEnqueue(async () =>
+                {
+                    await Task.Delay(2000);
+                    errorWhenGrantSystemPrivTextBlock.Visibility = Visibility.Collapsed;
+                });
+            }
+            else if (result == -1)
+            {
+                args.Cancel = true;
+                errorWhenGrantSystemPrivTextBlock.Text = "Error when granting system privilege.";
+                errorWhenGrantSystemPrivTextBlock.Visibility = Visibility.Visible;
+                DispatcherQueue.TryEnqueue(async () =>
+                {
+                    await Task.Delay(2000);
+                    errorWhenGrantSystemPrivTextBlock.Visibility = Visibility.Collapsed;
+                });
+            }
+            else
+            {
+
+            }
         }
     }
 }

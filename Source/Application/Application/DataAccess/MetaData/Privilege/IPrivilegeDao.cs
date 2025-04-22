@@ -7,6 +7,8 @@ namespace Application.DataAccess.MetaData.Privilege
     {
         public void GrantPrivileges(string name, string privilege, string table_name, string withGrantOption);
         public void GrantPrivilegesOnSpecificColumnsOfTableOrView(string name, string privilege, string table_name, string columns, string withGrantOption);
+        public void GrantSelectOnSpecificColumnsOfTableOrView(string name, string table_name, string columns, string withGrantOption);
+        public void GrantSystemPrivilegesToUser(string name, string privilege, string withAdminOption);
 
         public void RevokePrivilegesOfUserOnSpecificObjectType(string name, string privilege, string table_name);
         public void RevokeSystemPrivilegesFromUser(string name, string privilege);
@@ -15,6 +17,7 @@ namespace Application.DataAccess.MetaData.Privilege
         public void CreateView(string viewName, string columns, string tableName, string condition);
 
         public List<Model.Privilege> GetPrivilegesOfUserOnSpecificObjectType(string name, string objectType);
+        public List<Model.Privilege> GetAllSystemPrivileges();
         public List<Model.Privilege> GetSystemPrivilegesOfUser(string name);
         public List<Model.Privilege> GetColumnPrivilegesOfUser(string name);
         public List<Model.ColumnOfObject> GetColumns(string objectName);

@@ -85,7 +85,7 @@ namespace Application.DataAccess.MetaData.Privilege
                 if (sqlConnection.State == ConnectionState.Closed)
                     sqlConnection.Open();
 
-                using (OracleCommand cmd = new OracleCommand("revokePrivilegesFromUser", sqlConnection))
+                using (OracleCommand cmd = new OracleCommand("RevokePrivilegesOfUserOnSpecificObjectType", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("privilege_", OracleDbType.Varchar2).Value = privilege;
@@ -406,6 +406,106 @@ namespace Application.DataAccess.MetaData.Privilege
                     cmd.Parameters.Add("p_user", OracleDbType.Varchar2).Value = name;
                     cmd.Parameters.Add("p_columns", OracleDbType.Varchar2).Value = columns;
                     cmd.Parameters.Add("p_object", OracleDbType.Varchar2).Value = table_name;
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public void GrantSelectOnSpecificColumnsOfTableOrView(string name, string table_name, string columns, string withGrantOption)
+        {
+            try
+            {
+                if (sqlConnection.State == ConnectionState.Closed)
+                    sqlConnection.Open();
+
+                using (OracleCommand cmd = new OracleCommand("GrantSelectOnSpecificColumnsOfTable", sqlConnection))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    OracleParameter paramWithGrantOption = new OracleParameter("p_withGrantOption", OracleDbType.Varchar2);
+                    paramWithGrantOption.Value = withGrantOption;
+                    cmd.Parameters.Add(paramWithGrantOption);
+
+                    OracleParameter paramUser = new OracleParameter("p_user", OracleDbType.Varchar2);
+                    paramUser.Value = name;
+                    cmd.Parameters.Add(paramUser);
+
+                    OracleParameter paramColumns = new OracleParameter("p_columns", OracleDbType.Varchar2);
+                    paramColumns.Value = columns;
+                    cmd.Parameters.Add(paramColumns);
+
+                    OracleParameter paramObject = new OracleParameter("p_object", OracleDbType.Varchar2);
+                    paramObject.Value = table_name;
+                    cmd.Parameters.Add(paramObject);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public List<Model.Privilege> GetAllSystemPrivileges()
+        {
+            List<Model.Privilege> privileges = new List<Model.Privilege>();
+            try
+            {
+                if (sqlConnection.State == ConnectionState.Closed)
+                    sqlConnection.Open();
+
+                using (OracleCommand cmd = new OracleCommand("GetAllSystemPrivileges", sqlConnection))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("result_", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                    OracleDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        Model.Privilege privilege = new Model.Privilege()
+                        {
+                            privilege = reader["NAME"].ToString(),
+                            type = "systemprivilege",
+                        };
+                        privileges.Add(privilege);
+                    }
+                    reader.Close();
+                    return privileges;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public void GrantSystemPrivilegesToUser(string name, string privilege, string withAdminOption)
+        {
+            try
+            {
+                if (sqlConnection.State == ConnectionState.Closed)
+                    sqlConnection.Open();
+
+                using (OracleCommand cmd = new OracleCommand("GrantSystemPrivilegesToUser", sqlConnection))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    OracleParameter paramWithAdminOption = new OracleParameter("p_withAdminOption", OracleDbType.Varchar2);
+                    paramWithAdminOption.Value = withAdminOption;
+                    cmd.Parameters.Add(paramWithAdminOption);
+
+                    OracleParameter paramPrivilege = new OracleParameter("p_privilege", OracleDbType.Varchar2);
+                    paramPrivilege.Value = privilege;
+                    cmd.Parameters.Add(paramPrivilege);
+
+                    OracleParameter paramUser = new OracleParameter("p_user", OracleDbType.Varchar2);
+                    paramUser.Value = name;
+                    cmd.Parameters.Add(paramUser);
+
                     cmd.ExecuteNonQuery();
                 }
             }

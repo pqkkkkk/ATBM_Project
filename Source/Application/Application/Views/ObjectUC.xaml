@@ -64,37 +64,41 @@
         <components:DataListUC
             x:Name="dataList"
             Grid.Row="1"
+            selectedItemChanged="SelectedItemChangeHandler"
             mainViewModel="{x:Bind mainViewModel}"
             userViewModel="{x:Bind userDataViewModel}"
             roleViewModel="{x:Bind roleDataViewModel}"/>
         
         <!-- Create user dialog -->
         <ContentDialog
+            PrimaryButtonClick="CreateUserDialogPrimaryButtonClick"
             x:Name="createUserDialog">
             <ContentDialog.CloseButtonText> Cancel </ContentDialog.CloseButtonText>
             <ContentDialog.PrimaryButtonText> Create </ContentDialog.PrimaryButtonText>
             <ContentDialog.Title>Create User</ContentDialog.Title>
 
             <ContentDialog.Content>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
+                <StackPanel
+                    Orientation="Vertical"
+                    Spacing="10">
                     <TextBox
                         Grid.Row="0"
-                        x:Name="UsernameTextBox" 
+                        x:Name="usernameTextBoxWhenCreateUser" 
                         Header="Username" 
                         PlaceholderText="Enter username" 
                         Width="300"/>
                     <PasswordBox
-                        x:Name="PasswordTextBox"
+                        x:Name="passwordTextBoxWhenCreateUser"
                         Grid.Row="1"
                         Header="Password" 
                         PlaceholderText="Enter password" 
                         Width="300"/>
-                </Grid>
+                    <TextBlock
+                        Foreground="Red"
+                        Visibility="Collapsed"
+                        x:Name="createUserResultTextBlockWhenCreateUser"
+                        />
+                </StackPanel>
             </ContentDialog.Content>
         </ContentDialog>
         
@@ -107,18 +111,19 @@
             <ContentDialog.Title>Create Role</ContentDialog.Title>
 
             <ContentDialog.Content>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
+                <StackPanel
+                    Orientation="Vertical"
+                    Spacing="10">
                     <TextBox
-                        Grid.Row="0"
                         x:Name="roleTextBox" 
                         Header="Role name" 
                         PlaceholderText="Enter role name" 
                         Width="300"/>
-                </Grid>
+                    <TextBlock
+                        Foreground="Red"
+                        Visibility="Collapsed"
+                        x:Name="createRoleResultTextBlock"/>
+                </StackPanel>
             </ContentDialog.Content>
         </ContentDialog>
         
@@ -149,13 +154,11 @@
         <ContentDialog
             x:Name="notificationDialog"
             Title="{Binding notificationTitle, Mode=OneWay}"
-            CloseButtonText="OK"
-            Foreground="Black">
+            CloseButtonText="OK">
             
             <ContentDialog.Content>
                 <TextBlock 
                     x:Name="notificationTextBlock"
-                    Foreground="Black"
                     Text="{Binding notificationMessage, Mode=OneWay}" 
                     TextWrapping="Wrap"
                     Width="300" />  
@@ -164,24 +167,24 @@
 
         <!-- Update user dialog -->
         <ContentDialog
+            PrimaryButtonClick="UpdateUserDialogPrimaryButtonClick"
             x:Name="updateUserDialog">
             <ContentDialog.CloseButtonText>Cancel</ContentDialog.CloseButtonText>
             <ContentDialog.PrimaryButtonText>Update</ContentDialog.PrimaryButtonText>
             <ContentDialog.Title>Update User</ContentDialog.Title>
 
             <ContentDialog.Content>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+                <StackPanel>
                     <PasswordBox
-                        x:Name="UpdatePasswordTextBox"
-                        Grid.Row="1"
+                        x:Name="passwordTextBoxWhenUpdateUser"
                         Header="Password" 
                         PlaceholderText="Enter password" 
-                        Width="300"/>   
-                    </Grid>
+                        Width="300"/>
+                    <TextBlock
+                        Foreground="Red"
+                        Visibility="Collapsed"
+                        x:Name="updateUserResultWhenUpdateUserTextBlock"/>
+                </StackPanel>
             </ContentDialog.Content>
         </ContentDialog>
     </Grid>

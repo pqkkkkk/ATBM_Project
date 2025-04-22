@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Application.DataAccess.MetaData.User;
 using Application.Model;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Oracle.ManagedDataAccess.Client;
 
 namespace Application.ViewModels
@@ -20,101 +21,99 @@ namespace Application.ViewModels
 
         public UserDataViewModel()
         {
-            itemList = new ObservableCollection<User>(LoadData().Cast<User>());
+            var serviceProvider = (Microsoft.UI.Xaml.Application.Current as App)?.serviceProvider;
+            userDao = serviceProvider?.GetService<IUserDao>();
+
+            itemList = new ObservableCollection<User>(userDao.LoadData());
             selectedUser = null;
         }
-        public bool CreateItem(object item)
+        public int CreateItem(object item)
         {
-            var user = (User)item;
-            if (user.username == null)
+            try
             {
-                throw new ArgumentNullException(nameof(user.username), "Username cannot be null.");
-            }
-            if (user.password == null)
-            {
-                throw new ArgumentNullException(nameof(user.password), "Password cannot be null.");
-            }
+                var user = (User)item;
 
-            var serviceProvider = ((App)App.Current).serviceProvider;
-            if (serviceProvider == null)
-            {
-                throw new InvalidOperationException("Service provider is not initialized.");
+                if (String.IsNullOrEmpty(user.username) || String.IsNullOrEmpty(user.password))
+                {
+                    return (int)CreateUserResult.InvalidUsernameOrPassword;
+                }
+                if (userDao.CheckExist("USER", user.username))
+                {
+                    return (int)CreateUserResult.UserAlreadyExists;
+                }
+                if (userDao.CreateUser(user.username, user.password))
+                {
+                    itemList = new ObservableCollection<User>(userDao.LoadData());
+                    return (int)CreateUserResult.Success;
+                }
+                else
+                {
+                    return (int)CreateUserResult.UserCreationFailed;
+                }
             }
-
-            var connection = serviceProvider.GetRequiredService<OracleConnection>();
-            var userOracleDao = new UserOracleDao(connection);
-            return userOracleDao.CreateUser(user.username, user.password);
+            catch (Exception e)
+            {
+                return (int)CreateUserResult.UnknownError;
+            }
         }
 
-        public bool DeleteItem(object item)
+        public int DeleteItem(object item)
         {
-            var serviceProvider = ((App)App.Current).serviceProvider;
-            if (serviceProvider == null)
-            {
-                throw new InvalidOperationException("Service provider is not initialized.");
-            }
-            var connection = serviceProvider.GetRequiredService<OracleConnection>();
-            if (connection == null)
-            {
-                throw new InvalidOperationException("Oracle connection is not initialized.");
-            }
-            UserOracleDao userOracleDao = new UserOracleDao(connection);
             var user = (User)item;
-            return userOracleDao.DeleteUser(user.username);
+            
+            
+            if(userDao.DeleteUser(user.username))
+            {
+                itemList.Remove(user);
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
         }
 
-        public bool UpdateItem(object item)
+        public int UpdateItem(object item)
         {
-            var serviceProvider = ((App)App.Current).serviceProvider;
-            if (serviceProvider == null)
+            try
             {
-                throw new InvalidOperationException("Service provider is not initialized.");
-            }
+                if (selectedUser == null)
+                {
+                    return (int)UpdateUserResult.NoSelectedUser;
+                }
 
-            var connection = serviceProvider.GetRequiredService<OracleConnection>();
-            if (connection == null)
-            {
-                throw new InvalidOperationException("Oracle connection is not initialized.");
+                string newPassword = ((User)item).password;
+
+                if (String.IsNullOrEmpty(newPassword))
+                {
+                    return (int)UpdateUserResult.InvalidPassword;
+                }
+
+                if (userDao.UpdatePassword(selectedUser.username, newPassword))
+                {
+                    itemList = new ObservableCollection<User>(userDao.LoadData());
+                    return (int)UpdateUserResult.Success;
+                }
+                else
+                {
+                    return (int)UpdateUserResult.UserUpdateFailed;
+                }
             }
-            UserOracleDao userOracleDao = new UserOracleDao(connection);
-            var user = (User)item;
-            return userOracleDao.UpdatePassword(user.username, user.password);
+            catch (Exception e)
+            {
+                return (int)UpdateUserResult.UnknownError;
+            }
         }
 
         public void UpdateSelectedItem(object selectedItem)
         {
-            selectedItem = (User)selectedItem;
-        }
-
-        public List<User> LoadData()
-        {
-            var serviceProvider = (Microsoft.UI.Xaml.Application.Current as App)?.serviceProvider;
-
-            userDao = serviceProvider?.GetService<IUserDao>();
-
-            var users = userDao.LoadData().Select(obj =>
-            {
-                dynamic x = obj;
-                return new User
-                {
-                    username = x.Username,
-                    password = x.Password
-                };
-            })
-            .ToList();
-            return users;
+            selectedUser = (User)selectedItem;
         }
 
         List<object> BaseViewModel.LoadData()
         {
             throw new NotImplementedException();
         }
-
-        int BaseViewModel.DeleteItem(object item)
-        {
-            throw new NotImplementedException();
-        }
-
         public event PropertyChangedEventHandler? PropertyChanged;
     }
 }

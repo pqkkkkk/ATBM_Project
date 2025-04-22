@@ -179,10 +179,7 @@ BEGIN
 END;
 /
 
--- EXECUTE GRANTPRIVILEGES('SELECT', 'NV0001', 'NHANVIEN', 'NO');
-
-
-CREATE OR REPLACE TYPE string_list AS TABLE OF VARCHAR2(4000);
+EXECUTE GRANTPRIVILEGES('SELECT', 'ADMIN', 'EVENT_STATUS', 'NO');
 
 CREATE OR REPLACE PROCEDURE GrantPrivilegesOnSpecificColumnsOfTableOrView (
     p_withGrantOption IN VARCHAR2,
@@ -208,8 +205,35 @@ EXCEPTION
        RAISE;
 END;
 /
-EXECUTE GrantPrivilegesOnSpecificColumnsOfTableOrView('YES', 'UPDATE', 'sys', 'MADT,MAGV,VAITRO', 'QLDT_THAMGIA');
+CREATE OR REPLACE PROCEDURE GrantSelectOnSpecificColumnsOfTable(
+    p_withGrantOption IN VARCHAR2,
+    p_user IN VARCHAR2,
+    p_columns IN VARCHAR2,
+    p_object IN VARCHAR2
+)
+AS
+    createViewSql VARCHAR2(4000);
+    grantSql VARCHAR2(4000);
+BEGIN
+    -- Tạo view với các cột được chỉ định
+    createViewSql := 'CREATE OR REPLACE VIEW ' || p_user || '_' || p_object || '_VIEW AS SELECT ' || p_columns || ' FROM ' || p_object;
+    DBMS_OUTPUT.PUT_LINE('Executing SQL: ' || createViewSql);
+    EXECUTE IMMEDIATE createViewSql;
 
+    -- Cấp quyền SELECT trên view cho user
+    grantSql := 'GRANT SELECT ON ' || p_user || '_' || p_object || '_VIEW TO ' || p_user;
+    IF p_withGrantOption = 'YES' THEN
+        grantSql := grantSql || ' WITH GRANT OPTION';
+    END IF;
+    EXECUTE IMMEDIATE grantSql;
+
+    DBMS_OUTPUT.PUT_LINE('Grant SELECT on specific columns successfully.');
+EXCEPTION
+    WHEN OTHERS THEN
+       RAISE;
+END;
+/
+EXECUTE GrantSelectOnSpecificColumnsOfTable('YES', 'C##ADMIN1', 'ACCNO', 'ACCOUNTS_22120174');
 -- Cấp role cho user (with grant option)
 CREATE OR REPLACE PROCEDURE grantRole(
     role_name in VARCHAR2,
@@ -231,7 +255,28 @@ BEGIN
         RAISE;
 END;
 /
--- EXECUTE grantRoles('NVPDT', 'NV0002', 'NO');
+
+CREATE OR REPLACE PROCEDURE GrantSystemPrivilegesToUser(
+    p_withAdminOption IN VARCHAR2 ,
+    p_privilege IN VARCHAR2,    
+    p_user IN VARCHAR2  
+)
+AS
+    sqlQuery VARCHAR2(4000);
+BEGIN
+    sqlQuery := 'GRANT ' || p_privilege || ' TO ' || p_user;
+    IF p_withAdminOption = 'YES' THEN
+        sqlQuery := sqlQuery || ' WITH ADMIN OPTION';
+    END IF;
+    DBMS_OUTPUT.PUT_LINE('Executing SQL: ' || sqlQuery);
+    EXECUTE IMMEDIATE sqlQuery;
+    DBMS_OUTPUT.PUT_LINE('Grant system privilege successfully to ' || p_user);
+    EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('ERROR: ' || SQLERRM);
+END;
+/
+EXECUTE GrantSystemPrivilegesToUser('YES', 'ALTER SESSION', 'C##ADMIN1');
 -- thu hồi quyền của User/Role
 CREATE OR REPLACE PROCEDURE RevokePrivilegesOfUserOnSpecificObjectType(
     privilege_ IN VARCHAR2,    -- Quyền cần thu hồi
@@ -342,6 +387,17 @@ BEGIN
 END;
 /
 
+CREATE OR REPLACE PROCEDURE GetAllSystemPrivileges(
+    result_ OUT SYS_REFCURSOR
+)
+AS
+BEGIN
+    OPEN result_ FOR
+    SELECT NAME
+    FROM SYSTEM_PRIVILEGE_MAP;
+END;
+/
+
 CREATE OR REPLACE PROCEDURE GetSystemPrivilegesOfUser(
     name_ IN VARCHAR2,  
     result_ OUT SYS_REFCURSOR
@@ -371,6 +427,7 @@ BEGIN
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('ERROR:' || SQLERRM);
 END;
+/
 -- VAR v_roles REFCURSOR;
 -- EXECUTE getPrivilegesOnObjectType( 'NVCB', 'VIEW' ,:v_roles);
 -- PRINT v_roles;
@@ -418,6 +475,7 @@ END;
 /
 
 COMMIT;
+
 CREATE OR REPLACE PROCEDURE getAllUsers(user_list OUT SYS_REFCURSOR)
 AS
 BEGIN

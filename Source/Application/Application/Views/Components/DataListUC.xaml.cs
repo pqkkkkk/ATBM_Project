@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Application.ViewModels;
 using Application.Model;
+using System.Diagnostics;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -31,7 +32,7 @@ namespace Application.Views.Components
             typeof(DataListUC),
             new PropertyMetadata(null));
         public static readonly DependencyProperty privilegeDataViewModelProperty = DependencyProperty.Register(
-            nameof(userViewModel),
+            nameof(privilegeViewModel),
             typeof(PrivilegeDataViewModel),
             typeof(DataListUC),
             new PropertyMetadata(null));
@@ -69,6 +70,7 @@ namespace Application.Views.Components
         {
             this.InitializeComponent();
         }
+
         public void SetDataSource(string? objectType)
         {
             switch (objectType)
@@ -80,46 +82,13 @@ namespace Application.Views.Components
                     this.DataContext = roleViewModel;
                     break;
                 case "Privileges":
+                    Debug.WriteLine(privilegeViewModel?.itemList);
                     this.DataContext = privilegeViewModel;
                     break;
                 default:
                     break;
             }
         }
-        private void SelectedChangedHandler(object sender, SelectionChangedEventArgs e)
-        {
-            var selectedItem = dataList.SelectedItem;
-            if(selectedItem == null)
-            {
-                return;
-            }
-
-            CommonInfo newCommonInfo = new CommonInfo();
-
-            switch (mainViewModel.selectedTabView)
-            {
-                case "Users":
-                    User selectedUser = (User)selectedItem;
-                    userViewModel.UpdateSelectedItem(selectedUser);
-
-                    newCommonInfo.name = selectedUser.username;
-                    newCommonInfo.objectType = "User";
-                    mainViewModel.UpdateSelectedItem(newCommonInfo);
-
-                    break;
-                case "Roles":
-                    Role selectedRole = (Role)selectedItem;
-                    roleViewModel.UpdateSelectedItem(selectedRole);
-
-                    newCommonInfo.name = selectedRole.name;
-                    newCommonInfo.objectType = "Role";
-                    mainViewModel.UpdateSelectedItem(newCommonInfo);
-                    break;
-                default:
-                    break;
-            }
-        }
-
         private void OnSelectedItemChanged(object sender, SelectionChangedEventArgs e)
         {
             selectedItemChanged?.Invoke(dataList.SelectedItem);

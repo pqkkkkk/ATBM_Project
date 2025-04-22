@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Application.Views"
     xmlns:components="using:Application.Views.Components"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:models="using:Application.Model"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -35,6 +36,7 @@
                 </Grid.ColumnDefinitions>
 
                 <ComboBox
+                    IsEnabled="{x:Bind privilegeViewModel.selectedUserOrRole.isUser, Mode=OneWay}"
                     SelectionChanged="OnChangeSelectedRole"
                     ItemsSource="{x:Bind privilegeViewModel.roleOfUsers, Mode=OneWay}"
                     Grid.Column="0"
@@ -54,13 +56,16 @@
                     HorizontalAlignment="Right"
                     Grid.Column="1"
                     Orientation="Horizontal" Spacing="10">
-                    <Button Content="Grant role" 
-                            Background="#9C27B0"
-                            Click="GrantRole_Click"/>
-                    <Button Content="Revoke role"
-                            IsEnabled="{x:Bind privilegeViewModel.hasSelectedRole, Mode=OneWay}"
-                            Style="{ThemeResource ButtonRevealStyle}"
-                            Click="RevokeRole_Click"/>
+                    <Button
+                        IsEnabled="{x:Bind privilegeViewModel.selectedUserOrRole.isUser, Mode=OneWay}"
+                        Content="Grant role" 
+                        Background="#9C27B0"
+                        Click="GrantRole_Click"/>
+                    <Button 
+                        Content="Revoke role"
+                        IsEnabled="{x:Bind privilegeViewModel.hasSelectedRole, Mode=OneWay}"
+                        Style="{ThemeResource ButtonRevealStyle}"
+                        Click="RevokeRole_Click"/>
                 </StackPanel>
             </Grid>
 
@@ -100,12 +105,21 @@
             </Grid>
         </StackPanel>
 
-        <components:DataListUC
+        <!--<components:DataListUC
             x:Name="dataList"
             selectedItemChanged="SelectedItemChangedHandler"
-            privilegeViewModel="{x:Bind privilegeViewModel, Mode=OneWay}"
+            privilegeViewModel="{x:Bind privilegeViewModel}"
+            Grid.Row="1"/>-->
+        <controls:DataGrid
+            IsReadOnly="True"
+            x:Name="dataList"
+            ItemsSource="{x:Bind privilegeViewModel.itemList, Mode=OneWay}"
+            SelectionChanged="SelectedItemChangedHandler"
+            HeadersVisibility="Column" 
+            AutoGenerateColumns="True"
             Grid.Row="1"/>
-        
+
+
         <!-- Grant Priv On Table Dialog -->
         <ContentDialog
             Width="400"
@@ -262,7 +276,7 @@
 
                         <!-- Action List -->
                         <ComboBox
-                            x:Name="actionListOnVieCombobox"
+                            x:Name="actionListOnViewCombobox"
                             SelectionChanged="OnChangeSelectedActionOnTableOrView"
                             Width="200"
                             Header="Action">
@@ -432,7 +446,52 @@
                 </StackPanel>
             </ContentDialog.Content>
         </ContentDialog>
+        
+        <!-- Grant system privilege -->
+        <ContentDialog
+            PrimaryButtonClick="OnGrantSystemPrivilege"
+            x:Name="grantSystemPrivDialog">
+            <ContentDialog.Title>
+                Grant system privilege
+            </ContentDialog.Title>
 
+            <ContentDialog.CloseButtonText>
+                Cancel
+            </ContentDialog.CloseButtonText>
+
+            <ContentDialog.PrimaryButtonText>
+                Grant
+            </ContentDialog.PrimaryButtonText>
+
+            <ContentDialog.Content>
+                <StackPanel 
+                    Spacing="10">
+                    <!-- System Privs Dropdown -->
+                    <ComboBox 
+                        ItemsSource="{x:Bind privilegeViewModel.systemPrivilegeList, Mode=OneWay}"
+                        x:Name="SystemPrivComboBoxInGranSystemtPriv" 
+                        Header="System privileges"
+                        PlaceholderText="Select system priv"
+                        Width="300">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate
+                        x:DataType="models:Privilege">
+                                <TextBlock
+                            Text="{x:Bind privilege,Mode=OneWay}"
+                            FontSize="14"
+                            Foreground="White"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
+                    <CheckBox x:Name="withAdminOptionCheckboxWhenGrantSystemPriv" Content="WITH ADMIN OPTION"/>
+                    <TextBlock
+                        Foreground="Red"
+                        Visibility="Collapsed"
+                        x:Name="errorWhenGrantSystemPrivTextBlock"/>
+                </StackPanel>
+            </ContentDialog.Content>
+        </ContentDialog>
         <!-- Revoke privilege dialog-->
         <ContentDialog
             PrimaryButtonClick="OnRevokePrivilelgeCommand"
