@@ -40,6 +40,9 @@ namespace Application.Views
             typeof(ObjectUC),
             new PropertyMetadata(null));
         public UserDataViewModel userDataViewModel { get; set; }
+        public  TableViewViewModel tableViewViewModel { get; set; }
+        public PrivilegeDataViewModel privilegeDataViewModel { get; set; }
+        public ProcedureFunctionViewModel procedureFunctionViewModel { get; set; }
 
         public RoleDataViewModel roleDataViewModel { get; set; }
         public MainViewModel mainViewModel
@@ -51,7 +54,9 @@ namespace Application.Views
         {
             userDataViewModel = new UserDataViewModel();
             roleDataViewModel = new RoleDataViewModel();
-
+            tableViewViewModel = new TableViewViewModel();
+            privilegeDataViewModel = new PrivilegeDataViewModel();
+            procedureFunctionViewModel = new ProcedureFunctionViewModel();
             this.InitializeComponent();
             notificationDialog.DataContext = this;
             this.Loaded += ObjectUC_Loaded;
@@ -75,12 +80,43 @@ namespace Application.Views
                     this.DataContext = roleDataViewModel;
                     dataList.SetDataSource(objectType);
                     break;
+                case "TablesAndViews":
+                    this.DataContext = tableViewViewModel;
+                    dataList.SetDataSource(objectType);
+                    break;
+                case "Procedures":
+                    this.DataContext = procedureFunctionViewModel;
+                    procedureFunctionViewModel.objectType = "Procedure";
+                    procedureFunctionViewModel.itemList = new ObservableCollection<OracleObject>(procedureFunctionViewModel.LoadData().Cast<OracleObject>());
+                    dataList.SetDataSource(objectType);
+                    break;
+                case "Functions":
+                    this.DataContext = procedureFunctionViewModel;
+                    procedureFunctionViewModel.objectType = "Function";
+                    procedureFunctionViewModel.itemList = new ObservableCollection<OracleObject>(procedureFunctionViewModel.LoadData().Cast<OracleObject>());
+                    dataList.SetDataSource(objectType);
+                    break;
             }
         }
 
-        private void DetailClickHandler(object sender, RoutedEventArgs e)
+        private async void DetailClickHandler(object sender, RoutedEventArgs e)
         {
-            DetailClickedEvent?.Invoke();
+            if (mainViewModel.selectedTabView == "Users" || mainViewModel.selectedTabView == "Roles")
+            {
+                DetailClickedEvent?.Invoke();
+                return;
+            }
+            ContentDialog contentDialog = new ContentDialog
+            {
+                XamlRoot = this.XamlRoot,
+                Title = "Information",
+                Content = "No detail option for this tab!",
+                CloseButtonText = "OK"
+            };
+
+            await contentDialog.ShowAsync();
+            return;
+
         }
 
         private async void AddClickHandler(object sender, RoutedEventArgs e)
@@ -246,14 +282,45 @@ namespace Application.Views
         {
             if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
             {
-                var suggestions = roleDataViewModel.GetSuggestions(sender.Text);
+                IEnumerable<string> suggestions = null;
+                switch (mainViewModel.selectedTabView)
+                {
+                    case "Roles":
+                        suggestions = roleDataViewModel.GetSuggestions(sender.Text);
+                        break;
+                    case "Users":
+                        suggestions = userDataViewModel.GetSuggestions(sender.Text);
+                        break;
+                    case "TablesAndViews":
+                        suggestions = tableViewViewModel.GetSuggestions(sender.Text);
+                        break;
+                    case "Procedures":
+                    case "Functions":
+                        suggestions = procedureFunctionViewModel.GetSuggestions(sender.Text);
+                        break;
+                }
                 sender.ItemsSource = suggestions;
             }
         }
 
         private void searchBox_Click(object sender, RoutedEventArgs e)
         {
-            roleDataViewModel.search(searchBox.Text.ToLower().Trim());
+            switch (mainViewModel.selectedTabView)
+            {
+                case "Roles":
+                    roleDataViewModel.search(searchBox.Text.ToLower().Trim());
+                    break;
+                case "Users":
+                    userDataViewModel.search(searchBox.Text.ToLower().Trim());
+                    break;
+                case "TablesAndViews":
+                    tableViewViewModel.search(searchBox.Text.ToLower().Trim());
+                    break;
+                case "Procedures":
+                case "Functions":
+                    procedureFunctionViewModel.search(searchBox.Text.ToLower().Trim());
+                    break;
+            }
         }
 
         private void SelectedItemChangeHandler(object selectedItem)
