@@ -216,18 +216,18 @@ AS
     grantSql VARCHAR2(4000);
 BEGIN
     -- Tạo view với các cột được chỉ định
-    createViewSql := 'CREATE OR REPLACE VIEW ' || p_user || '_' || p_object || '_VIEW AS SELECT ' || p_columns || ' FROM ' || p_object;
-    DBMS_OUTPUT.PUT_LINE('Executing SQL: ' || createViewSql);
-    EXECUTE IMMEDIATE createViewSql;
+    -- createViewSql := 'CREATE OR REPLACE VIEW ' || p_user || '_' || p_object || '_VIEW AS SELECT ' || p_columns || ' FROM ' || p_object;
+    -- DBMS_OUTPUT.PUT_LINE('Executing SQL: ' || createViewSql);
+    -- EXECUTE IMMEDIATE createViewSql;
 
     -- Cấp quyền SELECT trên view cho user
-    grantSql := 'GRANT SELECT ON ' || p_user || '_' || p_object || '_VIEW TO ' || p_user;
+    grantSql := 'GRANT SELECT ON ' ||  p_object || ' TO ' || p_user;
     IF p_withGrantOption = 'YES' THEN
         grantSql := grantSql || ' WITH GRANT OPTION';
     END IF;
     EXECUTE IMMEDIATE grantSql;
 
-    DBMS_OUTPUT.PUT_LINE('Grant SELECT on specific columns successfully.');
+    DBMS_OUTPUT.PUT_LINE('Grant SELECT successfully.');
 EXCEPTION
     WHEN OTHERS THEN
        RAISE;
@@ -484,4 +484,49 @@ BEGIN
 END;
 /
 
+CREATE OR REPLACE PROCEDURE getAllTablesAndViews(
+  p_result OUT SYS_REFCURSOR
+) AS
+BEGIN
+  OPEN p_result FOR
+    SELECT o.owner AS owner,
+           o.object_id AS objectId,
+           t.table_name AS objectName,
+           'TABLE' AS objectType
+    FROM all_tables t
+    JOIN all_objects o
+      ON o.object_name = t.table_name
+     AND o.owner = t.owner
+     AND o.object_type = 'TABLE'
+
+    UNION ALL
+
+    SELECT o.owner AS owner,
+           o.object_id AS objectId,
+           v.view_name AS objectName,
+           'VIEW' AS objectType
+    FROM all_views v
+    JOIN all_objects o
+      ON o.object_name = v.view_name
+     AND o.owner = v.owner
+     AND o.object_type = 'VIEW'
+
+    ORDER BY owner, objectName;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE getAllProceduresAndFunctions(
+  p_result OUT SYS_REFCURSOR
+) AS
+BEGIN
+  OPEN p_result FOR
+    SELECT owner,
+           object_id AS objectId,
+           object_name AS objectName,
+           object_type AS objectType
+    FROM all_objects
+    WHERE object_type IN ('PROCEDURE', 'FUNCTION')
+    ORDER BY owner, objectType, objectName;
+END;
+/
 COMMIT;

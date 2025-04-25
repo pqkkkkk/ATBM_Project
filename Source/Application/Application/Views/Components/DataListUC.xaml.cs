@@ -41,6 +41,16 @@ namespace Application.Views.Components
             typeof(RoleDataViewModel),
             typeof(DataListUC),
             new PropertyMetadata(null));
+        public static readonly DependencyProperty tableViewViewModelProperty = DependencyProperty.Register(
+            nameof(tableViewViewModel),
+            typeof(TableViewViewModel),
+            typeof(DataListUC),
+            new PropertyMetadata(null));
+        public static readonly DependencyProperty procedureFunctionViewModelProperty = DependencyProperty.Register(
+            nameof(procedureFunctionViewModel),
+            typeof(ProcedureFunctionViewModel),
+            typeof(DataListUC),
+            new PropertyMetadata(null));
         public static readonly DependencyProperty mainViewModelProperty = DependencyProperty.Register(
             nameof(mainViewModel),
             typeof(MainViewModel),
@@ -66,6 +76,16 @@ namespace Application.Views.Components
             get => (MainViewModel)GetValue(mainViewModelProperty);
             set => SetValue(mainViewModelProperty, value);
         }
+        public TableViewViewModel tableViewViewModel
+        {
+            get => (TableViewViewModel)GetValue(tableViewViewModelProperty);
+            set => SetValue(tableViewViewModelProperty, value);
+        }
+        public ProcedureFunctionViewModel procedureFunctionViewModel
+        {
+            get => (ProcedureFunctionViewModel)GetValue(procedureFunctionViewModelProperty);
+            set => SetValue(procedureFunctionViewModelProperty, value);
+        }
         public DataListUC()
         {
             this.InitializeComponent();
@@ -84,6 +104,13 @@ namespace Application.Views.Components
                 case "Privileges":
                     Debug.WriteLine(privilegeViewModel?.itemList);
                     this.DataContext = privilegeViewModel;
+                    break;
+                case "TablesAndViews":
+                    this.DataContext = tableViewViewModel;
+                    break;
+                case "Procedures":
+                case "Functions":
+                    this.DataContext = procedureFunctionViewModel;
                     break;
                 default:
                     break;

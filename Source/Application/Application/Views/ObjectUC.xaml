@@ -67,7 +67,9 @@
             selectedItemChanged="SelectedItemChangeHandler"
             mainViewModel="{x:Bind mainViewModel}"
             userViewModel="{x:Bind userDataViewModel}"
-            roleViewModel="{x:Bind roleDataViewModel}"/>
+            roleViewModel="{x:Bind roleDataViewModel}"
+            tableViewViewModel="{x:Bind tableViewViewModel}"
+            procedureFunctionViewModel="{x:Bind procedureFunctionViewModel}"/>
         
         <!-- Create user dialog -->
         <ContentDialog

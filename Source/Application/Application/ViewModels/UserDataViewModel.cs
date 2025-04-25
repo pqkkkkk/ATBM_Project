@@ -114,6 +114,29 @@ namespace Application.ViewModels
         {
             throw new NotImplementedException();
         }
+        public List<string> GetSuggestions(string query)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+                return new List<string>();
+
+            return itemList
+                .Where(d => d.username.Contains(query, StringComparison.OrdinalIgnoreCase))
+                .Select(d => d.username)
+                .ToList();
+        }
+        public void search(string query)
+        {
+            if (query != "")
+            {
+                itemList = new ObservableCollection<User>(itemList.Where(item => item.username.ToLower().Contains(query)).ToList());
+            }
+            else
+            {
+                itemList = new ObservableCollection<User>(userDao.LoadData().Cast<User>());
+            }
+        }
+
+
         public event PropertyChangedEventHandler? PropertyChanged;
     }
 }

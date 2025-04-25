@@ -23,6 +23,8 @@ using Application.ViewModels;
 using Application.DataAccess.MetaData.Privilege;
 using Application.DataAccess.MetaData.Role;
 using Application.DataAccess.MetaData.User;
+using Application.DataAccess.MetaData.TableView;
+using Microsoft.Windows.ApplicationModel.WindowsAppRuntime;
 
 namespace Application
 {
@@ -65,7 +67,7 @@ namespace Application
                 services.AddSingleton<IPrivilegeDao, PrivilegeOracleDao>();
                 services.AddSingleton<IRoleDao, RoleOracleDao>();
                 services.AddSingleton<IUserDao, UserOracleDao>();
-
+                services.AddSingleton<ITableViewDao, TableViewOracleDao>();
                 serviceProvider = services.BuildServiceProvider();
 
                 m_window.SignInSuccessHandler();
