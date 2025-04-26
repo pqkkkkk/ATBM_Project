@@ -27,17 +27,23 @@ namespace Application.ViewModels
             itemList = new ObservableCollection<User>(userDao.LoadData());
             selectedUser = null;
         }
+        private string GetActualNameOfUser(string name)
+        {
+            return "X_" + name;
+        }
         public int CreateItem(object item)
         {
             try
             {
                 var user = (User)item;
-
+            
                 if (String.IsNullOrEmpty(user.username) || String.IsNullOrEmpty(user.password))
                 {
                     return (int)CreateUserResult.InvalidUsernameOrPassword;
                 }
-                if (userDao.CreateUser(user.username, user.password))
+
+                string username = GetActualNameOfUser(user.username);
+                if (userDao.CreateUser(username, user.password))
                 {
                     itemList = new ObservableCollection<User>(userDao.LoadData());
                     return (int)CreateUserResult.Success;
@@ -57,8 +63,8 @@ namespace Application.ViewModels
         {
             var user = (User)item;
             
-            
-            if(userDao.DeleteUser(user.username))
+            string username = GetActualNameOfUser(user.username);
+            if (userDao.DeleteUser(username))
             {
                 itemList.Remove(user);
                 return 1;
@@ -84,8 +90,8 @@ namespace Application.ViewModels
                 {
                     return (int)UpdateUserResult.InvalidPassword;
                 }
-
-                if (userDao.UpdatePassword(selectedUser.username, newPassword))
+                string username = GetActualNameOfUser(selectedUser.username);
+                if (userDao.UpdatePassword(username, newPassword))
                 {
                     itemList = new ObservableCollection<User>(userDao.LoadData());
                     return (int)UpdateUserResult.Success;
