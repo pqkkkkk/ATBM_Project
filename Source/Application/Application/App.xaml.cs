@@ -64,10 +64,10 @@ namespace Application
                 services.AddSingleton(sqlConnection);
 
                 // Đăng ký PrivilegeOracleDao
-                services.AddSingleton<IPrivilegeDao, PrivilegeOracleDao>();
-                services.AddSingleton<IRoleDao, RoleOracleDao>();
-                services.AddSingleton<IUserDao, UserOracleDao>();
-                services.AddSingleton<ITableViewDao, TableViewOracleDao>();
+                services.AddSingleton<IPrivilegeDao, PrivilegeXAdminDao>();
+                services.AddSingleton<IRoleDao, RoleXAdminDao>();
+                services.AddSingleton<IUserDao, UserXAdminDao>();
+                services.AddSingleton<ITableViewDao, TableViewXAdminDao>();
                 serviceProvider = services.BuildServiceProvider();
 
                 m_window.SignInSuccessHandler();
