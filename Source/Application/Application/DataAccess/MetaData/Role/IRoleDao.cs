@@ -9,7 +9,7 @@ namespace Application.DataAccess.MetaData.Role
 {
     public interface IRoleDao
     {
-        public bool CheckExist(string type, string name);
+        public bool CheckExist(string role);
         public bool CreateRole(string roleName);
         public bool DropRole(string roleName);
         public List<Model.Role> GetAllRoles();
