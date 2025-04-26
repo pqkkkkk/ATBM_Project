@@ -25,7 +25,16 @@ namespace Application.DataAccess.MetaData.User
 
         public List<Model.User> LoadData()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            return new List<Model.User>
+            {
+                new Model.User()
+                {
+                    accountStatus = "ACTIVE",
+                    authenticationType = "PASSWORD",
+                    username = "John Doe",
+                },
+            };  
         }
 
         public bool UpdatePassword(string username, string password)
