@@ -35,7 +35,7 @@ namespace Application.ViewModels
                 {
                     return (int)CreateRoleResult.InvalidRoleName;
                 }
-                if (roleDao.CheckExist("ROLE", roleName))
+                if (roleDao.CheckExist(roleName))
                 {
                     return (int)CreateRoleResult.RoleAlreadyExists;
                 }

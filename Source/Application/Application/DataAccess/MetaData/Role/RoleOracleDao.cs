@@ -52,6 +52,11 @@ namespace Application.DataAccess.MetaData.Role
             }
         }
 
+        public bool CheckExist(string role)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool CreateRole(string roleName)
         {
             if (CheckExist("ROLE", roleName))
@@ -136,9 +141,9 @@ namespace Application.DataAccess.MetaData.Role
                         Model.Role role = new Model.Role()
                         {
                             name = reader["role"].ToString(),
-                            roleId = reader["role_id"].ToString(),
-                            passwordRequired = reader["password_required"].ToString(),
-                            authenticationType = reader["authentication_type"].ToString(),
+                            //roleId = reader["role_id"].ToString(),
+                            //passwordRequired = reader["password_required"].ToString(),
+                            //authenticationType = reader["authentication_type"].ToString(),
                             common = reader["common"].ToString()
                         };
                         roles.Add(role);
