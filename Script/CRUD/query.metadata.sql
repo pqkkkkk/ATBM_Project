@@ -71,4 +71,3 @@ SELECT * FROM v$pdbs;
     SELECT * FROM all_users;
 
 
-

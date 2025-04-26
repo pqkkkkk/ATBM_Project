@@ -26,6 +26,10 @@ namespace Application.ViewModels
             itemList = new ObservableCollection<Role>(LoadData().Cast<Role>());
             selectedRole = null;
         }
+        private string GetActualNameOfRole(string name)
+        {
+            return "XR_" + name;
+        }
         public int CreateItem(object item)
         {
             try
@@ -35,6 +39,7 @@ namespace Application.ViewModels
                 {
                     return (int)CreateRoleResult.InvalidRoleName;
                 }
+                roleName = GetActualNameOfRole(roleName);
                 if (roleDao.CreateRole(roleName))
                 {
                     itemList = new ObservableCollection<Role>(LoadData().Cast<Role>());
@@ -54,7 +59,12 @@ namespace Application.ViewModels
 
         public int DeleteItem(object item)
         {
-            if (roleDao.DropRole(selectedRole.name))
+            if (selectedRole == null)
+            {
+                return 0;
+            }
+            string roleName = GetActualNameOfRole(selectedRole.name);
+            if (roleDao.DropRole(roleName))
             {
                 itemList = new ObservableCollection<Role>(LoadData().Cast<Role>());
                 return 1;

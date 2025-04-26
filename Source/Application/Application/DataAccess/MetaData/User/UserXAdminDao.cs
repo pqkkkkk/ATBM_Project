@@ -47,8 +47,7 @@ namespace Application.DataAccess.MetaData.User
 
         public bool CreateUser(string username, string password)
         {
-            string actual_username = "X_" +  username.ToUpper();
-            if (CheckExist("USER", actual_username))
+            if (CheckExist("USER", username))
             {
                 return false;
             }

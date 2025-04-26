@@ -51,9 +51,8 @@ namespace Application.DataAccess.MetaData.Role
 
         public bool CreateRole(string roleName)
         {
-            string actualRoleName = "XR_" + roleName.ToUpper();
 
-            if (CheckExist(actualRoleName))
+            if (CheckExist(roleName))
             {
                 return false;
             }
@@ -66,7 +65,7 @@ namespace Application.DataAccess.MetaData.Role
                 using (OracleCommand cmd = new OracleCommand("X_ADMIN_createRole", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.Add("user_role", OracleDbType.Varchar2).Value = actualRoleName;
+                    cmd.Parameters.Add("user_role", OracleDbType.Varchar2).Value = roleName;
                     cmd.ExecuteNonQuery();
                 }
                 return true;

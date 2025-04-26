@@ -18,16 +18,13 @@
         pwd IN VARCHAR2
     )
     AS
-        full_user_name VARCHAR2(100);
     BEGIN
-        full_user_name := 'X_' || user_name;
+        EXECUTE IMMEDIATE 'CREATE USER ' || user_name || ' IDENTIFIED BY "' || pwd || '"';
 
-        EXECUTE IMMEDIATE 'CREATE USER ' || full_user_name || ' IDENTIFIED BY "' || pwd || '"';
-
-        EXECUTE IMMEDIATE 'GRANT CREATE SESSION TO ' || full_user_name;
-        EXECUTE IMMEDIATE 'GRANT CONNECT TO ' || full_user_name;
-        EXECUTE IMMEDIATE 'GRANT RESOURCE TO ' || full_user_name;
-        DBMS_OUTPUT.PUT_LINE('User ' || full_user_name || ' created successfully.');
+        EXECUTE IMMEDIATE 'GRANT CREATE SESSION TO ' || user_name;
+        EXECUTE IMMEDIATE 'GRANT CONNECT TO ' || user_name;
+        EXECUTE IMMEDIATE 'GRANT RESOURCE TO ' || user_name;
+        DBMS_OUTPUT.PUT_LINE('User ' || user_name || ' created successfully.');
         
     EXCEPTION
         WHEN OTHERS THEN
