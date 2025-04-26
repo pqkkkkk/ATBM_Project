@@ -58,7 +58,7 @@ SELECT * FROM v$pdbs;
     WHERE  owner = 'X_ADMIN';
 
     -- Procedures and Functions
-    SELECT object_name, object_type
+    SELECT *
     FROM   all_objects
     WHERE  owner = 'X_ADMIN'
     AND  object_type IN ('PROCEDURE','FUNCTION','PACKAGE');
@@ -66,6 +66,9 @@ SELECT * FROM v$pdbs;
     -- Roles
     SELECT *
     FROM   user_role_privs;
+    SELECT * 
+    FROM ROLE_TAB_PRIVS;
+    SELECT * FROM all_users;
 
 
 
