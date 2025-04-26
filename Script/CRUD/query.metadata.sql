@@ -46,3 +46,26 @@ SELECT * FROM DBA_OBJECTS WHERE OBJECT_TYPE = 'PROCEDURE' AND OBJECT_NAME LIKE '
 SELECT * FROM v$database;
 SELECT * FROM v$pdbs;
 
+-- Query metadata of X_ADMIN schema
+    -- Tables 
+    SELECT *
+    FROM   all_tables
+    WHERE  owner = 'X_ADMIN';
+
+    -- Views
+    SELECT view_name
+    FROM   all_views
+    WHERE  owner = 'X_ADMIN';
+
+    -- Procedures and Functions
+    SELECT object_name, object_type
+    FROM   all_objects
+    WHERE  owner = 'X_ADMIN'
+    AND  object_type IN ('PROCEDURE','FUNCTION','PACKAGE');
+
+    -- Roles
+    SELECT *
+    FROM   user_role_privs;
+
+
+
