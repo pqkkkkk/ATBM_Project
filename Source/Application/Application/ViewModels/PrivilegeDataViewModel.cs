@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Oracle.ManagedDataAccess.Client;
+using Windows.System;
 
 namespace Application.ViewModels
 {
@@ -57,12 +58,12 @@ namespace Application.ViewModels
             selectedObjectType = "";
             this.selectedUserOrRole = selectedUserOrRole;
 
-            roleList = new ObservableCollection<Model.Role>(roleDao.GetAllRolesWithRoleClass());
+            roleList = new ObservableCollection<Model.Role>(roleDao.GetAllRoles());
             tableList = new ObservableCollection<Model.OracleObject>(privilegeDao.GetAllInstanceOfSpecificObject("Table"));
             viewList = new ObservableCollection<Model.OracleObject>(privilegeDao.GetAllInstanceOfSpecificObject("View"));
             procedureList = new ObservableCollection<Model.OracleObject>(privilegeDao.GetAllInstanceOfSpecificObject("Procedure"));
             functionList = new ObservableCollection<Model.OracleObject>(privilegeDao.GetAllInstanceOfSpecificObject("Function"));
-            systemPrivilegeList = new ObservableCollection<Model.Privilege>(privilegeDao.GetAllSystemPrivileges());
+            systemPrivilegeList = new ObservableCollection<Model.Privilege>();
 
             itemList = selectedUserOrRole != null ?  new ObservableCollection<Model.Privilege>(privilegeDao.GetPrivilegesOfUserOnSpecificObjectType(selectedUserOrRole.name,selectedObjectType)): itemList = new ObservableCollection<Model.Privilege>();
             selectedItem = new Model.Privilege();
@@ -81,12 +82,19 @@ namespace Application.ViewModels
             roleOfUsers = selectedUserOrRole != null ?  new ObservableCollection<Model.Role>(privilegeDao.GetAllRolesOfUser(selectedUserOrRole.name)) : roleOfUsers = new ObservableCollection<Model.Role>();
 
         }
+        private string GetActualNameOfUserOrRole(string name, bool isUser)
+        {
+            if (isUser)
+                return "X_" + name;
+            else
+                return "XR_" + name;
+        }
         public void UpdatedAllData(CommonInfo selectedUserOrRole)
         {
             selectedObjectType = "";
             this.selectedUserOrRole = selectedUserOrRole;
 
-            roleList = new ObservableCollection<Model.Role>(roleDao.GetAllRolesWithRoleClass());
+            roleList = new ObservableCollection<Model.Role>(roleDao.GetAllRoles());
             tableList = new ObservableCollection<Model.OracleObject>(privilegeDao.GetAllInstanceOfSpecificObject("Table"));
             viewList = new ObservableCollection<Model.OracleObject>(privilegeDao.GetAllInstanceOfSpecificObject("View"));
             procedureList = new ObservableCollection<Model.OracleObject>(privilegeDao.GetAllInstanceOfSpecificObject("Procedure"));
@@ -119,15 +127,15 @@ namespace Application.ViewModels
         {
             if (selectedObjectType == "System privilege")
             {
-                return privilegeDao.GetSystemPrivilegesOfUser(selectedUserOrRole.name).Cast<object>().ToList();
+                return privilegeDao.GetSystemPrivilegesOfUser(GetActualNameOfUserOrRole(selectedUserOrRole.name,selectedUserOrRole.isUser)).Cast<object>().ToList();
             }
             else if (selectedObjectType == "Column privilege")
             {
-                return privilegeDao.GetColumnPrivilegesOfUser(selectedUserOrRole.name).Cast<object>().ToList();
+                return privilegeDao.GetColumnPrivilegesOfUser(GetActualNameOfUserOrRole(selectedUserOrRole.name,selectedUserOrRole.isUser)).Cast<object>().ToList();
             }
             else
             {
-                return privilegeDao.GetPrivilegesOfUserOnSpecificObjectType(selectedUserOrRole.name, selectedObjectType).Cast<object>().ToList();
+                return privilegeDao.GetPrivilegesOfUserOnSpecificObjectType(GetActualNameOfUserOrRole(selectedUserOrRole.name,selectedUserOrRole.isUser), selectedObjectType).Cast<object>().ToList();
             }
         }
         public void UpdateSelectedObjectWhenSelectionChange(Model.OracleObject selectedItem)
@@ -175,10 +183,10 @@ namespace Application.ViewModels
                 if (selectedItem.type == "systemprivilege")
                     privilegeDao.RevokeSystemPrivilegesFromUser(selectedUserOrRole.name, selectedItem.privilege);
                 else if (selectedItem.type == "columnprivilege")
-                    privilegeDao.RevokePrivilegesOfUserOnSpecificObjectType(selectedUserOrRole.name, selectedItem.privilege, selectedItem.tableName);
+                    privilegeDao.RevokePrivilegesOfUserOnSpecificObjectType(GetActualNameOfUserOrRole(selectedUserOrRole.name, selectedUserOrRole.isUser), selectedItem.privilege, selectedItem.tableName);
                 //privilegeDao.RevokePrivilegesFromUserOnSpecificColumnsOfTableOrView(selectedUserOrRole.name, selectedItem.privilege, selectedItem.tableName, selectedItem.columnName);
                 else
-                    privilegeDao.RevokePrivilegesOfUserOnSpecificObjectType(selectedUserOrRole.name, selectedItem.privilege, selectedItem.tableName);
+                    privilegeDao.RevokePrivilegesOfUserOnSpecificObjectType(GetActualNameOfUserOrRole(selectedUserOrRole.name, selectedUserOrRole.isUser), selectedItem.privilege, selectedItem.tableName);
 
                 itemList = new ObservableCollection<Privilege>(LoadData().Cast<Privilege>());
                 return 1;
@@ -201,8 +209,8 @@ namespace Application.ViewModels
             try
             {
                 string withGrantOption = isWithGrantOption ? "YES" : "NO";
-                string username = selectedUserOrRole.name;
-                roleDao.GrantRole(username, roleName,withGrantOption);
+                string username = GetActualNameOfUserOrRole(selectedUserOrRole.name, selectedUserOrRole.isUser);
+                roleDao.GrantRole(username, GetActualNameOfUserOrRole(roleName, false),withGrantOption);
                 LoadRoleOfSelectedUser();
             }
             catch (Exception e)
@@ -219,8 +227,8 @@ namespace Application.ViewModels
                     throw new Exception("No role selected");
                 }
 
-                string username = selectedUserOrRole.name;
-                string roleName = selectedRole.name;
+                string username = GetActualNameOfUserOrRole(selectedUserOrRole.name, selectedUserOrRole.isUser);
+                string roleName = GetActualNameOfUserOrRole(selectedRole.name, false);
                 roleDao.RevokeRoleFromUser(username, roleName);
                 LoadRoleOfSelectedUser();
                 return 1;
@@ -248,7 +256,10 @@ namespace Application.ViewModels
                     throw new Exception("No procedure selected");
                 }
 
-                string username = selectedUserOrRole.name;
+            
+                string username = GetActualNameOfUserOrRole(selectedUserOrRole.name, selectedUserOrRole.isUser);
+                
+
                 privilegeDao.GrantPrivileges(username, "EXECUTE", procedureName, withGrantOption);
 
                 itemList = new ObservableCollection<Model.Privilege>(LoadData().Cast<Model.Privilege>());
@@ -276,7 +287,7 @@ namespace Application.ViewModels
                     throw new Exception("No system privilege selected");
                 }
 
-                string username = selectedUserOrRole.name;
+                string username = GetActualNameOfUserOrRole(selectedUserOrRole.name, selectedUserOrRole.isUser);
                 string withAdminOption = isWithAdminOption == true ? "YES" : "NO";
                 privilegeDao.GrantSystemPrivilegesToUser(username, privilege, withAdminOption);
                 itemList = new ObservableCollection<Model.Privilege>(LoadData().Cast<Model.Privilege>());
@@ -308,7 +319,7 @@ namespace Application.ViewModels
                     throw new Exception("No privilege selected");
                 }
 
-                string username = selectedUserOrRole.name;
+                string username = GetActualNameOfUserOrRole(selectedUserOrRole.name, selectedUserOrRole.isUser);
                 string withGrantOption = isWithGrantOption == true ? "YES" : "NO";
                
                 if (privilege == "SELECT" || privilege == "UPDATE")
@@ -330,7 +341,7 @@ namespace Application.ViewModels
                     }
 
                     if(privilege.Equals("SELECT"))
-                        privilegeDao.GrantSelectOnSpecificColumnsOfTableOrView(username, objectName, columns, withGrantOption);
+                        privilegeDao.GrantPrivileges(username, privilege, objectName, withGrantOption);
                     else
                         privilegeDao.GrantPrivilegesOnSpecificColumnsOfTableOrView(username, privilege, objectName, columns, withGrantOption);
                 }
@@ -357,7 +368,7 @@ namespace Application.ViewModels
         {
             try
             {
-                roleOfUsers = new ObservableCollection<Model.Role>(privilegeDao.GetAllRolesOfUser(selectedUserOrRole.name));
+                roleOfUsers = new ObservableCollection<Model.Role>(privilegeDao.GetAllRolesOfUser(GetActualNameOfUserOrRole(selectedUserOrRole.name, selectedUserOrRole.isUser)));
             }
             catch (Exception e)
             {

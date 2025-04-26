@@ -31,6 +31,7 @@ namespace Application.Views
         private void SignInClickedHandlerInSignInUC(object sender, RoutedEventArgs e)
         {
             string username = usernameBox.Text;
+
             string password = passwordBox.Password;
 
             signInClicked?.Invoke(username, password);

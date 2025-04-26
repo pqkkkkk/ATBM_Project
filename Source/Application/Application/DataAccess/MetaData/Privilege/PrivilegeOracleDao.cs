@@ -18,6 +18,7 @@ namespace Application.DataAccess.MetaData.Privilege
         {
             this.sqlConnection = sqlConnection;
         }
+        
         public Dictionary<string, List<string>> GetUserPrivileges(string name)
         {
             Dictionary<string, List<string>> userPrivileges = new Dictionary<string, List<string>>();

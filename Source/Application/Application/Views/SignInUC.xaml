@@ -17,7 +17,7 @@
 
             <StackPanel Spacing="16">
                 <TextBlock 
-                    Text="DBAdminPro" 
+                    Text="X University" 
                     FontSize="24" 
                     FontWeight="SemiBold" 
                     HorizontalAlignment="Center"

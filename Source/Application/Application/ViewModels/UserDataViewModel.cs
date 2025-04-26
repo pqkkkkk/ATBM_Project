@@ -37,10 +37,6 @@ namespace Application.ViewModels
                 {
                     return (int)CreateUserResult.InvalidUsernameOrPassword;
                 }
-                if (userDao.CheckExist("USER", user.username))
-                {
-                    return (int)CreateUserResult.UserAlreadyExists;
-                }
                 if (userDao.CreateUser(user.username, user.password))
                 {
                     itemList = new ObservableCollection<User>(userDao.LoadData());

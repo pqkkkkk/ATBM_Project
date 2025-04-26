@@ -35,10 +35,6 @@ namespace Application.ViewModels
                 {
                     return (int)CreateRoleResult.InvalidRoleName;
                 }
-                if (roleDao.CheckExist(roleName))
-                {
-                    return (int)CreateRoleResult.RoleAlreadyExists;
-                }
                 if (roleDao.CreateRole(roleName))
                 {
                     itemList = new ObservableCollection<Role>(LoadData().Cast<Role>());

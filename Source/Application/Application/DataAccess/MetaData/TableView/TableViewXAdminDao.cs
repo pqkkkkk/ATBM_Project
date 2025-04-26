@@ -11,7 +11,9 @@ namespace Application.DataAccess.MetaData.TableView
     {
         public List<OracleObject> getAllTableView()
         {
-            throw new NotImplementedException();
+            List<OracleObject> oracleObjects = new List<OracleObject>();
+
+            return oracleObjects;
         }
     }
 }

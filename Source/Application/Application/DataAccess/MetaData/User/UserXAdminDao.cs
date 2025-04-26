@@ -47,7 +47,8 @@ namespace Application.DataAccess.MetaData.User
 
         public bool CreateUser(string username, string password)
         {
-            if (CheckExist("USER", username))
+            string actual_username = "X_" +  username.ToUpper();
+            if (CheckExist("USER", actual_username))
             {
                 return false;
             }
@@ -120,6 +121,7 @@ namespace Application.DataAccess.MetaData.User
                     {
                         Model.User user = new Model.User()
                         {
+
                             username = reader["username"].ToString(),
                             //password = reader["password"].ToString(),
                             userId = Convert.ToString(reader["user_Id"]),
@@ -130,6 +132,10 @@ namespace Application.DataAccess.MetaData.User
                             common = reader["common"].ToString(),
                             //passwordChangeDate = reader["password_Change_Date"] != DBNull.Value ? DateOnly.FromDateTime(Convert.ToDateTime(reader["password_Change_Date"])) : null
                         };
+                        if(user.username != null && user.username.StartsWith("X_"))
+                        {
+                            user.username = user.username.Remove(0,2);
+                        }
                         userList.Add(user);
                     }
                     reader.Close();

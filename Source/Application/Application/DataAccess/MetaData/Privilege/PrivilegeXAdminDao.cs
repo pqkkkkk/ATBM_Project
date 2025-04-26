@@ -75,11 +75,20 @@ namespace Application.DataAccess.MetaData.Privilege
                     while (reader.Read())
                     {
                         string role = reader["GRANTED_ROLE"].ToString();
+                        if(role != null & role.Contains("XR_"))
+                        {
+                            role = role.Substring(3);
+                        }
+                        else
+                        {
+                            role = role.ToUpper();
+                        }
 
                         userRoles.Add(new Model.Role()
                         {
                             name = role,
                         });
+
                     }
                     reader.Close();
                     return userRoles;
@@ -98,7 +107,52 @@ namespace Application.DataAccess.MetaData.Privilege
 
         public List<Model.Privilege> GetColumnPrivilegesOfUser(string name)
         {
-            throw new NotImplementedException();
+            List<Model.Privilege> privileges = new List<Model.Privilege>();
+            try
+            {
+                if (sqlConnection.State == ConnectionState.Closed)
+                    sqlConnection.Open();
+
+                using (OracleCommand cmd = new OracleCommand("X_ADMIN_GetColumnPrivilegesOfUser", sqlConnection))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("name_", OracleDbType.Varchar2).Value = name;
+                    cmd.Parameters.Add("result_", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                    OracleDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        Model.Privilege privilege = new Model.Privilege()
+                        {
+                            grantee = reader["GRANTEE"].ToString(),
+                            privilege = reader["PRIVILEGE"].ToString(),
+                            owner = reader["OWNER"].ToString(),
+                            tableName = reader["TABLE_NAME"].ToString(),
+                            columnName = reader["COLUMN_NAME"].ToString(),
+                            grantor = reader["GRANTOR"].ToString(),
+                            type = "columnprivilege",
+                        };
+                        if (privilege.grantee != null && privilege.grantee.Contains("X_"))
+                        {
+                            privilege.grantee = privilege.grantee.Substring(2);
+                        }
+                        if (privilege.grantee != null && privilege.grantee.Contains("XR_"))
+                        {
+                            privilege.grantee = privilege.grantee.Substring(3);
+                        }
+                        else
+                        {
+                            privilege.grantee = privilege.grantee.ToUpper();
+                        }
+                        privileges.Add(privilege);
+                    }
+                    reader.Close();
+                    return privileges;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
 
         public List<ColumnOfObject> GetColumns(string objectName)
@@ -136,7 +190,52 @@ namespace Application.DataAccess.MetaData.Privilege
 
         public List<Model.Privilege> GetPrivilegesOfUserOnSpecificObjectType(string name, string objectType)
         {
-            throw new NotImplementedException();
+            List<Model.Privilege> privileges = new List<Model.Privilege>();
+            try
+            {
+                if (sqlConnection.State == ConnectionState.Closed)
+                    sqlConnection.Open();
+
+                using (OracleCommand cmd = new OracleCommand("X_ADMIN_GetPrivilegesOfUserOnSpecificObjectType", sqlConnection))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("name_", OracleDbType.Varchar2).Value = name;
+                    cmd.Parameters.Add("object_type", OracleDbType.Varchar2).Value = objectType;
+                    cmd.Parameters.Add("result_", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                    OracleDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        Model.Privilege privilege = new Model.Privilege()
+                        {
+                            grantee = reader["GRANTEE"].ToString(),
+                            owner = reader["OWNER"].ToString(),
+                            tableName = reader["TABLE_NAME"].ToString(),
+                            grantor = reader["GRANTOR"].ToString(),
+                            privilege = reader["PRIVILEGE"].ToString(),
+                            type = reader["TYPE"].ToString(),
+                        };
+                        if(privilege.grantee != null && privilege.grantee.Contains("X_"))
+                        {
+                            privilege.grantee = privilege.grantee.Substring(2);
+                        }
+                        if(privilege.grantee != null && privilege.grantee.Contains("XR_"))
+                        {
+                            privilege.grantee = privilege.grantee.Substring(3);
+                        }
+                        else
+                        {
+                            privilege.grantee = privilege.grantee.ToUpper();
+                        }
+                        privileges.Add(privilege);
+                    }
+                    reader.Close();
+                    return privileges;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
 
         public List<Model.Privilege> GetSystemPrivilegesOfUser(string name)
@@ -156,7 +255,7 @@ namespace Application.DataAccess.MetaData.Privilege
                 if (sqlConnection.State == ConnectionState.Closed)
                     sqlConnection.Open();
 
-                using (OracleCommand cmd = new OracleCommand("grantPrivileges", sqlConnection))
+                using (OracleCommand cmd = new OracleCommand("X_ADMIN_grantPrivileges", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("privilege_", OracleDbType.Varchar2).Value = privilege;
