@@ -48,12 +48,13 @@ namespace Application
         {
             try
             {
+                string actual_username = "X_" + username.ToUpper();
                 string connectionString = "";
-
+                
                 if(username.Equals("sys"))
-                    connectionString = $"User Id={username};Password={password};Data Source=localhost:1521/ORCLPDB;DBA Privilege=SYSDBA";
+                    connectionString = $"User Id={actual_username};Password={password};Data Source=localhost:1521/ORCLPDB;DBA Privilege=SYSDBA";
                 else
-                    connectionString = $"User Id={username};Password={password};Data Source=localhost:1521/ORCLPDB";
+                    connectionString = $"User Id={actual_username};Password={password};Data Source=localhost:1521/XEPDB1";
 
                 var sqlConnection = new OracleConnection(connectionString);
                 await sqlConnection.OpenAsync();
@@ -64,10 +65,10 @@ namespace Application
                 services.AddSingleton(sqlConnection);
 
                 // Đăng ký PrivilegeOracleDao
-                services.AddSingleton<IPrivilegeDao, PrivilegeOracleDao>();
-                services.AddSingleton<IRoleDao, RoleOracleDao>();
+                services.AddSingleton<IPrivilegeDao, PrivilegeXAdminDao>();
+                services.AddSingleton<IRoleDao, RoleXAdminDao>();
                 services.AddSingleton<IUserDao, UserXAdminDao>();
-                services.AddSingleton<ITableViewDao, TableViewOracleDao>();
+                services.AddSingleton<ITableViewDao, TableViewXAdminDao>();
                 serviceProvider = services.BuildServiceProvider();
 
                 m_window.SignInSuccessHandler();

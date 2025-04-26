@@ -26,7 +26,7 @@ namespace Application.DataAccess.MetaData.Role
                 {
                     sqlConnection.Open();
                 }
-                using (OracleCommand cmd = new OracleCommand("CheckRoleExist", sqlConnection))
+                using (OracleCommand cmd = new OracleCommand("X_ADMIN_CheckRoleExist", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("roleName", OracleDbType.Varchar2).Value = role;
@@ -51,7 +51,9 @@ namespace Application.DataAccess.MetaData.Role
 
         public bool CreateRole(string roleName)
         {
-            if (CheckExist( roleName))
+            string actualRoleName = "XR_" + roleName.ToUpper();
+
+            if (CheckExist(actualRoleName))
             {
                 return false;
             }
@@ -61,10 +63,10 @@ namespace Application.DataAccess.MetaData.Role
                 {
                     sqlConnection.Open();
                 }
-                using (OracleCommand cmd = new OracleCommand("createRole", sqlConnection))
+                using (OracleCommand cmd = new OracleCommand("X_ADMIN_createRole", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.Add("user_role", OracleDbType.Varchar2).Value = roleName;
+                    cmd.Parameters.Add("user_role", OracleDbType.Varchar2).Value = actualRoleName;
                     cmd.ExecuteNonQuery();
                 }
                 return true;
@@ -94,7 +96,7 @@ namespace Application.DataAccess.MetaData.Role
                 {
                     sqlConnection.Open();
                 }
-                using (OracleCommand cmd = new OracleCommand("dropRole", sqlConnection))
+                using (OracleCommand cmd = new OracleCommand("X_ADMIN_dropRole", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("user_role", OracleDbType.Varchar2).Value = roleName;
@@ -125,7 +127,7 @@ namespace Application.DataAccess.MetaData.Role
                 {
                     sqlConnection.Open();
                 }
-                using (OracleCommand cmd = new OracleCommand("getAllRoles", sqlConnection))
+                using (OracleCommand cmd = new OracleCommand("X_ADMIN_getAllRoles", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("role_list", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
@@ -141,6 +143,10 @@ namespace Application.DataAccess.MetaData.Role
                             common = reader["COMMON"].ToString(),
                             inherited = reader["INHERITED"].ToString()
                         };
+                        if(role.name != null && role.name.StartsWith("XR_"))
+                        {
+                            role.name = role.name.Remove(0, 3);
+                        }
                         roles.Add(role);
                     }
                     //reader.Close();
@@ -209,7 +215,7 @@ namespace Application.DataAccess.MetaData.Role
                 {
                     sqlConnection.Open();
                 }
-                using (OracleCommand cmd = new OracleCommand("GetUserRoles", sqlConnection))
+                using (OracleCommand cmd = new OracleCommand("X_ADMIN_GetUserRoles", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("user_name", OracleDbType.Varchar2).Value = username;
@@ -245,7 +251,7 @@ namespace Application.DataAccess.MetaData.Role
                 {
                     sqlConnection.Open();
                 }
-                using (OracleCommand cmd = new OracleCommand("grantRole", sqlConnection))
+                using (OracleCommand cmd = new OracleCommand("X_ADMIN_grantRole", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("role_name", OracleDbType.Varchar2).Value = rolename;
@@ -275,7 +281,7 @@ namespace Application.DataAccess.MetaData.Role
                 {
                     sqlConnection.Open();
                 }
-                using (OracleCommand cmd = new OracleCommand("revokeRoleFromUser", sqlConnection))
+                using (OracleCommand cmd = new OracleCommand("X_ADMIN_revokeRoleFromUser", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("role_", OracleDbType.Varchar2).Value = rolename;
