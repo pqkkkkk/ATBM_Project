@@ -50,38 +50,38 @@ namespace Application.DataAccess.MetaData.Role
         }
 
         public bool CreateRole(string roleName)
-        {
+         {
 
-            if (CheckExist(roleName))
-            {
-                return false;
-            }
-            try
-            {
-                if (sqlConnection.State == ConnectionState.Closed)
-                {
-                    sqlConnection.Open();
-                }
-                using (OracleCommand cmd = new OracleCommand("X_ADMIN_createRole", sqlConnection))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.Add("user_role", OracleDbType.Varchar2).Value = roleName;
-                    cmd.ExecuteNonQuery();
-                }
-                return true;
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
-            finally
-            {
-                if (sqlConnection.State == ConnectionState.Open)
-                {
-                    sqlConnection.Close();
-                }
-            }
-        }
+             if (CheckExist(roleName))
+             {
+                 return false;
+             }
+             try
+             {
+                 if (sqlConnection.State == ConnectionState.Closed)
+                 {
+                     sqlConnection.Open();
+                 }
+                 using (OracleCommand cmd = new OracleCommand("X_ADMIN_createRole", sqlConnection))
+                 {
+                     cmd.CommandType = CommandType.StoredProcedure;
+                     cmd.Parameters.Add("user_role", OracleDbType.Varchar2).Value = roleName;
+                     cmd.ExecuteNonQuery();
+                 }
+                 return true;
+             }
+             catch (Exception e)
+             {
+                 throw new Exception(e.Message);
+             }
+             finally
+             {
+                 if (sqlConnection.State == ConnectionState.Open)
+                 {
+                     sqlConnection.Close();
+                 }
+             }
+         }
 
         public bool DropRole(string roleName)
         {

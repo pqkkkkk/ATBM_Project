@@ -39,6 +39,7 @@ namespace Application.ViewModels
                 {
                     return (int)CreateRoleResult.InvalidRoleName;
                 }
+
                 roleName = GetActualNameOfRole(roleName);
                 if (roleDao.CreateRole(roleName))
                 {

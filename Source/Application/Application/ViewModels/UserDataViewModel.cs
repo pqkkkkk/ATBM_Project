@@ -43,7 +43,6 @@ namespace Application.ViewModels
                 }
 
                 string username = GetActualNameOfUser(user.username);
-
                 if (userDao.CreateUser(username, user.password))
                 {
                     itemList = new ObservableCollection<User>(userDao.LoadData());

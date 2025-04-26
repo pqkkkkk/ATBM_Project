@@ -1,4 +1,4 @@
-﻿-- kiểm tra user tồn tại
+-- kiểm tra user tồn tại
     CREATE OR REPLACE PROCEDURE X_ADMIN_checkExistUser(
         name_ in VARCHAR2,
         exist out NUMBER
