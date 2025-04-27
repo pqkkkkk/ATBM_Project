@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.DataAccess.NhanVien
 {
-    interface INhanVienDao
+    interface INhanVienDao : IBaseDao
     {
     }
 }

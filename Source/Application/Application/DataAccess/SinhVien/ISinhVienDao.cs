@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.DataAccess.SinhVien
 {
-    interface ISinhVienDao
+    interface ISinhVienDao : IBaseDao
     {
     }
 }

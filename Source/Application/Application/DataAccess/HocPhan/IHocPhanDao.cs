@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.DataAccess.HocPhan
 {
-    interface IHocPhanDao
+    interface IHocPhanDao : IBaseDao
     {
     }
 }

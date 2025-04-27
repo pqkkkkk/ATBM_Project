@@ -22,6 +22,15 @@
     <None Remove="Views\ObjectUC.xaml" />
     <None Remove="Views\SignInUC.xaml" />
     <None Remove="Views\UserDashboardUC.xaml" />
+    <None Remove="Views\User\DataContentUC.xaml" />
+    <None Remove="Views\User\GVDashboardUC.xaml" />
+    <None Remove="Views\User\NVCBDashboard.xaml" />
+    <None Remove="Views\User\NVCTSVDashboardUC.xaml" />
+    <None Remove="Views\User\NVPDTDashboardUC.xaml" />
+    <None Remove="Views\User\NVPKTDashboardUC.xaml" />
+    <None Remove="Views\User\NVTCHCDashboardUC.xaml" />
+    <None Remove="Views\User\SVDashboardUC.xaml" />
+    <None Remove="Views\User\TRGDVDashboardUC.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -55,6 +64,46 @@
     <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.3" />
     <PackageReference Include="System.Security.Permissions" Version="9.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\User\SVDashboardUC.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\User\TRGDVDashboardUC.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\User\NVCTSVDashboardUC.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\User\NVTCHCDashboardUC.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\User\NVPKTDashboardUC.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\User\NVPDTDashboardUC.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\User\GVDashboardUC.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\User\NVCBDashboard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\ObjectDetailUC.xaml">
@@ -93,6 +142,11 @@
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\SignInUC.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\User\DataContentUC.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
