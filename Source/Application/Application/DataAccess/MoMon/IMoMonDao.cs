@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.DataAccess.MoMon
 {
-    interface IMoMonDao
+    interface IMoMonDao : IBaseDao
     {
     }
 }

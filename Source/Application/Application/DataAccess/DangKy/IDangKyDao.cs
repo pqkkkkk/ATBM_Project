@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Application.DataAccess.DangKy
 {
-    interface IDangKyDao
+    public interface IDangKyDao : IBaseDao
     {
+
     }
 }

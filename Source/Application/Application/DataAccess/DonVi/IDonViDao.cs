@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.DataAccess.DonVi
 {
-    interface IDonViDao
+    interface IDonViDao : IBaseDao
     {
     }
 }
