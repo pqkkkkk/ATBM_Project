@@ -45,6 +45,56 @@ namespace Application.ViewModels.User
             nhanVienList = new ObservableCollection<Model.NhanVien>();
             sinhVienList = new ObservableCollection<Model.SinhVien>();
         }
+        public int DeleteItem()
+        { 
+            return 0;
+        }
+        public int UpdateItem()
+        {
+            return 0;
+        }
+        public int AddItem()
+        {
+            try
+            {
+                switch (selectedTabView)
+                {
+                    case "DangKy":
+                        dangKyList.Add(new Model.DangKy()
+                        {
+                            maSV = "SV001",
+                            maMM = "MM001",
+                            diemTH = 10,
+                            diemCT = 9,
+                            diemCK = 8,
+                            diemTK = 9
+                        });
+                        break;
+                    case "SinhVien":
+                        sinhVienList.Add(new Model.SinhVien()
+                        {
+                            maSV = "SV001",
+                            hoTen = "Nguyen Van A",
+                            phai = "Nam",
+                            ngSinh = new DateOnly(2000, 1, 1),
+                            dChi = "Ha Noi",
+                            dt = "0123456789",
+                            khoa = "CNTT",
+                            tinhTrang = "Khoa"
+                        });
+                        break;
+                    default:
+                        break;
+                }
+
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                // Handle exception
+                return -1;
+            }
+        }
         public void UpdateSelectedTabView(string selectedTabView)
         {
             this.selectedTabView = selectedTabView;

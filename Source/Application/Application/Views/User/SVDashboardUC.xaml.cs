@@ -40,17 +40,17 @@ namespace Application.Views.User
 
         private void OnDeleteClicked()
         {
-
+            viewModel.DeleteItem();
         }
 
         private void OnAddClicked()
         {
-
+            viewModel.AddItem();
         }
 
         private void OnUpdateClicked()
         {
-
+            viewModel.UpdateItem();
         }
     }
 }
