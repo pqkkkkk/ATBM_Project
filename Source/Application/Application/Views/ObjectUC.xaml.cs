@@ -356,7 +356,7 @@ namespace Application.Views
             string username = usernameTextBoxWhenCreateUser.Text.Trim();
             string password = passwordTextBoxWhenCreateUser.Password.Trim();
 
-            int result = userDataViewModel.CreateItem(new User(username, password));
+            int result = userDataViewModel.CreateItem(new Model.User(username, password));
             CreateUserResult exception = (CreateUserResult)result;
 
             if (exception != CreateUserResult.Success)
@@ -386,7 +386,7 @@ namespace Application.Views
         {
             string newPassword = passwordTextBoxWhenUpdateUser.Password.Trim();
 
-            int result = userDataViewModel.UpdateItem(new User(mainViewModel.selectedItem.name, newPassword));
+            int result = userDataViewModel.UpdateItem(new Model.User(mainViewModel.selectedItem.name, newPassword));
 
             if ((UpdateUserResult)result != UpdateUserResult.Success)
             {

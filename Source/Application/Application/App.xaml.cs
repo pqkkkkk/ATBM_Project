@@ -44,26 +44,38 @@ namespace Application
             m_window.Activate();
         }
 
-        private async  void OnSignInClicked(string username, string password)
+        private async  void OnSignInClicked(string username, string password, string role)
         {
             try
             {
                 string actual_username = "X_" + username.ToUpper();
+                string actual_role = "XR_" + role.ToUpper();
+                if (role != "ADMIN")
+                {
+                    var adminConnectString = $"User Id=X_ADMIN;Password=123;Data Source=localhost:1521/XEPDB1";
+                    var adminConnection = new OracleConnection(adminConnectString);
+                    IPrivilegeDao privilegeDao = new PrivilegeXAdminDao(adminConnection);
+                    var roleOfUserList = privilegeDao.GetAllRolesOfUser(actual_username);
+
+                    bool isRoleValid = roleOfUserList.Any(x => x.name.Equals(role));
+                    if (!isRoleValid)
+                    {
+                        throw new Exception("Invalid role");
+                    }
+                }
+
                 string connectionString = "";
                 
                 if(username.Equals("sys"))
                     connectionString = $"User Id={actual_username};Password={password};Data Source=localhost:1521/ORCLPDB;DBA Privilege=SYSDBA";
                 else
                     connectionString = $"User Id={actual_username};Password={password};Data Source=localhost:1521/XEPDB1";
-
                 var sqlConnection = new OracleConnection(connectionString);
                 await sqlConnection.OpenAsync();
-                
-                var services = new ServiceCollection();
 
+                var services = new ServiceCollection();
                 // Đăng ký OracleConnection
                 services.AddSingleton(sqlConnection);
-
                 // Đăng ký PrivilegeOracleDao
                 services.AddSingleton<IPrivilegeDao, PrivilegeXAdminDao>();
                 services.AddSingleton<IRoleDao, RoleXAdminDao>();
@@ -71,7 +83,7 @@ namespace Application
                 services.AddSingleton<ITableViewDao, TableViewXAdminDao>();
                 serviceProvider = services.BuildServiceProvider();
 
-                m_window.SignInSuccessHandler();
+                m_window.SignInSuccessHandler(role);
             }
             catch (Exception ex)
             {

@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Application.Views"
+    xmlns:models="using:Application.Model"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -40,6 +41,18 @@
                     PlaceholderText="Password"
                     Header="Password"
                     Margin="0,0,0,8"/>
+                <ComboBox
+                    Header="Role"
+                    HorizontalAlignment="Stretch"
+                    PlaceholderText="Select role..."
+                    x:Name="roleCombobox"
+                    ItemsSource="{x:Bind roleList, Mode=OneWay}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate x:DataType="models:Role">
+                            <TextBlock Text="{x:Bind name}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
 
                 <StackPanel Orientation="Horizontal" Spacing="16">
                     <CheckBox Content="Remember Me"/>

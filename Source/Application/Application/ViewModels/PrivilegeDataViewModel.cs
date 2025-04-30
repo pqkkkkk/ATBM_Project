@@ -100,7 +100,7 @@ namespace Application.ViewModels
             procedureList = new ObservableCollection<Model.OracleObject>(privilegeDao.GetAllInstanceOfSpecificObject("Procedure"));
             functionList = new ObservableCollection<Model.OracleObject>(privilegeDao.GetAllInstanceOfSpecificObject("Function"));
 
-            itemList = selectedUserOrRole != null ? new ObservableCollection<Model.Privilege>(privilegeDao.GetPrivilegesOfUserOnSpecificObjectType(selectedUserOrRole.name, selectedObjectType)) : itemList = new ObservableCollection<Model.Privilege>();
+            itemList = selectedUserOrRole != null ? new ObservableCollection<Model.Privilege>(privilegeDao.GetPrivilegesOfUserOnSpecificObjectType(GetActualNameOfUserOrRole(selectedUserOrRole.name, true), selectedObjectType)) : itemList = new ObservableCollection<Model.Privilege>();
             selectedItem = new Model.Privilege();
             hasSelectedItem = false;
 
@@ -114,7 +114,7 @@ namespace Application.ViewModels
                 name = ""
             };
             hasSelectedRole = false;
-            roleOfUsers = selectedUserOrRole != null ? new ObservableCollection<Model.Role>(privilegeDao.GetAllRolesOfUser(selectedUserOrRole.name)) : roleOfUsers = new ObservableCollection<Model.Role>();
+            roleOfUsers = selectedUserOrRole != null ? new ObservableCollection<Model.Role>(privilegeDao.GetAllRolesOfUser(GetActualNameOfUserOrRole(selectedUserOrRole.name, true))) : roleOfUsers = new ObservableCollection<Model.Role>();
         }
         public void UpdateSelectedObjectType(string objectType)
         {

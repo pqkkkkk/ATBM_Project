@@ -212,6 +212,7 @@
             WHERE GRANTEE = UPPER(p_username);
     END;
     /
+    EXECUTE X_ADMIN_GETUSERROLES('X_SV001');
 
 -- grant role cho 1 user
     CREATE OR REPLACE PROCEDURE X_ADMIN_grantRole(
