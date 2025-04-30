@@ -58,9 +58,10 @@
                 Width="100"/>
         </StackPanel>
 
-        <!-- Data List -->
+        <!-- Data Content -->
         <controls:DataGrid
              x:Name="dataList"
+            ItemsSource="{x:Bind dangKyList, Mode=OneWay}"
              Grid.Row="1"/>
         
     </Grid>

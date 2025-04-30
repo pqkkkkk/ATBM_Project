@@ -15,8 +15,8 @@ namespace Application.ViewModels
 {
     public class UserDataViewModel : BaseViewModel, INotifyPropertyChanged
     {
-        public ObservableCollection<User> itemList { get; set; }
-        public User? selectedUser { get; set; }
+        public ObservableCollection<Model.User> itemList { get; set; }
+        public Model.User? selectedUser { get; set; }
         public IUserDao? userDao { get; set; }
 
         public UserDataViewModel()
@@ -24,7 +24,7 @@ namespace Application.ViewModels
             var serviceProvider = (Microsoft.UI.Xaml.Application.Current as App)?.serviceProvider;
             userDao = serviceProvider?.GetService<IUserDao>();
 
-            itemList = new ObservableCollection<User>(userDao.LoadData());
+            itemList = new ObservableCollection<Model.User>(userDao.LoadData());
             selectedUser = null;
         }
         private string GetActualNameOfUser(string name)
@@ -35,7 +35,7 @@ namespace Application.ViewModels
         {
             try
             {
-                var user = (User)item;
+                var user = (Model.User)item;
             
                 if (String.IsNullOrEmpty(user.username) || String.IsNullOrEmpty(user.password))
                 {
@@ -45,7 +45,7 @@ namespace Application.ViewModels
                 string username = GetActualNameOfUser(user.username);
                 if (userDao.CreateUser(username, user.password))
                 {
-                    itemList = new ObservableCollection<User>(userDao.LoadData());
+                    itemList = new ObservableCollection<Model.User>(userDao.LoadData());
                     return (int)CreateUserResult.Success;
                 }
                 else
@@ -61,7 +61,7 @@ namespace Application.ViewModels
 
         public int DeleteItem(object item)
         {
-            var user = (User)item;
+            var user = (Model.User)item;
             
             string username = GetActualNameOfUser(user.username);
             if (userDao.DeleteUser(username))
@@ -84,7 +84,7 @@ namespace Application.ViewModels
                     return (int)UpdateUserResult.NoSelectedUser;
                 }
 
-                string newPassword = ((User)item).password;
+                string newPassword = ((Model.User)item).password;
 
                 if (String.IsNullOrEmpty(newPassword))
                 {
@@ -93,7 +93,7 @@ namespace Application.ViewModels
                 string username = GetActualNameOfUser(selectedUser.username);
                 if (userDao.UpdatePassword(username, newPassword))
                 {
-                    itemList = new ObservableCollection<User>(userDao.LoadData());
+                    itemList = new ObservableCollection<Model.User>(userDao.LoadData());
                     return (int)UpdateUserResult.Success;
                 }
                 else
@@ -109,7 +109,7 @@ namespace Application.ViewModels
 
         public void UpdateSelectedItem(object selectedItem)
         {
-            selectedUser = (User)selectedItem;
+            selectedUser = (Model.User)selectedItem;
         }
 
         List<object> BaseViewModel.LoadData()
@@ -130,11 +130,11 @@ namespace Application.ViewModels
         {
             if (query != "")
             {
-                itemList = new ObservableCollection<User>(itemList.Where(item => item.username.ToLower().Contains(query)).ToList());
+                itemList = new ObservableCollection<Model.User>(itemList.Where(item => item.username.ToLower().Contains(query)).ToList());
             }
             else
             {
-                itemList = new ObservableCollection<User>(userDao.LoadData().Cast<User>());
+                itemList = new ObservableCollection<Model.User>(userDao.LoadData().Cast<Model.User>());
             }
         }
 
