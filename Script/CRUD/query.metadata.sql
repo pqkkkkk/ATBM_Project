@@ -51,7 +51,6 @@ SELECT * FROM v$pdbs;
     SELECT *
     FROM   all_tables
     WHERE  owner = 'X_ADMIN';
-
     -- Views
     SELECT view_name
     FROM   all_views
@@ -70,4 +69,22 @@ SELECT * FROM v$pdbs;
     FROM ROLE_TAB_PRIVS;
     SELECT * FROM all_users;
 
+SELECT * from X_ADMIN.SINHVIEN;
+SELECT * from NHANVIEN;
+SELECT * FROM SESSION_ROLES;
 
+DECLARE
+    isSV INTEGER;
+    isGV INTEGER;
+    username VARCHAR2(10);
+BEGIN
+    username := SYS_CONTEXT('X_UNIVERITY_CONTEXT','USER_NAME');
+    DBMS_OUTPUT.PUT_LINE('username: ' || username);
+    isSV:= SYS_CONTEXT('X_UNIVERITY_CONTEXT','IS_SV');
+    DBMS_OUTPUT.PUT_LINE('isSV: ' || isSV);
+    isGV:= SYS_CONTEXT('X_UNIVERITY_CONTEXT','IS_GV');
+    DBMS_OUTPUT.PUT_LINE('isGV: ' || isGV);
+END;
+/
+
+SELECT * FROM SESSION_ROLEs;

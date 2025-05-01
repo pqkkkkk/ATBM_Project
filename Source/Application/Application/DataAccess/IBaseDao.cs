@@ -11,6 +11,6 @@ namespace Application.DataAccess
         bool Add(object obj);
         bool Update(object obj);
         bool Delete(object obj);
-        bool Load(object obj);
+        List<object> Load(object obj);
     }
 }

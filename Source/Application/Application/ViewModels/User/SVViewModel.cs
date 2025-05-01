@@ -12,6 +12,7 @@ using Application.DataAccess.HocPhan;
 using Application.DataAccess.MoMon;
 using Application.DataAccess.NhanVien;
 using Application.DataAccess.SinhVien;
+using Oracle.ManagedDataAccess.Client;
 
 namespace Application.ViewModels.User
 {
@@ -29,6 +30,9 @@ namespace Application.ViewModels.User
         public SVViewModel()
         {
             selectedTabView = "DangKy";
+            var serviceProvider = (Microsoft.UI.Xaml.Application.Current as App)?.serviceProvider;
+            var sqlConnection = serviceProvider?.GetService(typeof(OracleConnection)) as OracleConnection;
+
 
             daoList = new Dictionary<string, IBaseDao>();
             daoList.Add("DangKy", new DangKySVDao());
@@ -36,14 +40,24 @@ namespace Application.ViewModels.User
             daoList.Add("HocPhan", new HocPhanSVDao());
             daoList.Add("MoMon", new MoMonSVDao());
             daoList.Add("NhanVien", new NhanVienSVDao());
-            daoList.Add("SinhVien", new SinhVienSVDao());
+            daoList.Add("SinhVien", new SinhVienSVDao(sqlConnection));
 
             dangKyList = new ObservableCollection<Model.DangKy>();
+            dangKyList.Add(new Model.DangKy()
+            {
+                maSV = "SV001",
+                maMM = "MM001",
+                diemTH = 10,
+                diemCT = 9,
+                diemCK = 8,
+                diemTK = 9
+            });
+
             donViList = new ObservableCollection<Model.DonVi>();
             hocPhanList = new ObservableCollection<Model.HocPhan>();
             moMonList = new ObservableCollection<Model.MoMon>();
             nhanVienList = new ObservableCollection<Model.NhanVien>();
-            sinhVienList = new ObservableCollection<Model.SinhVien>();
+            sinhVienList = new ObservableCollection<Model.SinhVien>(daoList["SinhVien"].Load(null).Cast<Model.SinhVien>().ToList());
         }
         public int DeleteItem()
         { 
@@ -55,45 +69,7 @@ namespace Application.ViewModels.User
         }
         public int AddItem()
         {
-            try
-            {
-                switch (selectedTabView)
-                {
-                    case "DangKy":
-                        dangKyList.Add(new Model.DangKy()
-                        {
-                            maSV = "SV001",
-                            maMM = "MM001",
-                            diemTH = 10,
-                            diemCT = 9,
-                            diemCK = 8,
-                            diemTK = 9
-                        });
-                        break;
-                    case "SinhVien":
-                        sinhVienList.Add(new Model.SinhVien()
-                        {
-                            maSV = "SV001",
-                            hoTen = "Nguyen Van A",
-                            phai = "Nam",
-                            ngSinh = new DateOnly(2000, 1, 1),
-                            dChi = "Ha Noi",
-                            dt = "0123456789",
-                            khoa = "CNTT",
-                            tinhTrang = "Khoa"
-                        });
-                        break;
-                    default:
-                        break;
-                }
-
-                return 1;
-            }
-            catch (Exception ex)
-            {
-                // Handle exception
-                return -1;
-            }
+            return 1;
         }
         public void UpdateSelectedTabView(string selectedTabView)
         {

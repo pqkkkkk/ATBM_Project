@@ -61,6 +61,7 @@
         <!-- Data Content -->
         <controls:DataGrid
              x:Name="dataList"
+            IsReadOnly="True"
             ItemsSource="{x:Bind dangKyList, Mode=OneWay}"
              Grid.Row="1"/>
         
