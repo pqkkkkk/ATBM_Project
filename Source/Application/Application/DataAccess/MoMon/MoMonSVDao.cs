@@ -18,7 +18,7 @@ namespace Application.DataAccess.MoMon
             throw new NotImplementedException();
         }
 
-        public bool Load(object obj)
+        public List<object> Load(object obj)
         {
             throw new NotImplementedException();
         }
