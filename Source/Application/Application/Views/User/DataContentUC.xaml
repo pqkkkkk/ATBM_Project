@@ -9,7 +9,8 @@
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     mc:Ignorable="d">
 
-    <Grid>
+    <Grid
+        Padding="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -21,8 +22,8 @@
             Spacing="10" 
             Margin="0,0,0,20">
             <Button 
-                 Content="Detail"
-                 Click="DetailClickHandler"
+                 Content="Save"
+                 Click="SaveClickHandler"
                  Background="#9C27B0" 
                  Foreground="White" 
                  Width="100"/>
@@ -60,10 +61,11 @@
 
         <!-- Data Content -->
         <controls:DataGrid
-             x:Name="dataList"
-            IsReadOnly="True"
-            ItemsSource="{x:Bind dangKyList, Mode=OneWay}"
-             Grid.Row="1"/>
+           x:Name="dataList"
+           IsReadOnly="False"
+           RowEditEnded="DataGridRowEditEndedHandler"
+           ItemsSource="{x:Bind dangKyList, Mode=OneWay}"
+           Grid.Row="1"/>
         
     </Grid>
 </UserControl>

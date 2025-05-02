@@ -6,12 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Oracle.ManagedDataAccess.Client;
 
-namespace Application.DataAccess.MoMon
+namespace Application.DataAccess.NhanVien
 {
-    class MoMonSVDao : IMoMonDao
+    class NhanVienTRGDVDao : INhanVienDao
     {
         private OracleConnection sqlConnection;
-        public MoMonSVDao(OracleConnection sqlConnection)
+
+        public NhanVienTRGDVDao(OracleConnection sqlConnection)
         {
             this.sqlConnection = sqlConnection;
         }
@@ -31,8 +32,8 @@ namespace Application.DataAccess.MoMon
             {
                 sqlConnection.Open();
             }
-            List<Model.MoMon> result = new List<Model.MoMon>();
-            using (var cmd = new OracleCommand("X_ADMIN.X_ADMIN_Select_MOMON_Table_ForSV", sqlConnection))
+            List<Model.NhanVien> result = new List<Model.NhanVien>();
+            using (var cmd = new OracleCommand("X_ADMIN.X_ADMIN_Select_NHANVIEN_Table_ForTRGDV", sqlConnection))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.Add("p_result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
@@ -41,16 +42,18 @@ namespace Application.DataAccess.MoMon
                 {
                     while (reader.Read())
                     {
-                        var mm = new Model.MoMon
+                        var nv = new Model.NhanVien
                         {
-                            maMM = reader["maMM"].ToString(),
-                            maHP = reader["maHP"].ToString(),
-                            maGV = reader["maGV"].ToString(),
-                            hk = reader["hk"] != DBNull.Value ? Convert.ToInt32(reader["hk"]) : null,
-                            nam = reader["nam"] != DBNull.Value ? Convert.ToInt32(reader["nam"]) : null
+                            maNV = reader["maNV"].ToString(),
+                            hoTen = reader["hoTen"].ToString(),
+                            phai = reader["phai"].ToString(),
+                            ngSinh = reader["ngSinh"] != DBNull.Value ? DateOnly.FromDateTime(Convert.ToDateTime(reader["ngSinh"])) : null,
+                            dt = reader["dt"].ToString(),
+                            vaiTro = reader["vaiTro"].ToString(),
+                            maDV = reader["maDV"].ToString()
                         };
 
-                        result.Add(mm);
+                        result.Add(nv);
                     }
                 }
             }

@@ -15,6 +15,7 @@ using Microsoft.UI.Xaml.Navigation;
 using Application.DataAccess;
 using Application.DataAccess.DangKy;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -30,6 +31,8 @@ namespace Application.Views.User
         public delegate void AddedClickedHandler();
         public event AddedClickedHandler AddClicked;
 
+        public delegate void RowEditEndedHandler(object item);
+        public event RowEditEndedHandler RowEditEnded;
 
         public static readonly DependencyProperty sinhVienListDependencyProperty =
             DependencyProperty.Register(nameof(sinhVienList),
@@ -41,8 +44,20 @@ namespace Application.Views.User
                 typeof(ObservableCollection<Model.DangKy>),
                 typeof(DataContentUC),
                 new PropertyMetadata(null));
+        public static readonly DependencyProperty moMonListDependencyProperty =
+            DependencyProperty.Register(nameof(moMonList),
+                typeof(ObservableCollection<Model.MoMon>),
+                typeof(DataContentUC),
+                new PropertyMetadata(null));
+        public static readonly DependencyProperty nhanVienListDependencyProperty =
+            DependencyProperty.Register(nameof(nhanvienList),
+                typeof(ObservableCollection<Model.NhanVien>),
+                typeof(DataContentUC),
+                new PropertyMetadata(null));
         public ObservableCollection<Model.SinhVien> sinhVienList { get; set; }
         public ObservableCollection<Model.DangKy> dangKyList { get; set; }
+        public ObservableCollection<Model.MoMon> moMonList { get; set; }
+        public ObservableCollection<Model.NhanVien> nhanvienList { get; set; }
         public DataContentUC()
         {
             this.InitializeComponent();
@@ -57,11 +72,22 @@ namespace Application.Views.User
                 case "DangKy":
                     dataList.ItemsSource = dangKyList;
                     break;
+                case "MoMon":
+                    dataList.ItemsSource = moMonList;
+                    break;
+                case "NhanVien":
+                    dataList.ItemsSource = nhanvienList;
+                    break;
                 default:
                     break;
             }
         }
-        private void DetailClickHandler(object sender, RoutedEventArgs e)
+        public void UpdateSelectedItemOfDataListAfterAddNewItem()
+        {
+            dataList.SelectedItem = dataList.ItemsSource.Cast<object>().LastOrDefault();
+            
+        }
+        private void SaveClickHandler(object sender, RoutedEventArgs e)
         {
 
         }
@@ -81,5 +107,11 @@ namespace Application.Views.User
             DeleteClicked?.Invoke();
         }
 
+        private void DataGridRowEditEndedHandler(object sender, CommunityToolkit.WinUI.UI.Controls.DataGridRowEditEndedEventArgs e)
+        {
+            Debug.WriteLine("Row edit ended");
+            var item = e.Row.DataContext;
+            RowEditEnded?.Invoke(item);
+        }
     }
 }

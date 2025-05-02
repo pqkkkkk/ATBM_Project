@@ -35,27 +35,18 @@ namespace Application.ViewModels.User
 
 
             daoList = new Dictionary<string, IBaseDao>();
-            daoList.Add("DangKy", new DangKySVDao());
+            daoList.Add("DangKy", new DangKySVDao(sqlConnection));
             daoList.Add("DonVi", new DonViSVDao());
             daoList.Add("HocPhan", new HocPhanSVDao());
-            daoList.Add("MoMon", new MoMonSVDao());
+            daoList.Add("MoMon", new MoMonSVDao(sqlConnection));
             daoList.Add("NhanVien", new NhanVienSVDao());
             daoList.Add("SinhVien", new SinhVienSVDao(sqlConnection));
 
-            dangKyList = new ObservableCollection<Model.DangKy>();
-            dangKyList.Add(new Model.DangKy()
-            {
-                maSV = "SV001",
-                maMM = "MM001",
-                diemTH = 10,
-                diemCT = 9,
-                diemCK = 8,
-                diemTK = 9
-            });
+            dangKyList = new ObservableCollection<Model.DangKy>(daoList["DangKy"].Load(null).Cast<Model.DangKy>().ToList());
 
             donViList = new ObservableCollection<Model.DonVi>();
             hocPhanList = new ObservableCollection<Model.HocPhan>();
-            moMonList = new ObservableCollection<Model.MoMon>();
+            moMonList = new ObservableCollection<Model.MoMon>(daoList["MoMon"].Load(null).Cast<Model.MoMon>().ToList());
             nhanVienList = new ObservableCollection<Model.NhanVien>();
             sinhVienList = new ObservableCollection<Model.SinhVien>(daoList["SinhVien"].Load(null).Cast<Model.SinhVien>().ToList());
         }

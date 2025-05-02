@@ -57,8 +57,9 @@ return VARCHAR2 as
 begin
    if 'SV' in (select * from SESSION_ROLES) then
       return 'MASV = '||SYS_CONTEXT('USERENV','SESSION_USER');
-   if 'NV PĐT' or 'NV PCTSV' in (select * from SESSION_ROLES) then
-      return '1=1’;
+   if 'NVPDT' or 'NVCTSV' in (select * from SESSION_ROLES) then
+      return '1=1';
+   end if;
    return '1=0';
 
 

@@ -1,16 +1,42 @@
 CREATE OR REPLACE PROCEDURE X_ADMIN_Select_SINHVIEN_Table_ForSV(
     p_result OUT SYS_REFCURSOR
 )
-AS
-BEGIN
-    OPEN p_result FOR
-    SELECT * FROM X_ADMIN.SINHVIEN;
-EXCEPTION
-    WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
-        RAISE;
-END;
-/
+    AS
+    BEGIN
+        OPEN p_result FOR
+        SELECT * FROM X_ADMIN.SINHVIEN;
+    EXCEPTION
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+            RAISE;
+    END;
+    /
 GRANT EXECUTE ON X_ADMIN_Select_SINHVIEN_Table_ForSV TO PUBLIC;
-
+CREATE OR REPLACE PROCEDURE X_ADMIN_Select_DANGKY_Table_ForSV(
+    p_result OUT SYS_REFCURSOR
+)
+    AS
+    BEGIN
+        OPEN p_result FOR
+        SELECT * FROM X_ADMIN.DANGKY;
+    EXCEPTION
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+            RAISE;
+    END;
+    /
+CREATE OR REPLACE PROCEDURE X_ADMIN_Select_MOMON_Table_ForSV(
+    p_result OUT SYS_REFCURSOR
+)
+    AS
+    BEGIN
+        OPEN p_result FOR
+        SELECT * FROM X_ADMIN.view_SV_MOMON;
+    EXCEPTION
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+            RAISE;
+    END;
+    /
+GRANT EXECUTE ON X_ADMIN_Select_MOMON_Table_ForSV TO PUBLIC;
 COMMIT;

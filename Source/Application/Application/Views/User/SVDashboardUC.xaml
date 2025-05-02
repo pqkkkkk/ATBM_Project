@@ -80,6 +80,7 @@
                 x:Name="dataContent"
                 dangKyList="{x:Bind viewModel.dangKyList, Mode=OneWay}"
                 sinhVienList="{x:Bind viewModel.sinhVienList, Mode=OneWay}"
+                moMonList="{x:Bind viewModel.moMonList, Mode=OneWay}"
                 DeleteClicked="OnDeleteClicked"
                 AddClicked="OnAddClicked"
                 UpdateClicked="OnUpdateClicked"
