@@ -83,7 +83,8 @@
                 moMonList="{x:Bind viewModel.moMonList, Mode=OneWay}"
                 DeleteClicked="OnDeleteClicked"
                 AddClicked="OnAddClicked"
-                UpdateClicked="OnUpdateClicked"
+                RowEditEnded="SaveItem"
+                BeginningEdit="CheckTheColumnOfRowIsEditable"
                 Grid.Row="0"/>
         </Grid>
     </Grid>

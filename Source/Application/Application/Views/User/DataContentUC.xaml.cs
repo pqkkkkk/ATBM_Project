@@ -16,6 +16,8 @@ using Application.DataAccess;
 using Application.DataAccess.DangKy;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using Application.Event;
+using Windows.UI.WebUI;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -26,13 +28,13 @@ namespace Application.Views.User
     {
         public delegate void UpdatedClickedHandler();
         public event UpdatedClickedHandler UpdateClicked;
-        public delegate void DeletedClickedHandler();
+        public delegate void DeletedClickedHandler(object item);
         public event DeletedClickedHandler DeleteClicked;
         public delegate void AddedClickedHandler();
         public event AddedClickedHandler AddClicked;
-
         public delegate void RowEditEndedHandler(object item);
         public event RowEditEndedHandler RowEditEnded;
+        public event EventHandler<BeginningEditEvent> BeginningEdit;
 
         public static readonly DependencyProperty sinhVienListDependencyProperty =
             DependencyProperty.Register(nameof(sinhVienList),
@@ -104,14 +106,39 @@ namespace Application.Views.User
 
         private void DeleteClickHandler(object sender, RoutedEventArgs e)
         {
-            DeleteClicked?.Invoke();
+            var selectedItem = dataList.SelectedItem;
+            DeleteClicked?.Invoke(selectedItem);
         }
 
         private void DataGridRowEditEndedHandler(object sender, CommunityToolkit.WinUI.UI.Controls.DataGridRowEditEndedEventArgs e)
         {
-            Debug.WriteLine("Row edit ended");
             var item = e.Row.DataContext;
             RowEditEnded?.Invoke(item);
+        }
+
+        private void OnAutoGeneratingColumn(object sender, CommunityToolkit.WinUI.UI.Controls.DataGridAutoGeneratingColumnEventArgs e)
+        {
+            if(e.PropertyName == "isInDB")
+            {
+                e.Cancel = true;
+            }
+        }
+
+        private void OnBeginningEdit(object sender, CommunityToolkit.WinUI.UI.Controls.DataGridBeginningEditEventArgs e)
+        {
+            var column = e.Column.Header.ToString();
+            var eventArg = new BeginningEditEvent()
+            {
+                columnName = column,
+                canEdit = false
+            };
+
+            BeginningEdit?.Invoke(this, eventArg);
+
+            if (eventArg.canEdit == false)
+            {
+                e.Cancel = true;
+            }
         }
     }
 }

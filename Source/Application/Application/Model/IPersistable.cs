@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Application.Model
 {
-    public class PropertyOfClass
+    public interface IPersistable
     {
-        public string? propertyName { get; set; }
-        public string? propertyType { get; set; }
+        bool? isInDB { get; set; }
     }
 }

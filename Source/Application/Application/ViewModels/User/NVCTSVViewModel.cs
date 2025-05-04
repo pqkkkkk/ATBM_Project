@@ -14,6 +14,9 @@ using Application.DataAccess.SinhVien;
 using Application.DataAccess;
 using Oracle.ManagedDataAccess.Client;
 using System.Diagnostics;
+using System.Collections;
+using Application.Model;
+using Windows.Media.Devices;
 
 namespace Application.ViewModels.User
 {
@@ -22,6 +25,9 @@ namespace Application.ViewModels.User
         public string selectedTabView { get; set; }
         public Dictionary<string, IBaseDao> daoList { get; set; }
         public Dictionary<string, object> newItemList { get; set; }
+        private readonly Dictionary<string, IList> listMap;
+        private readonly Dictionary<string, IList> editableColumnMap;
+        private readonly Dictionary<string, IList> permissionMap;
         public ObservableCollection<Model.DangKy> dangKyList { get; set; }
         public ObservableCollection<Model.DonVi> donViList { get; set; }
         public ObservableCollection<Model.HocPhan> hocPhanList { get; set; }
@@ -35,6 +41,7 @@ namespace Application.ViewModels.User
 
             var serviceProvider = (Microsoft.UI.Xaml.Application.Current as App)?.serviceProvider;
             var sqlConnection = serviceProvider?.GetService(typeof(OracleConnection)) as OracleConnection;
+
             daoList = new Dictionary<string, IBaseDao>();
             daoList.Add("DangKy", new DangKyNVCTSVDao());
             daoList.Add("DonVi", new DonViNVCTSVDao());
@@ -56,41 +63,85 @@ namespace Application.ViewModels.User
             newItemList.Add("HocPhan", new Model.HocPhan());
             newItemList.Add("MoMon", new Model.MoMon());
             newItemList.Add("NhanVien", new Model.NhanVien());
-            newItemList.Add("SinhVien", new Model.SinhVien());
+            newItemList.Add("SinhVien", new Model.SinhVien()
+            {
+                isInDB = false,
+            });
+
+            listMap = new Dictionary<string, IList>
+            {
+                {  "DangKy", dangKyList },
+                { "DonVi", donViList },
+                { "HocPhan", hocPhanList },
+                { "MoMon", moMonList },
+                { "NhanVien", nhanVienList },
+                {"SinhVien", sinhVienList}
+            };
+            editableColumnMap = new Dictionary<string, IList>
+            {
+                { "DangKy", new List<string> { } },
+                { "DonVi", new List<string> { } },
+                { "HocPhan", new List<string> { } },
+                { "MoMon", new List<string> { } },
+                { "NhanVien", new List<string> { } },
+                {"SinhVien", new List<string> {"maSV","hoTen","phai","ngSinh","dChi","dt","khoa"}}
+            };
+            permissionMap = new Dictionary<string, IList>
+            {
+                { "DangKy", new List<string> { } },
+                { "DonVi", new List<string> {  } },
+                { "HocPhan", new List<string> { } },
+                { "MoMon", new List<string> { } },
+                { "NhanVien", new List<string> { } },
+                {"SinhVien", new List<string> {"insert","update","delete","select"}}
+            };
         }
-        public int DeleteItem()
+        public int DeleteItem(object item)
         {
-            return 0;
-        }
-        public int UpdateItem()
-        {
-            return 0;
+            try
+            {
+                var dao = daoList[selectedTabView];
+
+                if (item is IPersistable e)
+                {
+                    if (e.isInDB == true)
+                    {
+                        dao.Delete(item);
+                    }
+
+                    var list = listMap[selectedTabView];
+                    list.Remove(item);
+                }
+                else
+                {
+                    var list = listMap[selectedTabView];
+                    list.Remove(item);
+                }
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return 0;
+            }
         }
         public int SaveItem(object item)
         {
             try
             {
-                bool? isInDB = false;
-                if (selectedTabView == "SinhVien")
-                {
-                    var sv = item as Model.SinhVien;
-                    isInDB = sv.GetIsInDB();
-                }
+                var dao = daoList[selectedTabView];
 
-
-                if (isInDB != null && isInDB == false)
+                if(item is IPersistable e)
                 {
-                    daoList[selectedTabView].Add(item);
-                }
-                else
-                {
-                    daoList[selectedTabView].Update(item);
-                }
-
-                if (selectedTabView == "SinhVien")
-                {
-                    var sv = item as Model.SinhVien;
-                    sinhVienList.FirstOrDefault(x => x.maSV == sv.maSV).SetIsInDB(true);
+                    if (e.isInDB == true)
+                    {
+                        dao.Update(item);
+                    }
+                    else
+                    {
+                        dao.Add(item);
+                        e.isInDB = true;
+                    }
                 }
 
                 return 1;
@@ -104,55 +155,31 @@ namespace Application.ViewModels.User
         }
         public int AddItem()
         {
-            if (selectedTabView == "DangKy")
+            if (permissionMap.TryGetValue(selectedTabView, out var permissionList))
             {
-                var item = newItemList["DangKy"] as Model.DangKy;
-                if (item != null)
+                if (permissionList.Contains("insert") == false)
                 {
-                    dangKyList.Add(item);
+                    return 0;
                 }
             }
-            else if (selectedTabView == "DonVi")
+
+            if (listMap.TryGetValue(selectedTabView, out var list)
+                && newItemList.TryGetValue(selectedTabView, out var newItem))
             {
-                var item = newItemList["DonVi"] as Model.DonVi;
-                if (item != null)
-                {
-                    donViList.Add(item);
-                }
+                list.Add(newItem);
+                return 1;
             }
-            else if (selectedTabView == "HocPhan")
+
+            return 0;
+        }
+        public bool CheckTheColumnOfRowIsEditable(string columnName)
+        {
+            if(editableColumnMap.TryGetValue(selectedTabView, out var list))
             {
-                var item = newItemList["HocPhan"] as Model.HocPhan;
-                if (item != null)
-                {
-                    hocPhanList.Add(item);
-                }
+                return list.Contains(columnName);
             }
-            else if (selectedTabView == "MoMon")
-            {
-                var item = newItemList["MoMon"] as Model.MoMon;
-                if (item != null)
-                {
-                    moMonList.Add(item);
-                }
-            }
-            else if (selectedTabView == "NhanVien")
-            {
-                var item = newItemList["NhanVien"] as Model.NhanVien;
-                if (item != null)
-                {
-                    nhanVienList.Add(item);
-                }
-            }
-            else if (selectedTabView == "SinhVien")
-            {
-                var item = newItemList["SinhVien"] as Model.SinhVien;
-                if (item != null)
-                {
-                    sinhVienList.Add(item);
-                }
-            }
-            return 1;
+
+            return false;
         }
         public void UpdateSelectedTabView(string selectedTabView)
         {

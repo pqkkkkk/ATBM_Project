@@ -35,21 +35,24 @@ namespace Application.Views.User
             TabViewChanged += dataContent.SetDataSource;
             AddedNewItem += dataContent.UpdateSelectedItemOfDataListAfterAddNewItem;
         }
-
-        private void OnDeleteClicked()
+        private  async void OnAddClicked()
         {
+            int addResult = viewModel.AddItem();
 
-        }
+            if(addResult == 0)
+            {
+                var notification = new ContentDialog
+                {
+                    XamlRoot = this.XamlRoot,
+                    Title = "Failed",
+                    Content = "You do not have permission to add new item",
+                    CloseButtonText = "OK"
+                };
+                await notification.ShowAsync();
+                return;
+            }
 
-        private  void OnAddClicked()
-        {
-            viewModel.AddItem();
             AddedNewItem?.Invoke();
-        }
-
-        private void OnUpdateClicked()
-        {
-
         }
         private void OnTabViewChanged(object sender, RoutedEventArgs e)
         {
@@ -71,6 +74,7 @@ namespace Application.Views.User
                     Content = "Save successfully",
                     CloseButtonText = "OK"
                 };
+
                 await notification.ShowAsync();
             }
             else {
@@ -83,6 +87,52 @@ namespace Application.Views.User
                 };
                 await notification.ShowAsync();
             }
+        }
+
+        private async void OnDeleteClicked(object item)
+        {
+            if (item == null)
+            {
+                var notification = new ContentDialog
+                {
+                    XamlRoot = this.XamlRoot,
+                    Title = "Failed",
+                    Content = "Please select an item to delete",
+                    CloseButtonText = "OK"
+                };
+                await notification.ShowAsync();
+
+                return;
+            }
+
+            int deleteResult = viewModel.DeleteItem(item);
+            if (deleteResult == 1)
+            {
+                var notification = new ContentDialog
+                {
+                    XamlRoot = this.XamlRoot,
+                    Title = "Success",
+                    Content = "Delete successfully",
+                    CloseButtonText = "OK"
+                };
+                await notification.ShowAsync();
+            }
+            else
+            {
+                var notification = new ContentDialog
+                {
+                    XamlRoot = this.XamlRoot,
+                    Title = "Failed",
+                    Content = "Delete failed",
+                    CloseButtonText = "OK"
+                };
+                await notification.ShowAsync();
+            }
+        }
+
+        private void CheckCanEditSelectedColumn(object sender, Event.BeginningEditEvent e)
+        {
+            e.canEdit = viewModel.CheckTheColumnOfRowIsEditable(e.columnName);
         }
     }
 }

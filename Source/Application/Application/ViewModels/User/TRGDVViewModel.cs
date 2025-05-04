@@ -13,6 +13,7 @@ using Application.DataAccess.NhanVien;
 using Application.DataAccess.SinhVien;
 using Application.DataAccess;
 using Oracle.ManagedDataAccess.Client;
+using System.Collections;
 
 namespace Application.ViewModels.User
 {
@@ -26,6 +27,11 @@ namespace Application.ViewModels.User
         public ObservableCollection<Model.MoMon> moMonList { get; set; }
         public ObservableCollection<Model.NhanVien> nhanVienList { get; set; }
         public ObservableCollection<Model.SinhVien> sinhVienList { get; set; }
+
+        private readonly Dictionary<string, IList> editableColumnMap;
+        private readonly Dictionary<string, IList> listMap;
+        private readonly Dictionary<string, IList> permissionMap;
+        private Dictionary<string, object> newItemList;
 
         public TRGDVViewModel()
         {
@@ -49,6 +55,35 @@ namespace Application.ViewModels.User
             moMonList = new ObservableCollection<Model.MoMon>(daoList["MoMon"].Load(null).Cast<Model.MoMon>().ToList());
             nhanVienList = new ObservableCollection<Model.NhanVien>(daoList["NhanVien"].Load(null).Cast<Model.NhanVien>().ToList());
             sinhVienList = new ObservableCollection<Model.SinhVien>();
+
+            editableColumnMap = new Dictionary<string, IList>
+            {
+                { "DangKy", new List<string> { } },
+                { "DonVi", new List<string> { } },
+                { "HocPhan", new List<string> { } },
+                { "MoMon", new List<string> { } },
+                { "NhanVien", new List<string> { } },
+                { "SinhVien", new List<string> { } }
+            };
+            listMap = new Dictionary<string, IList>
+            {
+                { "DangKy", dangKyList },
+                { "DonVi", donViList },
+                { "HocPhan", hocPhanList },
+                { "MoMon", moMonList },
+                { "NhanVien", nhanVienList },
+                {"SinhVien", sinhVienList}
+            };
+            permissionMap = new Dictionary<string, IList>
+            {
+                { "DangKy", new List<string> { } },
+                { "DonVi", new List<string> { } },
+                { "HocPhan", new List<string> { } },
+                { "MoMon", new List<string> {"select" } },
+                { "NhanVien", new List<string> {"select" } },
+                { "SinhVien", new List<string> { } }
+            };
+            newItemList = new Dictionary<string, object>();
         }
         public int DeleteItem()
         {
@@ -60,11 +95,35 @@ namespace Application.ViewModels.User
         }
         public int AddItem()
         {
-            return 1;
+            if (permissionMap.TryGetValue(selectedTabView, out var permissionList))
+            {
+                if (permissionList.Contains("insert") == false)
+                {
+                    return 0;
+                }
+            }
+
+            if (listMap.TryGetValue(selectedTabView, out var list)
+              && newItemList.TryGetValue(selectedTabView, out var newItem))
+            {
+                list.Add(newItem);
+                return 1;
+            }
+
+            return 0;
         }
         public void UpdateSelectedTabView(string selectedTabView)
         {
             this.selectedTabView = selectedTabView;
+        }
+        public bool CheckTheColumnOfRowIsEditable(string columnName)
+        {
+            if (editableColumnMap.TryGetValue(selectedTabView, out var list))
+            {
+                return list.Contains(columnName);
+            }
+
+            return false;
         }
         public event PropertyChangedEventHandler? PropertyChanged;
     }

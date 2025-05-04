@@ -60,12 +60,18 @@
         </StackPanel>
 
         <!-- Data Content -->
-        <controls:DataGrid
-           x:Name="dataList"
-           IsReadOnly="False"
-           RowEditEnded="DataGridRowEditEndedHandler"
-           ItemsSource="{x:Bind dangKyList, Mode=OneWay}"
-           Grid.Row="1"/>
-        
+        <ScrollViewer
+            Grid.Row="1"
+            VerticalScrollBarVisibility="Auto"
+            HorizontalScrollBarVisibility="Auto">
+            <controls:DataGrid
+                x:Name="dataList"
+                IsReadOnly="False"
+                AutoGeneratingColumn="OnAutoGeneratingColumn"
+                RowEditEnded="DataGridRowEditEndedHandler"
+                BeginningEdit="OnBeginningEdit"
+                ItemsSource="{x:Bind dangKyList, Mode=OneWay}"/>
+        </ScrollViewer>
+
     </Grid>
 </UserControl>

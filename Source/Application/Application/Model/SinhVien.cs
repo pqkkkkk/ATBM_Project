@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.Model
 {
-    public class SinhVien : INotifyPropertyChanged
+    public class SinhVien : IPersistable, INotifyPropertyChanged
     {
         public string? maSV { get; set; }
         public string? hoTen { get; set; }
@@ -17,7 +17,8 @@ namespace Application.Model
         public string? dt { get; set; }
         public string? khoa { get; set; }
         public string? tinhTrang { get; set; }
-        private bool? isInDB;
+        public bool? isInDB { get; set; }
+
         public SinhVien()
         {
             maSV = "Mã SV";
@@ -28,15 +29,6 @@ namespace Application.Model
             dt = "Điện thoại";
             khoa = "Khoa";
             tinhTrang = "Tình trạng";
-            isInDB = false;
-        }
-        public bool? GetIsInDB()
-        {
-            return isInDB;
-        }
-        public void SetIsInDB(bool? isInDB)
-        {
-            this.isInDB = isInDB;
         }
         public event PropertyChangedEventHandler? PropertyChanged;
     }

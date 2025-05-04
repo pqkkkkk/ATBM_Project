@@ -17,7 +17,22 @@ namespace Application.DataAccess.DangKy
         }
         public bool Add(object obj)
         {
-            throw new NotImplementedException();
+            var dk = obj as Model.DangKy;
+
+            if (sqlConnection.State != ConnectionState.Open)
+            {
+                sqlConnection.Open();
+            }
+
+            using (OracleCommand cmd = new OracleCommand("X_ADMIN.X_ADMIN_Insert_DANGKY_Table_ForSV", sqlConnection))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("p_maSV", OracleDbType.Varchar2).Value = dk.maSV;
+                cmd.Parameters.Add("p_maMM", OracleDbType.Varchar2).Value = dk.maMM;
+                cmd.ExecuteNonQuery();
+                sqlConnection.Close();
+                return true;
+            }
         }
 
         public bool Delete(object obj)
@@ -45,10 +60,10 @@ namespace Application.DataAccess.DangKy
                         {
                             maSV = reader["maSV"].ToString(),
                             maMM = reader["maMM"].ToString(),
-                            diemTH = Convert.ToInt16(reader["diemTH"]),
-                            diemCT = Convert.ToInt16(reader["diemCT"]),
-                            diemCK = Convert.ToInt16(reader["diemCK"]),
-                            diemTK = Convert.ToInt16(reader["diemTK"])
+                            diemTH = reader["diemTH"] != DBNull.Value ? Convert.ToInt16(reader["diemTH"]) : null,
+                            diemCT = reader["diemCT"] != DBNull.Value ?  Convert.ToInt16(reader["diemCT"]) : null,
+                            diemCK = reader["diemCK"] != DBNull.Value ? Convert.ToInt16(reader["diemCK"]) : null,
+                            diemTK = reader["diemTK"] != DBNull.Value ? Convert.ToInt16(reader["diemTK"]) : null
                         };
 
                         result.Add(dk);

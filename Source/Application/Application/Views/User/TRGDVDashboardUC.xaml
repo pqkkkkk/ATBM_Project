@@ -83,7 +83,7 @@
                 nhanvienList="{x:Bind viewModel.nhanVienList, Mode=OneWay}"
                 DeleteClicked="OnDeleteClicked"
                 AddClicked="OnAddClicked"
-                UpdateClicked="OnUpdateClicked"
+                BeginningEdit="CheckTheColumnOfRowIsEditable"
                 Grid.Row="0"/>
         </Grid>
     </Grid>

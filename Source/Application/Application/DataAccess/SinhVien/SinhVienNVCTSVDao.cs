@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Oracle.ManagedDataAccess.Client;
+using Oracle.ManagedDataAccess.Types;
 
 namespace Application.DataAccess.SinhVien
 {
@@ -43,7 +45,27 @@ namespace Application.DataAccess.SinhVien
 
         public bool Delete(object obj)
         {
-            throw new NotImplementedException();
+            var sv = obj as Model.SinhVien;
+
+            if (sqlConnection.State != ConnectionState.Open)
+            {
+                sqlConnection.Open();
+            }
+
+            using (OracleCommand cmd = new OracleCommand("X_ADMIN.X_ADMIN_Delete_SINHVIEN_Table_ForNVCTSV", sqlConnection))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("rowAffected", OracleDbType.Int32).Direction = ParameterDirection.Output;
+                cmd.Parameters.Add("p_maSV", OracleDbType.Varchar2).Value = sv.maSV;
+                cmd.ExecuteNonQuery();
+
+                var outputParam = cmd.Parameters["rowAffected"].Value;
+                int rowAffected = outputParam != null && outputParam != DBNull.Value
+                    ? ((OracleDecimal)outputParam).ToInt32() : 0;
+
+                sqlConnection.Close();
+                return true;
+            }
         }
 
         public List<object> Load(object obj)
@@ -71,9 +93,9 @@ namespace Application.DataAccess.SinhVien
                             dChi = reader["dChi"].ToString(),
                             dt = reader["dt"].ToString(),
                             khoa = reader["khoa"].ToString(),
-                            tinhTrang = reader["tinhTrang"].ToString()
+                            tinhTrang = reader["tinhTrang"].ToString(),
+                            isInDB = true
                         };
-                        sv.SetIsInDB(true);
 
                         result.Add(sv);
                     }
