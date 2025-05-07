@@ -163,7 +163,7 @@ namespace Application.DataAccess.MetaData.Privilege
                 if (sqlConnection.State == ConnectionState.Closed)
                     sqlConnection.Open();
 
-                using (OracleCommand cmd = new OracleCommand("X_ADMIN_getColumns", sqlConnection))
+                using (OracleCommand cmd = new OracleCommand("X_ADMIN.X_ADMIN_getColumns", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("object_name", OracleDbType.Varchar2).Value = objectName;

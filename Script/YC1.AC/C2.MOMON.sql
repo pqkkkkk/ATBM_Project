@@ -3,7 +3,7 @@ CREATE OR REPLACE VIEW view_GV_MOMON AS
 SELECT * FROM MOMON 
 WHERE MAGV = SYS_CONTEXT('USERENV', 'SESSION_USER');
 -- Cấp quyền SELECT trên view cho GV
-GRANT SELECT ON view_GV_MOMON TO GV;
+GRANT SELECT ON view_GV_MOMON TO XR_GV;
 
 -- Hàm tạo view trên bảng MOMON của tất cá các môn thuộc học kì hiện tại của năm học đang diễn ra
 CREATE OR REPLACE VIEW view_PDT_MOMON AS
@@ -16,7 +16,7 @@ AND HK = CASE
     END;
 
 -- Cấp quyền SELECT, INSERT, UPDATE, DELETE trên view này dành cho NV PDT
-GRANT SELECT, UPDATE, INSERT, DELETE ON view_PDT_MOMON TO NVPDT;
+GRANT SELECT, UPDATE, INSERT, DELETE ON view_PDT_MOMON TO XR_NVPDT;
 
 -- Tạo view xem phân công giảng dạy của các GV thuộc đơn vị của mình cho TRGDV
 CREATE OR REPLACE VIEW view_TRGDV_MOMON AS 
@@ -26,7 +26,7 @@ WHERE nv.MADV IN (
     FROM NHANVIEN nv2 
     WHERE nv2.MANV = SYS_CONTEXT('USERENV', 'SESSION_USER'));
 -- Cấp quyền SELECT trên view
-GRANT SELECT ON view_TRGDV_MOMON TO TRGDV;
+GRANT SELECT ON view_TRGDV_MOMON TO XR_TRGDV;
 
 -- Tạo view gồm tất cả các mở môn thuộc khoa của sinh viên đang theo học
 CREATE OR REPLACE VIEW  view_SV_MOMON AS
@@ -38,7 +38,7 @@ WHERE hp.MADV IN (
     WHERE MASV = SYS_CONTEXT('USERENV', 'SESSION_USER')  
 ) ;
 -- Cấp quyền SELECT trên view cho SV
-GRANT SELECT ON view_SV_MOMON TO SV;
+GRANT SELECT ON view_SV_MOMON TO XR_SV;
 
 -- SELECT SYS_CONTEXT('USERENV', 'SESSION_USER') FROM dual; -- Xem người dùng hiện tại là ai
 -- SELECT SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA') FROM dual; -- Xem schema hiện tại

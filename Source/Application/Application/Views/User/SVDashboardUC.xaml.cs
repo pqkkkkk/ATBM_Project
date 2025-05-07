@@ -38,7 +38,7 @@ namespace Application.Views.User
             TabViewChanged?.Invoke(selectedTab);
         }
 
-        private void OnDeleteClicked()
+        private void OnDeleteClicked(object item)
         {
             viewModel.DeleteItem();
         }

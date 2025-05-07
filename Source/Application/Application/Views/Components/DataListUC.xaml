@@ -10,7 +10,7 @@
     mc:Ignorable="d">
 
     <controls:DataGrid
-        IsReadOnly="True"
+        IsReadOnly="False"
         x:Name="dataList" ItemsSource="{Binding itemList, Mode=OneWay}"
         SelectionChanged="OnSelectedItemChanged"
         HeadersVisibility="Column" AutoGenerateColumns="True">
