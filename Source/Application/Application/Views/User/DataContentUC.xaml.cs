@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,9 +15,11 @@ using Microsoft.UI.Xaml.Navigation;
 using Application.DataAccess;
 using Application.DataAccess.DangKy;
 using System.Collections.ObjectModel;
+using Application.Model;
 using System.Diagnostics;
 using Application.Event;
 using Windows.UI.WebUI;
+using CommunityToolkit.WinUI.UI.Controls;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -56,10 +58,12 @@ namespace Application.Views.User
                 typeof(ObservableCollection<Model.NhanVien>),
                 typeof(DataContentUC),
                 new PropertyMetadata(null));
+                
         public ObservableCollection<Model.SinhVien> sinhVienList { get; set; }
         public ObservableCollection<Model.DangKy> dangKyList { get; set; }
         public ObservableCollection<Model.MoMon> moMonList { get; set; }
         public ObservableCollection<Model.NhanVien> nhanvienList { get; set; }
+
         public DataContentUC()
         {
             this.InitializeComponent();
@@ -84,6 +88,11 @@ namespace Application.Views.User
                     break;
             }
         }
+        private void DeleteClickHandler(object sender, RoutedEventArgs e)
+        {
+            var selectedItem = dataList.SelectedItem;
+            DeleteClicked?.Invoke(selectedItem);
+        }
         public void UpdateSelectedItemOfDataListAfterAddNewItem()
         {
             dataList.SelectedItem = dataList.ItemsSource.Cast<object>().LastOrDefault();
@@ -103,11 +112,72 @@ namespace Application.Views.User
         {
             UpdateClicked?.Invoke();
         }
-
-        private void DeleteClickHandler(object sender, RoutedEventArgs e)
+        public void UpdateSelectedItemOfDataListAfterAddNewItem()
         {
-            var selectedItem = dataList.SelectedItem;
-            DeleteClicked?.Invoke(selectedItem);
+            dataList.SelectedItem = dataList.ItemsSource.Cast<object>().LastOrDefault();
+        }
+        private void DataGridRowEditEndedHandler(object sender, CommunityToolkit.WinUI.UI.Controls.DataGridRowEditEndedEventArgs args)
+        {
+            var item = args.Row.DataContext;
+            RowEditEnded?.Invoke(item);
+        }
+
+        private void OnAutoGeneratingColumn(object sender, CommunityToolkit.WinUI.UI.Controls.DataGridAutoGeneratingColumnEventArgs e)
+        {
+            if (e.PropertyName == "isInDB")
+            {
+                e.Cancel = true;
+            }
+            // Sử lý kiểu Datetime và int
+            if (e.Column is DataGridTextColumn textColumn)
+            {
+                if (e.PropertyType == typeof(int) || e.PropertyType == typeof(int?))
+                {
+                    textColumn.Binding = new Binding
+                    {
+                        Path = new PropertyPath(e.PropertyName),
+                        Mode = BindingMode.TwoWay,
+                        Converter = (IValueConverter)this.Resources["IntToStringConverter"],
+                        UpdateSourceTrigger = UpdateSourceTrigger.LostFocus
+                    };
+                }
+                if (e.PropertyType == typeof(DateTime) || e.PropertyType == typeof(DateTime?))
+                {
+                    textColumn.Binding = new Binding
+                    {
+                        Path = new PropertyPath(e.PropertyName),
+                        Mode = BindingMode.TwoWay,
+                        Converter = (IValueConverter)this.Resources["DatetimeConverter"],
+                        UpdateSourceTrigger = UpdateSourceTrigger.LostFocus
+                    };
+                }
+                if (e.PropertyType == typeof(double) || e.PropertyType == typeof(double?))
+                {
+                    textColumn.Binding = new Binding
+                    {
+                        Path = new PropertyPath(e.PropertyName),
+                        Mode = BindingMode.TwoWay,
+                        Converter = (IValueConverter)this.Resources["DoubleToStringConverter"],
+                        UpdateSourceTrigger = UpdateSourceTrigger.LostFocus,
+                    };
+                }
+            }
+        }
+        private void OnBeginningEdit(object sender, CommunityToolkit.WinUI.UI.Controls.DataGridBeginningEditEventArgs e)
+        {
+            var column = e.Column.Header.ToString();
+            var eventArg = new BeginningEditEvent()
+            {
+                columnName = column,
+                canEdit = false
+            };
+
+            BeginningEdit?.Invoke(this, eventArg);
+
+            if (eventArg.canEdit == false)
+            {
+                e.Cancel = true;
+            }
         }
 
         private void DataGridRowEditEndedHandler(object sender, CommunityToolkit.WinUI.UI.Controls.DataGridRowEditEndedEventArgs e)
