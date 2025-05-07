@@ -9,6 +9,6 @@ namespace Application.DataAccess.MetaData.TableView
 {
     public interface ITableViewDao
     {
-        List<OracleObject> getAllTableView();
+        List<OracleObject> getAllTable();
     }
 }

@@ -15,7 +15,9 @@
         <local1:NullableIntToStringConverter x:Key="IntToStringConverter"/>
         <local1:NullableDoubleToStringConverter x:Key="DoubleToStringConverter"/>  
     </UserControl.Resources>
-    <Grid>
+
+    <Grid
+        Padding="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -27,8 +29,8 @@
             Spacing="10" 
             Margin="0,0,0,20">
             <Button 
-                 Content="Detail"
-                 Click="DetailClickHandler"
+                 Content="Save"
+                 Click="SaveClickHandler"
                  Background="#9C27B0" 
                  Foreground="White" 
                  Width="100"/>
@@ -65,19 +67,17 @@
         </StackPanel>
 
         <!-- Data Content -->
-            <ScrollViewer
-                Grid.Row="1"
-                VerticalScrollBarVisibility="Auto"
-                HorizontalScrollBarVisibility="Auto">
-                <controls:DataGrid
-                    x:Name="dataList"
-                    IsReadOnly="False"
-                    AutoGeneratingColumn="OnAutoGeneratingColumn"
-                    RowEditEnded="DataGridRowEditEndedHandler"
-                    BeginningEdit="OnBeginningEdit"                    
-                    ItemsSource="{x:Bind dangKyList, Mode=OneWay}">
-                </controls:DataGrid>
-            </ScrollViewer>
-        
+        <ScrollViewer
+            Grid.Row="1"
+            VerticalScrollBarVisibility="Auto"
+            HorizontalScrollBarVisibility="Auto">
+            <controls:DataGrid
+                x:Name="dataList"
+                IsReadOnly="False"
+                AutoGeneratingColumn="OnAutoGeneratingColumn"
+                RowEditEnded="DataGridRowEditEndedHandler"
+                BeginningEdit="OnBeginningEdit"
+                ItemsSource="{x:Bind dangKyList, Mode=OneWay}"/>
+        </ScrollViewer>
     </Grid>
 </UserControl>
