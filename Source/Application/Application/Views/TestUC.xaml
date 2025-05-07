@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="Application.Views.TestUC"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Application.Views"
+    xmlns:converter="using:Application.Converts"
+    xmlns:model="using:Application.Model"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <converter:TabViewBGConverter x:Key="TabViewBGConverter"/>
+    </UserControl.Resources>
+    <Grid>
+        <NavigationView
+            SelectionChanged="OnTabViewChanged"
+            MenuItemsSource="{x:Bind tableList}">
+            <NavigationView.MenuItemTemplate>
+                <DataTemplate
+                    x:DataType="model:OracleObject">
+                    <TextBlock Text="{x:Bind objectName}"/>
+                </DataTemplate>
+            </NavigationView.MenuItemTemplate>
+        </NavigationView>
+    </Grid>
+</UserControl>

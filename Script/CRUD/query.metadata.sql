@@ -49,8 +49,13 @@ SELECT * FROM v$pdbs;
 -- Query metadata of X_ADMIN schema
     -- Tables 
     SELECT *
-    FROM   all_tables
-    WHERE  owner = 'X_ADMIN';
+    FROM   all_objects
+    WHERE  owner = 'X_ADMIN' and object_type = 'TABLE';
+
+            SELECT *
+        FROM ALL_OBJECTS
+        WHERE OBJECT_TYPE = UPPER('Table') AND OWNER = 'X_ADMIN';
+
     -- Views
     SELECT view_name
     FROM   all_views
@@ -69,22 +74,15 @@ SELECT * FROM v$pdbs;
     FROM ROLE_TAB_PRIVS;
     SELECT * FROM all_users;
 
+SELECT * FROM X_ADMIN.USER_ROLES;
 SELECT * from X_ADMIN.SINHVIEN;
-SELECT * from NHANVIEN;
+SELECT * from X_ADMIN.DANGKY;
+SELECT * from X_ADMIN.MOMON;
+SELECT * from X_ADMIN.HOCPHAN;
+SELECT * from X_ADMIN.NHANVIEN;
+SELECT * FROM X_ADMIN.DONVI;
 SELECT * FROM SESSION_ROLES;
 
-DECLARE
-    isSV INTEGER;
-    isGV INTEGER;
-    username VARCHAR2(10);
-BEGIN
-    username := SYS_CONTEXT('X_UNIVERITY_CONTEXT','USER_NAME');
-    DBMS_OUTPUT.PUT_LINE('username: ' || username);
-    isSV:= SYS_CONTEXT('X_UNIVERITY_CONTEXT','IS_SV');
-    DBMS_OUTPUT.PUT_LINE('isSV: ' || isSV);
-    isGV:= SYS_CONTEXT('X_UNIVERITY_CONTEXT','IS_GV');
-    DBMS_OUTPUT.PUT_LINE('isGV: ' || isGV);
-END;
-/
-
-SELECT * FROM SESSION_ROLEs;
+SELECT * 
+FROM DBA_POLICIES
+WHERE OBJECT_NAME = 'SINHVIEN';
