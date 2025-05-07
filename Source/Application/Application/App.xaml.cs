@@ -31,6 +31,7 @@ namespace Application
     public partial class App : Microsoft.UI.Xaml.Application
     {
         public IServiceProvider? serviceProvider { get; private set; }
+        public List<Model.OracleObject> tableList { get; set; } = new List<Model.OracleObject>();
 
         public App()
         {
@@ -54,6 +55,7 @@ namespace Application
                 {
                     var adminConnectString = $"User Id=X_ADMIN;Password=123;Data Source=localhost:1521/ORCLPDB";
                     var adminConnection = new OracleConnection(adminConnectString);
+
                     IPrivilegeDao privilegeDao = new PrivilegeXAdminDao(adminConnection);
                     var roleOfUserList = privilegeDao.GetAllRolesOfUser(actual_username);
 
@@ -62,6 +64,11 @@ namespace Application
                     {
                         throw new Exception("Invalid role");
                     }
+
+                    ITableViewDao tableViewDao = new TableViewXAdminDao(adminConnection);
+                    tableList = tableViewDao.getAllTable();
+                    tableList.RemoveAll(x => x.objectName == "USER_ROLES");
+
                 }
 
                 string connectionString = "";

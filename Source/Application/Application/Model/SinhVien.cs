@@ -18,6 +18,18 @@ namespace Application.Model
         public string? khoa { get; set; }
         public string? tinhTrang { get; set; }
         public bool? isInDB { get; set; }
+
+        public SinhVien()
+        {
+            maSV = "Mã SV";
+            hoTen = "Họ tên";
+            phai = "Phái";
+            ngSinh = DateOnly.FromDateTime(DateTime.Now);
+            dChi = "Địa chỉ";
+            dt = "Điện thoại";
+            khoa = "Khoa";
+            tinhTrang = "Tình trạng";
+        }
         public event PropertyChangedEventHandler? PropertyChanged;
     }
 }

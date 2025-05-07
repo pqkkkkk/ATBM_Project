@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.Model
 {
-    internal interface IPersistable
+    public interface IPersistable
     {
         bool? isInDB { get; set; }
     }

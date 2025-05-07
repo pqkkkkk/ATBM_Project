@@ -12,7 +12,7 @@ AS
    isNVPKT INTEGER;
    isNVPDT INTEGER;
 BEGIN
-   username := SUBSTR(SYS_CONTEXT('X_UNIVERITY_CONTEXT','USER_NAME'),1);
+   username := SYS_CONTEXT('X_UNIVERITY_CONTEXT','USER_NAME');
    isSV := SYS_CONTEXT('X_UNIVERITY_CONTEXT', 'IS_SV');
    isGV := SYS_CONTEXT('X_UNIVERITY_CONTEXT', 'IS_GV');
    isNVPKT := SYS_CONTEXT('X_UNIVERITY_CONTEXT', 'IS_NVPKT');
@@ -29,7 +29,6 @@ BEGIN
    END IF;
 END DANGKY_SELECT;
 /
-
 --Gắn hàm thực hiện chính sách DANGKY_SELECT vào bảng DANGKY:
 BEGIN
  DBMS_RLS.ADD_POLICY(
@@ -43,17 +42,15 @@ BEGIN
     );
 END;
 /
-
---BEGIN
---    DBMS_RLS.DROP_POLICY(
---        object_schema   => 'X_ADMIN',
---        object_name     => 'DANGKY',
---        policy_name     => 'DANGKY_SELECT'
---    );
---END;
+BEGIN
+    DBMS_RLS.DROP_POLICY(
+        object_schema   => 'X_ADMIN',
+        object_name     => 'DANGKY',
+        policy_name     => 'DANGKY_SELECT'
+    );
+END;
+/
 COMMIT;
-
-
 
 --Cài VPD cho từng vai trò với thao tác INSERT, UPDATE, DELETE với các trường MASV, MAMM:
 CREATE OR REPLACE FUNCTION DANGKY_INS_DEL_UPD
@@ -64,7 +61,6 @@ AS
    isSV INTEGER;
    isNVPKT INTEGER;
    isNVPDT INTEGER;
-   
    v_today      DATE := SYSDATE;
    v_startHK    DATE;
    v_month      NUMBER := TO_NUMBER(TO_CHAR(SYSDATE, 'MM'));

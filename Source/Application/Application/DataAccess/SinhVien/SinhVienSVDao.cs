@@ -51,7 +51,8 @@ namespace Application.DataAccess.SinhVien
                             dChi = reader["dChi"].ToString(),
                             dt = reader["dt"].ToString(),
                             khoa = reader["khoa"].ToString(),
-                            tinhTrang = reader["tinhTrang"].ToString()
+                            tinhTrang = reader["tinhTrang"].ToString(),
+                            isInDB = true
                         };
 
                         result.Add(sv);
@@ -64,7 +65,22 @@ namespace Application.DataAccess.SinhVien
 
         public bool Update(object obj)
         {
-            throw new NotImplementedException();
+            var sv = obj as Model.SinhVien;
+
+            if (sqlConnection.State != ConnectionState.Open)
+            {
+                sqlConnection.Open();
+            }
+
+            using (OracleCommand cmd = new OracleCommand("X_ADMIN.X_ADMIN_Update_SINHVIEN_Table_ForSV", sqlConnection))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("p_dChi", OracleDbType.Varchar2).Value = sv.dChi;
+                cmd.Parameters.Add("p_dt", OracleDbType.Varchar2).Value = sv.dt;
+                cmd.ExecuteNonQuery();
+                sqlConnection.Close();
+                return true;
+            }
         }
     }
 }

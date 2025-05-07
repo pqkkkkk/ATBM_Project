@@ -126,7 +126,7 @@ namespace Application.DataAccess.MetaData.Role
                 {
                     sqlConnection.Open();
                 }
-                using (OracleCommand cmd = new OracleCommand("X_ADMIN_getAllRoles", sqlConnection))
+                using (OracleCommand cmd = new OracleCommand("X_ADMIN.X_ADMIN_getAllRoles", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("role_list", OracleDbType.RefCursor).Direction = ParameterDirection.Output;

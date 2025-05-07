@@ -2,7 +2,8 @@
 CREATE OR REPLACE VIEW view_GV_MM AS 
 SELECT * FROM MOMON where MaGV = SUBSTR(SYS_CONTEXT('USERENV', 'SESSION_USER'), 3);
 -- Cấp quyền SELECT trên view cho GV
- GRANT SELECT ON X_ADMIN.view_GV_MM TO XR_GV;
+
+GRANT SELECT ON X_ADMIN.view_GV_MOMON TO XR_GV;
 
 -- Hàm tạo view trên bảng MOMON của tất cá các môn thuộc học kì hiện tại của năm học đang diễn ra
 CREATE OR REPLACE VIEW view_PDT_MOMON AS
@@ -15,7 +16,7 @@ AND HK = CASE
    END;
 
 -- Cấp quyền SELECT, INSERT, UPDATE, DELETE trên view này dành cho NV PDT
-GRANT SELECT, UPDATE, INSERT, DELETE ON X_ADMIN.view_PDT_MOMON TO XR_NVPDT
+GRANT SELECT, UPDATE, INSERT, DELETE ON X_ADMIN.view_PDT_MOMON TO XR_NVPDT;
 
 -- Tạo view xem phân công giảng dạy của các GV thuộc đơn vị của mình cho TRGDV
 CREATE OR REPLACE VIEW view_TRGDV_MOMON AS 
@@ -23,9 +24,9 @@ SELECT m.* FROM MOMON m JOIN NHANVIEN nv ON m.MAGV = nv.MANV
 WHERE nv.MADV IN (
     SELECT nv2.MADV             
     FROM NHANVIEN nv2 
-    WHERE nv2.MANV = SYS_CONTEXT('USERENV', 'SESSION_USER'));
+    WHERE nv2.MANV = SUBSTR(SYS_CONTEXT('USERENV','SESSION_USER'), INSTR(SYS_CONTEXT('USERENV','SESSION_USER'), '_') + 1));
 -- Cấp quyền SELECT trên view
-GRANT SELECT ON view_TRGDV_MOMON TO TRGDV;
+GRANT SELECT ON view_TRGDV_MOMON TO XR_TRGDV;
 
 -- Tạo view gồm tất cả các mở môn thuộc khoa của sinh viên đang theo học
 CREATE OR REPLACE VIEW  view_SV_MOMON AS
@@ -34,11 +35,12 @@ FROM MOMON m JOIN HOCPHAN hp ON m.MAHP = hp.MAHP
 WHERE hp.MADV IN (
     SELECT KHOA 
     FROM SINHVIEN 
-    WHERE MASV = SYS_CONTEXT('USERENV', 'SESSION_USER')  
+    WHERE MASV = SUBSTR(SYS_CONTEXT('USERENV','SESSION_USER'), INSTR(SYS_CONTEXT('USERENV','SESSION_USER'), '_') + 1)
 ) ;
 -- Cấp quyền SELECT trên view cho SV
-GRANT SELECT ON view_SV_MOMON TO SV;
+GRANT SELECT ON view_SV_MOMON TO XR_SV;
 
+COMMIT;
 -- SELECT SYS_CONTEXT('USERENV', 'SESSION_USER') FROM dual; -- Xem người dùng hiện tại là ai
 -- SELECT SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA') FROM dual; -- Xem schema hiện tại
 
