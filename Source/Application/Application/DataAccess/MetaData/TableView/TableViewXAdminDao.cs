@@ -31,8 +31,8 @@ namespace Application.DataAccess.MetaData.TableView
             {
                 string object_type = "TABLE";
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.Add("p_type", OracleDbType.Varchar2).Value = object_type;
-                cmd.Parameters.Add("p_result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                cmd.Parameters.Add("type", OracleDbType.Varchar2).Value = object_type;
+                cmd.Parameters.Add("result_", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
 
                 using (var reader = cmd.ExecuteReader())
                 {
