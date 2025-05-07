@@ -41,7 +41,7 @@ namespace Application
                     mainContent.Children.Add(new AdminDashboardUC());
                     break;
                 case "NVCB":
-                    mainContent.Children.Add(new NVCBDashboard());
+                    mainContent.Children.Add(new NVCBDashboardUC());
                     break;
                 case "GV":
                     mainContent.Children.Add(new GVDashboardUC());

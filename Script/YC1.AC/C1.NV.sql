@@ -13,11 +13,11 @@
 
 -- Tạo view chỉ xem được thông tin của chính bản thân cho NVCB
 CREATE OR REPLACE VIEW view_NVCB_NV AS 
-SELECT * FROM NHANVIEN where MANV = SYS_CONTEXT('USERENV', 'SESSION_USER')
+SELECT * FROM NHANVIEN where MaNV = SUBSTR(SYS_CONTEXT('USERENV', 'SESSION_USER'), 3);
 
 -- Gán quyền SELECT, UPDATE(DT) trên view_NVCB cho NVCB và gán role NVCB cho tất cả các vai trò khác
- GRANT SELECT, UPDATE(DT) ON sys.view_NVCB_NV TO NVCB;
- GRANT NVCB TO TRGDV, NVTCHC, GV, NVPDT, NVPKT, NVCTSV;
+ GRANT SELECT, UPDATE(DT) ON X_ADMIN.view_NVCB_NV TO XR_NVCB;
+ GRANT XR_NVCB TO XR_TRGDV, XR_NVTCHC, XR_GV, XR_NVPDT, XR_NVPKT, XR_NVCTSV;
 
 -- Tạo view quản lý nhân viên cho trưởng đơn vị và cấp quyền SELECT trên view này cho TRGDV
 CREATE OR REPLACE VIEW view_TRGDV_NV AS 

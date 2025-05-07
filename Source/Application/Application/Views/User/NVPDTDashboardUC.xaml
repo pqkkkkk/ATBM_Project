@@ -4,11 +4,112 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Application.Views.User"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:converter="using:Application.Converts"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:components="using:Application.Views.Components"
     mc:Ignorable="d">
 
-    <Grid>
+    <UserControl.Resources>
+        <converter:TabViewBGConverter x:Key="TabViewBGConverter"/>
+    </UserControl.Resources>
+
+    <Grid Background="{ThemeResource SystemControlAcrylicWindowBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Sidebar Navigation -->
+        <Grid Grid.Column="0" Background="#F0F0F0" Width="200" Padding="3">
+            <StackPanel>
+                <TextBlock Text="X University" 
+                        FontSize="20" 
+                        FontWeight="Bold" 
+                        Margin="0,0,0,20" 
+                        Foreground="#333"/>
+
+                <StackPanel Spacing="10">
+                    <Button Content="NhanVien" 
+                         Click="OnTabViewChanged"
+                         Tag="NhanVien"
+                         Foreground="Black"
+                         Style="{x:Bind viewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='NhanVien'}" 
+                         HorizontalAlignment="Stretch"/>
+                    <Button Content="SinhVien"
+                         Tag="SinhVien"
+                         Foreground="Black"
+                         Click="OnTabViewChanged"
+                         Style="{x:Bind viewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='SinhVien'}"
+                         HorizontalAlignment="Stretch"/>
+                    <Button Content="DonVi"
+                         Tag="DonVi"
+                         Click="OnTabViewChanged"
+                         Foreground="Black"
+                         Style="{x:Bind viewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='DonVi'}" 
+                         HorizontalAlignment="Stretch"/>
+                    <Button Content="HocPhan"
+                         Tag="HocPhan"
+                         Click="OnTabViewChanged"
+                         Foreground="Black"
+                         Style="{x:Bind viewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='HocPhan'}"
+                         HorizontalAlignment="Stretch"/>
+                    <Button Content="MoMon" 
+                         Tag="MoMon"
+                         Click="OnTabViewChanged"
+                         Foreground="Black"
+                         Style="{x:Bind viewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='MoMon'}"
+                         HorizontalAlignment="Stretch"/>
+                    <Button Content="DangKy" 
+                         Tag="DangKy"
+                         Click="OnTabViewChanged"
+                         Foreground="Black"
+                         Style="{x:Bind viewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='DangKy'}"
+                         HorizontalAlignment="Stretch"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+
+        <!-- Main Content Area -->
+        <Grid Grid.Column="1" Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <local:DataContentUC
+                x:Name="dataContent"
+                dangKyList="{x:Bind viewModel.dangKyList, Mode=OneWay}"
+                sinhVienList="{x:Bind viewModel.sinhVienList, Mode=OneWay}"
+                moMonList="{x:Bind viewModel.moMonList, Mode=OneWay}"
+                DeleteClicked="OnDeleteClicked"
+                AddClicked="OnAddClicked"
+                UpdateClicked="OnUpdateClicked"
+                RowEditEnded="SaveItem"
+                Grid.Row="0"/>
+        </Grid>
+
+        <!-- Delete warning dialog-->
+        <!-- Create role dialog-->
+        <ContentDialog
+            x:Name="deleteWarningDialog">   
+            <ContentDialog.CloseButtonText>No</ContentDialog.CloseButtonText>
+            <ContentDialog.PrimaryButtonText>Yes</ContentDialog.PrimaryButtonText>
+            <ContentDialog.Title>Delete</ContentDialog.Title>
+
+            <ContentDialog.Content>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        x:Name="deleteWarningDialogTextBlock"
+                        Grid.Row="0"
+                        Text="Are you sure you want to delete selected item?"
+                        Width="300"/>
+                </Grid>
+            </ContentDialog.Content>
+        </ContentDialog>
 
     </Grid>
 </UserControl>

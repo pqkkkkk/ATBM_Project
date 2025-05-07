@@ -61,8 +61,10 @@
         <!-- Data Content -->
         <controls:DataGrid
              x:Name="dataList"
-            IsReadOnly="True"
+            IsReadOnly="False"
+            AutoGeneratingColumn="OnAutoGenerateColumns"
             ItemsSource="{x:Bind dangKyList, Mode=OneWay}"
+            RowEditEnded="DataGridRowEditEndedHandler"
              Grid.Row="1"/>
         
     </Grid>
