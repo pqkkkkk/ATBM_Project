@@ -43,7 +43,7 @@ namespace Application.Views.User
                 typeof(ObservableCollection<Model.SinhVien>),
                 typeof(DataContentUC),
                 new PropertyMetadata(null));
-        public static readonly DependencyProperty dangKyListDependencyProperty = 
+        public static readonly DependencyProperty dangKyListDependencyProperty =
             DependencyProperty.Register(nameof(dangKyList),
                 typeof(ObservableCollection<Model.DangKy>),
                 typeof(DataContentUC),
@@ -70,6 +70,7 @@ namespace Application.Views.User
         }
         public void SetDataSource(string tabView)
         {
+            dataList.Columns.Clear();
             switch (tabView)
             {
                 case "SinhVien":
@@ -185,29 +186,43 @@ namespace Application.Views.User
             var item = e.Row.DataContext;
             RowEditEnded?.Invoke(item);
         }
-
-        private void OnAutoGeneratingColumn(object sender, CommunityToolkit.WinUI.UI.Controls.DataGridAutoGeneratingColumnEventArgs e)
+        private void OnAutoGenerateColumns(object sender, CommunityToolkit.WinUI.UI.Controls.DataGridAutoGeneratingColumnEventArgs e)
         {
-            if(e.PropertyName == "isInDB")
+            if (e.PropertyName == "isInDB")
             {
                 e.Cancel = true;
             }
-        }
+            var dataGrid = (DataGrid)sender;
+            var firstItem = dataGrid.ItemsSource?.Cast<object>()?.FirstOrDefault();
+            if (firstItem == null)
+                return;
 
-        private void OnBeginningEdit(object sender, CommunityToolkit.WinUI.UI.Controls.DataGridBeginningEditEventArgs e)
-        {
-            var column = e.Column.Header.ToString();
-            var eventArg = new BeginningEditEvent()
+            if (firstItem.GetType().Name == "MoMon")
             {
-                columnName = column,
-                canEdit = false
-            };
+                var targetProperties = new HashSet<string> { "hk", "nam" };
 
-            BeginningEdit?.Invoke(this, eventArg);
+                if (targetProperties.Contains(e.PropertyName))
+                {
+                    e.Cancel = true;
 
-            if (eventArg.canEdit == false)
-            {
-                e.Cancel = true;
+                    if (!dataGrid.Columns.Any(c => c.Header?.ToString() == e.PropertyName))
+                    {
+                        var binding = new Binding
+                        {
+                            Path = new PropertyPath(e.PropertyName),
+                            Mode = BindingMode.TwoWay,
+                            Converter = new NullableIntToStringConverter(),
+                            UpdateSourceTrigger = UpdateSourceTrigger.LostFocus
+                        };
+
+                        var column = new DataGridTextColumn
+                        {
+                            Header = e.PropertyName,
+                            Binding = binding
+                        };
+                        dataGrid.Columns.Add(column);
+                    }
+                }
             }
         }
     }

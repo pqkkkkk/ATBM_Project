@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.Model
 {
+
     public class DangKy : INotifyPropertyChanged, IPersistable
     {
         public string? maSV { get; set; }
@@ -23,7 +24,6 @@ namespace Application.Model
             maMM = "Nhập mã mở môn";
             maSV = "Nhập mã sinh viên";
         }
-
         public event PropertyChangedEventHandler? PropertyChanged;
     }
 }

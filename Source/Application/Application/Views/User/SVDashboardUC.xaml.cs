@@ -55,6 +55,7 @@ namespace Application.Views.User
             }
         }
 
+
         private async void OnDeleteClicked(object item)
         {
             int deleteResult = viewModel.DeleteItem();

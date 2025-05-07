@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.Model
 {
+
     public class NhanVien : INotifyPropertyChanged, IPersistable
     {
         public string? maNV { get; set; }
@@ -19,7 +20,7 @@ namespace Application.Model
         public string? vaiTro { get; set; }
         public string? maDV { get; set; }
         public bool? isInDB { get; set; }
-
+        
         public NhanVien()
         {
             maNV = "";
