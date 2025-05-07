@@ -18,7 +18,7 @@ namespace Application.DataAccess.MetaData.TableView
         {
             sqlConnection = oracleConnection;
         }
-        public List<OracleObject> getAllTableView()
+        public List<OracleObject> getAllTable()
         {
             if (sqlConnection.State != ConnectionState.Open)
             {

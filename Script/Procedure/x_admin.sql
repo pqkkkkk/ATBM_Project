@@ -122,23 +122,33 @@
     /
 -- Lấy danh sách của kiểu object tương ứng (table, view, procedure, function...)
     CREATE OR REPLACE PROCEDURE X_ADMIN_GetAllInstanceOfSpecificObject(
-        type IN VARCHAR2, 
-        result_ OUT SYS_REFCURSOR
+        p_type IN VARCHAR2, 
+        p_result OUT SYS_REFCURSOR
     )
     AS
     BEGIN
-        DBMS_OUTPUT.PUT_LINE('>> Đã nhận tham số object_type: ' || UPPER(type));
+        DBMS_OUTPUT.PUT_LINE('>> Đã nhận tham số object_type: ' || UPPER(p_type));
 
-        OPEN result_ FOR
+        OPEN p_result FOR
         SELECT *
         FROM ALL_OBJECTS
-        WHERE OBJECT_TYPE = UPPER(type) AND OWNER = 'X_ADMIN';
+        WHERE OBJECT_TYPE = p_type AND OWNER = 'X_ADMIN';
 
     EXCEPTION
         WHEN OTHERS THEN
             DBMS_OUTPUT.PUT_LINE('Lỗi: ' || SQLERRM);
     END;
     /
+DECLARE
+    v_result SYS_REFCURSOR;
+BEGIN
+    X_ADMIN_GetAllInstanceOfSpecificObject('TABLE', v_result);
+    DBMS_OUTPUT.PUT_LINE('>> Đã lấy danh sách các table trong schema X_ADMIN');
+    -- Xử lý con trỏ kết quả ở đây nếu cần
+    CLOSE v_result;
+END;
+/
+
 
 -- Lấy danh sách các cột của table hoặc view
     CREATE OR REPLACE PROCEDURE X_ADMIN_getColumns(
