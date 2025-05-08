@@ -113,10 +113,6 @@ namespace Application.Views.User
         {
             UpdateClicked?.Invoke();
         }
-        public void UpdateSelectedItemOfDataListAfterAddNewItem()
-        {
-            dataList.SelectedItem = dataList.ItemsSource.Cast<object>().LastOrDefault();
-        }
         private void DataGridRowEditEndedHandler(object sender, CommunityToolkit.WinUI.UI.Controls.DataGridRowEditEndedEventArgs args)
         {
             var item = args.Row.DataContext;
@@ -179,12 +175,6 @@ namespace Application.Views.User
             {
                 e.Cancel = true;
             }
-        }
-
-        private void DataGridRowEditEndedHandler(object sender, CommunityToolkit.WinUI.UI.Controls.DataGridRowEditEndedEventArgs e)
-        {
-            var item = e.Row.DataContext;
-            RowEditEnded?.Invoke(item);
         }
         private void OnAutoGenerateColumns(object sender, CommunityToolkit.WinUI.UI.Controls.DataGridAutoGeneratingColumnEventArgs e)
         {

@@ -12,10 +12,10 @@ namespace Application.Model
     {
         public string? maSV { get; set; }
         public string? maMM { get; set; }
-        public int? diemTH { get; set; }
-        public int? diemCT { get; set; }
-        public int? diemCK { get; set; }
-        public int? diemTK { get; set; }
+        public double? diemTH { get; set; }
+        public double? diemCT { get; set; }
+        public double? diemCK { get; set; }
+        public double? diemTK { get; set; }
         public bool? isInDB { get; set; }
 
         public DangKy()

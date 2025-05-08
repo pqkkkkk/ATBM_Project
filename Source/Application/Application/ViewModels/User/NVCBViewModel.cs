@@ -37,10 +37,10 @@ namespace Application.ViewModels.User
 
 
             daoList = new Dictionary<string, IBaseDao>();
-            daoList.Add("DangKy", new DangKySVDao());
+            daoList.Add("DangKy", new DangKySVDao(sqlConnection));
             daoList.Add("DonVi", new DonViSVDao());
             daoList.Add("HocPhan", new HocPhanSVDao());
-            daoList.Add("MoMon", new MoMonSVDao());
+            daoList.Add("MoMon", new MoMonSVDao(sqlConnection));
             daoList.Add("NhanVien", new NhanVienNVCBDao(sqlConnection));
             daoList.Add("SinhVien", new SinhVienSVDao(sqlConnection));
 
