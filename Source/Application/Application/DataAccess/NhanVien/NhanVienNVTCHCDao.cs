@@ -104,7 +104,7 @@ namespace Application.DataAccess.NhanVien
                                 maNV = reader["maNV"].ToString(),
                                 hoTen = reader["hoTen"].ToString(),
                                 phai = reader["phai"].ToString(),
-                                ngSinh = Convert.ToDateTime(reader["ngSinh"]),
+                                ngSinh = DateOnly.FromDateTime(Convert.ToDateTime(reader["ngSinh"])),
                                 luong = reader["luong"] != DBNull.Value ? Convert.ToInt32(reader["luong"]) : 0,
                                 phuCap = reader["phuCap"] != DBNull.Value ? Convert.ToInt32(reader["phuCap"]) : 0,
                                 dt = reader["dt"].ToString(),

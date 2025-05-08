@@ -77,7 +77,7 @@
 
             <local:DataContentUC
             x:Name="dataContent"
-            nhanVienList="{x:Bind nvTCHCviewModel.nhanVienList, Mode=OneWay}"
+            nhanvienList="{x:Bind nvTCHCviewModel.nhanVienList, Mode=OneWay}"
             DeleteClicked="OnDeleteClicked"
             AddClicked="OnAddClicked"
             UpdateClicked="OnUpdateClicked"

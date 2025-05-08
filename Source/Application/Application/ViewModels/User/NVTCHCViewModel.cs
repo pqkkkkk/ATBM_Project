@@ -34,6 +34,7 @@ namespace Application.ViewModels.User
         public NVTCHCViewModel()
         {
             selectedTabView = "DangKy";
+
             var serviceProvider = (Microsoft.UI.Xaml.Application.Current as App)?.serviceProvider;
             var sqlConnection = serviceProvider?.GetService(typeof(OracleConnection)) as OracleConnection;
             daoList = new Dictionary<string, IBaseDao>();
@@ -45,16 +46,15 @@ namespace Application.ViewModels.User
             {
                 { "NhanVien", nhanVienList },
             };
-
             editableColumnMap = new Dictionary<string, IList>
             {
                 { "NhanVien", new List<string> { "maNV","hoTen", "phai", "ngSinh", "luong", "phuCap", "dt", "vaiTro", "maDV" } },
             };
-
             permissionMap = new Dictionary<string, IList>
             {
                 { "NhanVien", new List<string> { "select", "insert", "update", "delete" } },
             };
+
             newItemList = new Dictionary<string, object>();
             newItemList.Add("NhanVien", new Model.NhanVien()
             {
