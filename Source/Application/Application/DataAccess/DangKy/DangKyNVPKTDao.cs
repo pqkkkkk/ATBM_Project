@@ -45,8 +45,8 @@ namespace Application.DataAccess.DangKy
                         {
                             var dk = new Model.DangKy
                             {
-                                maMM = reader["MAMM"].ToString(),
-                                maSV = reader["MASV"].ToString(),
+                                MAMM = reader["MAMM"].ToString(),
+                                MASV = reader["MASV"].ToString(),
                                 diemTH = Convert.ToDouble(reader["DIEMTH"]),
                                 diemCT = Convert.ToDouble(reader["DIEMCT"]),
                                 diemCK = Convert.ToDouble(reader["DIEMCK"]),
@@ -82,8 +82,8 @@ namespace Application.DataAccess.DangKy
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     var dangKy = (Model.DangKy)obj;
-                    cmd.Parameters.Add("p_MAMM", OracleDbType.Varchar2).Value = dangKy.maMM;
-                    cmd.Parameters.Add("p_MASV", OracleDbType.Varchar2).Value = dangKy.maSV;
+                    cmd.Parameters.Add("p_MAMM", OracleDbType.Varchar2).Value = dangKy.MAMM;
+                    cmd.Parameters.Add("p_MASV", OracleDbType.Varchar2).Value = dangKy.MASV;
                     cmd.Parameters.Add("p_DIEMTH", OracleDbType.Double).Value = dangKy.diemTH;
                     cmd.Parameters.Add("p_DIEMCT", OracleDbType.Double).Value = dangKy.diemCT;
                     cmd.Parameters.Add("p_DIEMCK", OracleDbType.Double).Value = dangKy.diemCK;

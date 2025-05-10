@@ -76,7 +76,7 @@ BEGIN
      SELECT MaMM 
      FROM MOMON
      WHERE CURRENT_DATE - TRUNC(TO_DATE(NAM || ''-'' || 
-        CASE HK WHEN 1 THEN ''01'' WHEN 2 THEN ''05'' WHEN 3 THEN ''09'' END, ''YYYY-MM'')) 
+        CASE HK WHEN 1 THEN ''09'' WHEN 2 THEN ''01'' WHEN 3 THEN ''05'' END, ''YYYY-MM'')) 
         BETWEEN 0 AND 13
      )';
    
@@ -85,7 +85,7 @@ BEGIN
      SELECT MaMM 
      FROM MOMON
      WHERE CURRENT_DATE - TRUNC(TO_DATE(NAM || ''-'' || 
-        CASE HK WHEN 1 THEN ''01'' WHEN 2 THEN ''05'' WHEN 3 THEN ''09'' END, ''YYYY-MM'')) 
+        CASE HK WHEN 1 THEN ''09'' WHEN 2 THEN ''01'' WHEN 3 THEN ''05'' END, ''YYYY-MM'')) 
         BETWEEN 0 AND 13
      )';
    
@@ -104,7 +104,7 @@ BEGIN
         policy_name     => 'DANGKY_INS_DEL_UPD',
         function_schema => 'X_ADMIN',
         policy_function => 'DANGKY_INS_DEL_UPD',
-        statement_types => 'INSERT, UPDATE, DELETE',
+        statement_types => 'INSERT, UPDATE, DELETE, SELECT',
         update_check    => TRUE
     );
 END;

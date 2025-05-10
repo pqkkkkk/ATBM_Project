@@ -32,7 +32,7 @@
                 <StackPanel Spacing="10">
                     <Button Content="NhanVien" 
                          Click="OnTabViewChanged"
-                         Tag="NhanVien"
+                         Tag="NHANVIEN"
                          Foreground="Black"
                          Style="{x:Bind viewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='NhanVien'}" 
                          HorizontalAlignment="Stretch"/>
@@ -85,6 +85,7 @@
                 AddClicked="OnAddClicked"
                 UpdateClicked="OnUpdateClicked"
                 RowEditEnded="SaveItem"
+                BeginningEdit="CheckTheColumnOfRowIsEditable"
                 Grid.Row="0"/>
         </Grid>
     </Grid>

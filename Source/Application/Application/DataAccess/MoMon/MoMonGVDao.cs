@@ -32,7 +32,7 @@ namespace Application.DataAccess.MoMon
                 sqlConnection.Open();
             }
             List<Model.MoMon> result = new List<Model.MoMon>();
-            using (var cmd = new OracleCommand("SELECT * FROM X_ADMIN.view_GV_MOMON", sqlConnection))
+            using (var cmd = new OracleCommand("SELECT * FROM X_ADMIN.view_GV_MM", sqlConnection))
             {
                 cmd.CommandType = CommandType.Text;
 
@@ -42,11 +42,11 @@ namespace Application.DataAccess.MoMon
                     {
                         var mm = new Model.MoMon
                         {
-                            maMM = reader["maMM"].ToString(),
-                            maHP = reader["maHP"].ToString(),
-                            maGV = reader["maGV"].ToString(),
-                            hk = reader["hk"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["hk"]),
-                            nam = reader["nam"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["nam"]),
+                            MAMM = reader["maMM"].ToString(),
+                            MAHP = reader["maHP"].ToString(),
+                            MAGV = reader["maGV"].ToString(),
+                            HK = reader["hk"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["hk"]),
+                            NAM = reader["nam"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["nam"]),
                         }
                         ;
                         mm.isInDB = true;

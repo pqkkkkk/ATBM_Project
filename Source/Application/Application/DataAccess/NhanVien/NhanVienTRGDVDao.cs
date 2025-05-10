@@ -48,7 +48,7 @@ namespace Application.DataAccess.NhanVien
                             hoTen = reader["hoTen"].ToString(),
                             phai = reader["phai"].ToString(),
                             ngSinh = reader["ngSinh"] != DBNull.Value ? DateOnly.FromDateTime(Convert.ToDateTime(reader["ngSinh"])) : null,
-                            dt = reader["dt"].ToString(),
+                            DT = reader["dt"].ToString(),
                             vaiTro = reader["vaiTro"].ToString(),
                             maDV = reader["maDV"].ToString()
                         };

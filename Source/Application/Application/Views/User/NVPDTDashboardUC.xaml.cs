@@ -73,28 +73,14 @@ namespace Application.Views.User
 
         private async void OnDeleteClicked(object obj)
         {
-            if (obj == null)
-            {
-                var notification = new ContentDialog
-                {
-                    XamlRoot = this.XamlRoot,
-                    Title = "Failed",
-                    Content = "Please select an item to delete",
-                    CloseButtonText = "OK"
-                };
-                await notification.ShowAsync();
-
-                return;
-            }
-
             int deleteResult = viewModel.DeleteItem(obj);
-            if (deleteResult == 1)
+            if (deleteResult == 0)
             {
                 var notification = new ContentDialog
                 {
                     XamlRoot = this.XamlRoot,
-                    Title = "Success",
-                    Content = "Delete successfully",
+                    Title = "Error",
+                    Content = "You dont't have permission for delete to this table",
                     CloseButtonText = "OK"
                 };
                 await notification.ShowAsync();
@@ -104,10 +90,11 @@ namespace Application.Views.User
                 var notification = new ContentDialog
                 {
                     XamlRoot = this.XamlRoot,
-                    Title = "Failed",
-                    Content = "Delete failed",
+                    Title = "Success",
+                    Content = "Delete successfully",
                     CloseButtonText = "OK"
                 };
+
                 await notification.ShowAsync();
             }
         }
@@ -115,7 +102,18 @@ namespace Application.Views.User
         private async void OnAddClicked()
         {
             int addResult = viewModel.AddItem();
-            AddedNewItem?.Invoke();
+
+            if (addResult == 0)
+            {
+                var notification = new ContentDialog
+                {
+                    XamlRoot = this.XamlRoot,
+                    Title = "Error",
+                    Content = "You dont't have permission for add to this table",
+                    CloseButtonText = "OK"
+                };
+                await notification.ShowAsync();
+            }
         }
 
         private void OnUpdateClicked()

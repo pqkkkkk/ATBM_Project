@@ -49,7 +49,7 @@ namespace Application.DataAccess.SinhVien
                             dChi = reader["dChi"].ToString(),
                             dt = reader["dt"].ToString(),
                             khoa = reader["khoa"].ToString(),
-                            tinhTrang = reader["tinhTrang"].ToString()
+                            TINHTRANG = reader["tinhTrang"].ToString()
                         };
 
                         result.Add(sv);

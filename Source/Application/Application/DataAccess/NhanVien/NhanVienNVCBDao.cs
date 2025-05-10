@@ -50,7 +50,7 @@ namespace Application.DataAccess.NhanVien
                             ngSinh = DateOnly.FromDateTime(Convert.ToDateTime(reader["ngSinh"])),
                             luong = reader["luong"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["luong"]),
                             phuCap = reader["phuCap"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["phuCap"]),
-                            dt = reader["dt"].ToString(),
+                            DT = reader["dt"].ToString(),
                             vaiTro = reader["vaiTro"].ToString(),
                             maDV = reader["maDV"].ToString()
                         }
@@ -76,7 +76,7 @@ namespace Application.DataAccess.NhanVien
                 using (var cmd = new OracleCommand("X_ADMIN.X_ADMIN_Update_NHANVIEN_ForNVCB", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.Add("newDt", OracleDbType.Varchar2).Value = nv.dt;
+                    cmd.Parameters.Add("newDt", OracleDbType.Varchar2).Value = nv.DT;
 
                     var rowParam = cmd.Parameters.Add("ROW_AFFECTED", OracleDbType.Int32);
                     rowParam.Direction = ParameterDirection.Output;

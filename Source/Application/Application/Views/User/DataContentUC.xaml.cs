@@ -73,16 +73,16 @@ namespace Application.Views.User
             dataList.Columns.Clear();
             switch (tabView)
             {
-                case "SinhVien":
+                case "SINHVIEN":
                     dataList.ItemsSource = sinhVienList;
                     break;
-                case "DangKy":
+                case "DANGKY":
                     dataList.ItemsSource = dangKyList;
                     break;
-                case "MoMon":
+                case "MOMON":
                     dataList.ItemsSource = moMonList;
                     break;
-                case "NhanVien":
+                case "NHANVIEN":
                     dataList.ItemsSource = nhanvienList;
                     break;
                 default:

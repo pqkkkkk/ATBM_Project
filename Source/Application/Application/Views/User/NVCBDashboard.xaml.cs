@@ -41,6 +41,11 @@ namespace Application.Views.User
             TabViewChanged?.Invoke(selectedTab);
         }
 
+        private void CheckTheColumnOfRowIsEditable(object sender, Event.BeginningEditEvent e)
+        {
+            e.canEdit = viewModel.CheckTheColumnOfRowIsEditable(e.columnName);
+        }
+
         private async void SaveItem(object item)
         {
             int result = viewModel.Update(item);
@@ -69,18 +74,42 @@ namespace Application.Views.User
             }
         }
 
-        private void OnDeleteClicked(object obj)
+        private async void OnDeleteClicked(object obj)
         {
-            viewModel.DeleteItem();
+            int deleteResult = viewModel.DeleteItem();
+            if (deleteResult == 0)
+            {
+                var notification = new ContentDialog
+                {
+                    XamlRoot = this.XamlRoot,
+                    Title = "Error",
+                    Content = "You dont't have permission for delete to this table",
+                    CloseButtonText = "OK"
+                };
+                await notification.ShowAsync();
+            }
         }
 
-        private void OnAddClicked()
+        private async void OnAddClicked()
         {
-            viewModel.AddItem();
+            int addResult = viewModel.AddItem();
+
+            if (addResult == 0)
+            {
+                var notification = new ContentDialog
+                {
+                    XamlRoot = this.XamlRoot,
+                    Title = "Error",
+                    Content = "You dont't have permission for add to this table",
+                    CloseButtonText = "OK"
+                };
+                await notification.ShowAsync();
+            }
         }
 
         private void OnUpdateClicked()
         {
+
         }
 
     }

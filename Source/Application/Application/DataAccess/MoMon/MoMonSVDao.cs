@@ -43,11 +43,11 @@ namespace Application.DataAccess.MoMon
                     {
                         var mm = new Model.MoMon
                         {
-                            maMM = reader["maMM"].ToString(),
-                            maHP = reader["maHP"].ToString(),
-                            maGV = reader["maGV"].ToString(),
-                            hk = reader["hk"] != DBNull.Value ? Convert.ToInt32(reader["hk"]) : null,
-                            nam = reader["nam"] != DBNull.Value ? Convert.ToInt32(reader["nam"]) : null
+                            MAMM = reader["maMM"].ToString(),
+                            MAHP = reader["maHP"].ToString(),
+                            MAGV = reader["maGV"].ToString(),
+                            HK = reader["hk"] != DBNull.Value ? Convert.ToInt32(reader["hk"]) : null,
+                            NAM = reader["nam"] != DBNull.Value ? Convert.ToInt32(reader["nam"]) : null
                         };
 
                         result.Add(mm);

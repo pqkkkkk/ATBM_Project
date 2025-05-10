@@ -52,7 +52,7 @@ namespace Application.DataAccess.SinhVien
                             dChi = reader["dChi"].ToString(),
                             dt = reader["dt"].ToString(),
                             khoa = reader["khoa"].ToString(),
-                            tinhTrang = reader["tinhTrang"].ToString()
+                            TINHTRANG = reader["tinhTrang"].ToString()
                         };
                         sv.isInDB = true;
                         result.Add(sv);
@@ -76,7 +76,7 @@ namespace Application.DataAccess.SinhVien
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("MaSV_", OracleDbType.Varchar2).Value = sinhVien.maSV;
-                    cmd.Parameters.Add("TINHTRANG_", OracleDbType.Varchar2).Value = sinhVien.tinhTrang;
+                    cmd.Parameters.Add("TINHTRANG_", OracleDbType.Varchar2).Value = sinhVien.TINHTRANG;
 
                     var rowAffectedParam = new OracleParameter("ROW_AFFECTED", OracleDbType.Int32);
                     rowAffectedParam.Direction = ParameterDirection.Output;

@@ -42,8 +42,8 @@ namespace Application.DataAccess.DangKy
                     {
                         var dk = new Model.DangKy
                         {
-                            maSV = reader["maSV"].ToString(),
-                            maMM = reader["maMM"].ToString(),
+                            MASV = reader["maSV"].ToString(),
+                            MAMM = reader["maMM"].ToString(),
                             diemTH = reader["diemTH"] == DBNull.Value ? (double?)null : Convert.ToDouble(reader["diemTH"]),
                             diemCT = reader["diemCT"] == DBNull.Value ? (double?)null : Convert.ToDouble(reader["diemCT"]),
                             diemCK = reader["diemCK"] == DBNull.Value ? (double?)null : Convert.ToDouble(reader["diemCK"]),

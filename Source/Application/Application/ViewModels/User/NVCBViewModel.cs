@@ -35,6 +35,12 @@ namespace Application.ViewModels.User
         public ObservableCollection<Model.NhanVien> nhanVienList { get; set; }
         public ObservableCollection<Model.SinhVien> sinhVienList { get; set; }
 
+        private readonly Dictionary<string, IList> editableColumnMap = new Dictionary<string, IList>();
+
+        private readonly Dictionary<string, IList> permissionMap = new Dictionary<string, IList>();
+
+        private readonly Dictionary<string, IList> listMap;
+
         public NVCBViewModel()
         {
             helper = new Helper.Helper();
@@ -49,32 +55,22 @@ namespace Application.ViewModels.User
             daoList.Add("DangKy", new DangKySVDao(sqlConnection));
             daoList.Add("DonVi", new DonViSVDao());
             daoList.Add("HocPhan", new HocPhanSVDao());
-            daoList.Add("MoMon", new MoMonSVDao(sqlConnection));
-            daoList.Add("NhanVien", new NhanVienNVCBDao(sqlConnection));
+            daoList.Add("NHANVIEN", new NhanVienNVCBDao(sqlConnection));
             daoList.Add("SinhVien", new SinhVienSVDao(sqlConnection));
 
             dangKyList = new ObservableCollection<Model.DangKy>();
-            dangKyList.Add(new Model.DangKy()
-            {
-                maSV = "SV001",
-                maMM = "MM001",
-                diemTH = 10,
-                diemCT = 9,
-                diemCK = 8,
-                diemTK = 9
-            });
+           
 
             donViList = new ObservableCollection<Model.DonVi>();
             hocPhanList = new ObservableCollection<Model.HocPhan>();
             moMonList = new ObservableCollection<Model.MoMon>();
-            nhanVienList = new ObservableCollection<Model.NhanVien>(daoList["NhanVien"].Load(null).Cast<Model.NhanVien>().ToList());
-            sinhVienList = new ObservableCollection<Model.SinhVien>(daoList["SinhVien"].Load(null).Cast<Model.SinhVien>().ToList());
+            nhanVienList = new ObservableCollection<Model.NhanVien>(daoList["NHANVIEN"].Load(null).Cast<Model.NhanVien>().ToList());
+            sinhVienList = new ObservableCollection<Model.SinhVien>();
+
+            LoadPrivilegeOfRole();
         }
         public void LoadPrivilegeOfRole()
         {
-            Dictionary<string, IList> editableColumnMapTest = new Dictionary<string, IList>();
-            Dictionary<string, IList> permissionMapTest = new Dictionary<string, IList>();
-
             var tableList = (Microsoft.UI.Xaml.Application.Current as App)?.tableList;
 
             if (tableList == null)
@@ -82,8 +78,8 @@ namespace Application.ViewModels.User
 
             foreach (var table in tableList)
             {
-                permissionMapTest.Add(table.objectName, new List<string> { });
-                editableColumnMapTest.Add(table.objectName, new List<string> { });
+                permissionMap.Add(table.objectName, new List<string> { });
+                editableColumnMap.Add(table.objectName, new List<string> { });
             }
 
             List<Model.Privilege> privileges = privilegeDao.GetPrivilegesOfUserOnSpecificObjectType("XR_NVCB", "TABLE");
@@ -91,13 +87,13 @@ namespace Application.ViewModels.User
             foreach (var privilege in privileges)
             {
                 string tableName = privilege.tableName;
-                if (permissionMapTest.TryGetValue(tableName, out var permissionList))
+                if (permissionMap.TryGetValue(tableName, out var permissionList))
                 {
                     if (permissionList.Contains(privilege.privilege) == false)
                         permissionList.Add(privilege.privilege);
                 }
 
-                if (editableColumnMapTest.TryGetValue(tableName, out var columnList))
+                if (editableColumnMap.TryGetValue(tableName, out var columnList))
                 {
                     if (privilege.privilege == "UPDATE")
                     {
@@ -114,14 +110,17 @@ namespace Application.ViewModels.User
                     continue;
 
                 string tableName = helper.GetTableNameFromTextOfView(textOfView);
-
-                if (permissionMapTest.TryGetValue(tableName, out var permissionList))
+                if (tableName.Contains("X_ADMIN"))
+                {
+                    tableName = tableName.Replace("X_ADMIN.", "");
+                }
+                if (permissionMap.TryGetValue(tableName, out var permissionList))
                 {
                     if (permissionList.Contains(privilege.privilege) == false)
                         permissionList.Add(privilege.privilege);
                 }
 
-                if (editableColumnMapTest.TryGetValue(tableName, out var columnList))
+                if (editableColumnMap.TryGetValue(tableName, out var columnList))
                 {
                     if (privilege.privilege == "UPDATE")
                     {
@@ -151,13 +150,22 @@ namespace Application.ViewModels.User
         }
         public int AddItem()
         {
-            return 1;
+            return 0;
         }
 
 
         public void UpdateSelectedTabView(string selectedTabView)
         {
             this.selectedTabView = selectedTabView;
+        }
+        public bool CheckTheColumnOfRowIsEditable(string columnName)
+        {
+            if (editableColumnMap.TryGetValue(selectedTabView, out var list))
+            {
+                return list.Contains(columnName);
+            }
+
+            return false;
         }
         public event PropertyChangedEventHandler? PropertyChanged;
     }

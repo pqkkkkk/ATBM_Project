@@ -38,14 +38,37 @@ namespace Application.Views.User
             TabViewChanged?.Invoke(selectedTab);
         }
 
-        private void OnDeleteClicked(object obj)
+        private async void OnDeleteClicked(object obj)
         {
-            viewModel.DeleteItem();
+            int deleteResult = viewModel.DeleteItem();
+            if (deleteResult == 0)
+            {
+                var notification = new ContentDialog
+                {
+                    XamlRoot = this.XamlRoot,
+                    Title = "Error",
+                    Content = "You dont't have permission for delete to this table",
+                    CloseButtonText = "OK"
+                };
+                await notification.ShowAsync();
+            }
         }
 
-        private void OnAddClicked()
+        private async void OnAddClicked()
         {
-            viewModel.AddItem();
+            int addResult = viewModel.AddItem();
+
+            if (addResult == 0)
+            {
+                var notification = new ContentDialog
+                {
+                    XamlRoot = this.XamlRoot,
+                    Title = "Error",
+                    Content = "You dont't have permission for add to this table",
+                    CloseButtonText = "OK"
+                };
+                await notification.ShowAsync();
+            }
         }
 
         private void OnUpdateClicked()
