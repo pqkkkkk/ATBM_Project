@@ -33,27 +33,27 @@ namespace Application.ViewModels.User
         public ObservableCollection<Model.NhanVien> nhanVienList { get; set; }
         public ObservableCollection<Model.SinhVien> sinhVienList { get; set; }
 
+        public Dictionary<string, IList> editableColumnMap { get; set; }
+        public Dictionary<string, IList> permissionMap { get; set; }
+
         public NVPDTViewModel()
         {
             selectedTabView = "DangKy";
             var serviceProvider = (Microsoft.UI.Xaml.Application.Current as App)?.serviceProvider;
             var sqlConnection = serviceProvider?.GetService(typeof(OracleConnection)) as OracleConnection;
-
-
             daoList = new Dictionary<string, IBaseDao>();
             daoList.Add("DangKy", new DangKyNVPDTDao(sqlConnection));
             daoList.Add("DonVi", new DonViSVDao());
             daoList.Add("HocPhan", new HocPhanSVDao());
             daoList.Add("MoMon", new MoMonNVPDTDao(sqlConnection));
-            daoList.Add("NhanVien", new NhanVienSVDao());
+            daoList.Add("NhanVien", new NhanVienNVCBDao(sqlConnection));
             daoList.Add("SinhVien", new SinhVienNVPDTDao(sqlConnection));
 
             dangKyList = new ObservableCollection<Model.DangKy>(daoList["DangKy"].Load(null).Cast<Model.DangKy>().ToList());
-
             donViList = new ObservableCollection<Model.DonVi>();
             hocPhanList = new ObservableCollection<Model.HocPhan>();
             moMonList = new ObservableCollection<Model.MoMon>(daoList["MoMon"].Load(null).Cast<Model.MoMon>().ToList());
-            nhanVienList = new ObservableCollection<Model.NhanVien>();
+            nhanVienList = new ObservableCollection<Model.NhanVien>(daoList["NhanVien"].Load(null).Cast<Model.NhanVien>().ToList());
             sinhVienList = new ObservableCollection<Model.SinhVien>(daoList["SinhVien"].Load(null).Cast<Model.SinhVien>().ToList());
 
             newItemList = new Dictionary<string, object>();
@@ -75,6 +75,24 @@ namespace Application.ViewModels.User
                 { "MoMon", moMonList },
                 { "NhanVien", nhanVienList },
                 {"SinhVien", sinhVienList}
+            };
+            editableColumnMap = new Dictionary<string, IList>
+            {
+                { "DangKy", new List<string> { "maSV", "maMM"} },
+                { "DonVi", new List<string> { } },
+                { "HocPhan", new List<string> { "maHP", "tenHP" } },
+                { "MoMon", new List<string> {"maMM","maHP","maGV","hk","nam" } },
+                { "NhanVien", new List<string> {"dt"} },
+                { "SinhVien", new List<string> { "tinhTrang" } }
+            };
+            permissionMap = new Dictionary<string, IList>
+            {
+                { "DangKy", new List<string> {"delete", "insert","update", "select"} },
+                { "DonVi", new List<string> { } },
+                { "HocPhan", new List<string> { } },
+                { "MoMon", new List<string> {"select","update","insert","delete" } },
+                { "NhanVien", new List<string> {"select","update" } },
+                { "SinhVien", new List<string> {"select", "update" } }
             };
         }
         public int DeleteItem(object item)
@@ -121,6 +139,15 @@ namespace Application.ViewModels.User
         public void UpdateSelectedTabView(string selectedTabView)
         {
             this.selectedTabView = selectedTabView;
+        }
+        public bool CheckTheColumnOfRowIsEditable(string columnName)
+        {
+            if (editableColumnMap.TryGetValue(selectedTabView, out var list))
+            {
+                return list.Contains(columnName);
+            }
+
+            return false;
         }
         private void updateItemList(Dictionary<string, object> itemList)
         {

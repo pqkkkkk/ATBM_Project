@@ -39,6 +39,7 @@ namespace Application.ViewModels.User
             var sqlConnection = serviceProvider?.GetService(typeof(OracleConnection)) as OracleConnection;
             daoList = new Dictionary<string, IBaseDao>();
             daoList?.Add("NhanVien", new NhanVienNVTCHCDao(sqlConnection));
+
             nhanVienList = new ObservableCollection<NhanVien>();
             LoadData();
 

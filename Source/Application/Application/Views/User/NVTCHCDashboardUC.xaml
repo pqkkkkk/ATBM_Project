@@ -82,6 +82,7 @@
             AddClicked="OnAddClicked"
             UpdateClicked="OnUpdateClicked"
             RowEditEnded="SaveItem"
+            BeginningEdit="CheckTheColumnOfRowIsEditable"
             Grid.Row="0"/>
         </Grid>
 

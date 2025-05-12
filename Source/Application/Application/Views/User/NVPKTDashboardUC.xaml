@@ -79,6 +79,7 @@
             <local:DataContentUC
                 x:Name="dataContent"
                 dangKyList="{x:Bind nvPKTViewModel.dangKyList, Mode=OneWay}"
+                nhanvienList="{x:Bind nvPKTViewModel.nhanVienList, Mode=OneWay}"
                 DeleteClicked="OnDeleteClicked"
                 AddClicked="OnAddClicked"
                 UpdateClicked="OnUpdateClicked"

@@ -33,9 +33,10 @@ namespace Application.DataAccess.NhanVien
                 sqlConnection.Open();
             }
             List<Model.NhanVien> result = new List<Model.NhanVien>();
-            using (var cmd = new OracleCommand("SELECT * FROM X_ADMIN.view_NVCB_NV", sqlConnection))
+            using (var cmd = new OracleCommand("X_ADMIN.X_ADMIN_Select_NHANVIEN_ForNVCB", sqlConnection))
             {
-                cmd.CommandType = CommandType.Text;
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("p_result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
 
                 using (var reader = cmd.ExecuteReader())
                 {
@@ -72,7 +73,7 @@ namespace Application.DataAccess.NhanVien
                 {
                     sqlConnection.Open();
                 }
-                using (var cmd = new OracleCommand("X_ADMIN.X_ADMIN_update_DT", sqlConnection))
+                using (var cmd = new OracleCommand("X_ADMIN.X_ADMIN_Update_NHANVIEN_ForNVCB", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("newDt", OracleDbType.Varchar2).Value = nv.dt;

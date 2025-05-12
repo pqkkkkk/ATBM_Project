@@ -81,8 +81,10 @@
                 dangKyList="{x:Bind viewModel.dangKyList, Mode=OneWay}"
                 sinhVienList="{x:Bind viewModel.sinhVienList, Mode=OneWay}"
                 moMonList="{x:Bind viewModel.moMonList, Mode=OneWay}"
+                nhanvienList="{x:Bind viewModel.nhanVienList, Mode=OneWay}"
                 DeleteClicked="OnDeleteClicked"
                 AddClicked="OnAddClicked"
+                BeginningEdit="CheckTheColumnOfRowIsEditable"
                 UpdateClicked="OnUpdateClicked"
                 RowEditEnded="SaveItem"
                 Grid.Row="0"/>
