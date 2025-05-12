@@ -30,16 +30,18 @@ namespace Application.ViewModels.User
         private Dictionary<string, object> newItemList;
 
         public ObservableCollection<Model.DangKy> dangKyList { get; set; }
+        public ObservableCollection<Model.NhanVien> nhanVienList { get; set; }
         public NVPKTViewModel()
         {
             selectedTabView = "DangKy";
             var serviceProvider = (Microsoft.UI.Xaml.Application.Current as App)?.serviceProvider;
             var sqlConnection = serviceProvider?.GetService(typeof(OracleConnection)) as OracleConnection;
-
             daoList = new Dictionary<string, IBaseDao>();
             daoList.Add("DangKy", new DangKyNVPKTDao(sqlConnection));
-            dangKyList = new ObservableCollection<Model.DangKy>();
-            LoadData();
+            daoList.Add("NhanVien", new NhanVienNVCBDao(sqlConnection));
+
+            dangKyList = new ObservableCollection<Model.DangKy>(daoList["DangKy"].Load(null).Cast<Model.DangKy>().ToList());
+            nhanVienList = new ObservableCollection<Model.NhanVien>(daoList["NhanVien"].Load(null).Cast<Model.NhanVien>().ToList());
 
             listMap = new Dictionary<string, IList>
             {
@@ -62,11 +64,6 @@ namespace Application.ViewModels.User
             });
 
         }
-        public void LoadData()
-        {
-            dangKyList = new ObservableCollection<Model.DangKy>(daoList["DangKy"].Load(null).Cast<Model.DangKy>().ToList());
-        }
-
         public int SaveItem(object item)
         {
             try

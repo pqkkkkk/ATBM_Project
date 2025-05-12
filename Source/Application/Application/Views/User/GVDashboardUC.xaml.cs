@@ -52,5 +52,10 @@ namespace Application.Views.User
         {
             viewModel.UpdateItem();
         }
+
+        private void CheckTheColumnOfRowIsEditable(object sender, Event.BeginningEditEvent e)
+        {
+            e.canEdit = viewModel.CheckTheColumnOfRowIsEditable(e.columnName);
+        }
     }
 }

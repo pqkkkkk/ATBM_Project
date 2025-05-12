@@ -1,5 +1,5 @@
 ﻿--Tạo procedure để cập nhật trường dt trên View_NVCB
-    CREATE OR REPLACE PROCEDURE X_ADMIN_update_DT(
+    CREATE OR REPLACE PROCEDURE X_ADMIN_Update_NHANVIEN_ForNVCB(
         NEWDT IN VARCHAR2,
         ROW_AFFECTED OUT INTEGER
     )
@@ -11,10 +11,24 @@
 
         -- Gán số dòng bị ảnh hưởng
         ROW_AFFECTED := SQL%ROWCOUNT;
-    END X_ADMIN_update_DT;
+    END X_ADMIN_Update_NHANVIEN_ForNVCB;
     /
 
     --GÁN QUYỀN CHO NVCB
-    GRANT EXECUTE ON X_ADMIN_update_DT TO XR_NVCB;
-
+    GRANT EXECUTE ON X_ADMIN_Update_NHANVIEN_ForNVCB TO XR_NVCB;
+-- SELECT tren bang NHANVIEN
+    CREATE OR REPLACE PROCEDURE X_ADMIN_Select_NHANVIEN_ForNVCB(
+        p_result OUT SYS_REFCURSOR
+    )
+    AS
+    BEGIN
+        OPEN p_result FOR
+        SELECT * FROM X_ADMIN.view_NVCB_NV;
+    EXCEPTION
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+            RAISE;
+    END;
+    /
+    GRANT EXECUTE ON X_ADMIN_Select_NHANVIEN_ForNVCB TO XR_NVCB;
 COMMIT;

@@ -132,5 +132,10 @@ namespace Application.Views.User
         private async void OnUpdateClicked()
         {
         }
+
+        private void CheckTheColumnOfRowIsEditable(object sender, Event.BeginningEditEvent e)
+        {
+            e.canEdit = nvTCHCviewModel.CheckTheColumnOfRowIsEditable(e.columnName);
+        }
     }
 }

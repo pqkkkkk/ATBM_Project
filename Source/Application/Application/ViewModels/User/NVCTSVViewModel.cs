@@ -47,14 +47,14 @@ namespace Application.ViewModels.User
             daoList.Add("DonVi", new DonViNVCTSVDao());
             daoList.Add("HocPhan", new HocPhanNVCTSVDao());
             daoList.Add("MoMon", new MoMonNVCTSVDao());
-            daoList.Add("NhanVien", new NhanVienNVCTSVDao());
+            daoList.Add("NhanVien", new NhanVienNVCBDao(sqlConnection));
             daoList.Add("SinhVien", new SinhVienNVCTSVDao(sqlConnection));
 
             dangKyList = new ObservableCollection<Model.DangKy>();
             donViList = new ObservableCollection<Model.DonVi>();
             hocPhanList = new ObservableCollection<Model.HocPhan>();
             moMonList = new ObservableCollection<Model.MoMon>();
-            nhanVienList = new ObservableCollection<Model.NhanVien>();
+            nhanVienList = new ObservableCollection<Model.NhanVien>(daoList["NhanVien"].Load(null).Cast<Model.NhanVien>().ToList());
             sinhVienList = new ObservableCollection<Model.SinhVien>(daoList["SinhVien"].Load(null).Cast<Model.SinhVien>().ToList());
 
             newItemList = new Dictionary<string, object>();
