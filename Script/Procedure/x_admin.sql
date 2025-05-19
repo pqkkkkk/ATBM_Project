@@ -306,4 +306,25 @@
             DBMS_OUTPUT.PUT_LINE('ERROR:' || SQLERRM);
     END;
     /
+
+-- SEND NOTIFICATION
+    CREATE OR REPLACE PROCEDURE SendNotification (
+        p_noidung IN NVARCHAR2,
+        p_label IN NVARCHAR2)
+    AS
+    BEGIN
+        INSERT INTO X_ADMIN.THONGBAO (NOIDUNG, LABEL)
+        VALUES (p_noidung, CHAR_TO_LABEL('NOTIFICATION_POLICY', p_label));
+    COMMIT;
+    END SendNotification;
+/
+-- GET NOTIFICATION
+    CREATE OR REPLACE PROCEDURE getNotification (
+        p_result OUT SYS_REFCURSOR)
+    AS
+    BEGIN
+        OPEN p_result FOR
+        SELECT MATB, NOIDUNG FROM X_ADMIN.THONGBAO;
+END getNotification;
+/
 COMMIT;
