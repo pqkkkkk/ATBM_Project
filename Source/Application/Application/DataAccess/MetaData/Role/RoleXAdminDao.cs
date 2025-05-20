@@ -36,9 +36,9 @@ namespace Application.DataAccess.MetaData.Role
                     return check;
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
-                throw new Exception(e.Message);
+                throw new System.Exception(e.Message);
             }
             finally
             {
@@ -70,9 +70,9 @@ namespace Application.DataAccess.MetaData.Role
                  }
                  return true;
              }
-             catch (Exception e)
+             catch (System.Exception e)
              {
-                 throw new Exception(e.Message);
+                 throw new System.Exception(e.Message);
              }
              finally
              {
@@ -103,7 +103,7 @@ namespace Application.DataAccess.MetaData.Role
                 }
                 return true;
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 Console.WriteLine($"[DropRole] Lỗi khi xóa role '{roleName}': {e.Message}");
                 return false;
@@ -152,9 +152,9 @@ namespace Application.DataAccess.MetaData.Role
                     return roles;
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
-                throw new Exception(e.Message);
+                throw new System.Exception(e.Message);
             }
             finally
             {
@@ -192,9 +192,9 @@ namespace Application.DataAccess.MetaData.Role
                     return roles;
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
-                throw new Exception(e.Message);
+                throw new System.Exception(e.Message);
             }
             finally
             {
@@ -229,9 +229,9 @@ namespace Application.DataAccess.MetaData.Role
                     return userRoles;
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
-                throw new Exception(e.Message);
+                throw new System.Exception(e.Message);
             }
             finally
             {
@@ -259,9 +259,9 @@ namespace Application.DataAccess.MetaData.Role
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
-                throw new Exception(e.Message);
+                throw new System.Exception(e.Message);
             }
             finally
             {
@@ -288,9 +288,9 @@ namespace Application.DataAccess.MetaData.Role
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
-                throw new Exception(e.Message);
+                throw new System.Exception(e.Message);
             }
             finally
             {

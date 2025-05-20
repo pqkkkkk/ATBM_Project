@@ -48,5 +48,10 @@ namespace Application.DataAccess.MetaData.TableView
             }
             return oracleObjects;  
         }
+
+        public string? GetTextOfView(string viewName)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

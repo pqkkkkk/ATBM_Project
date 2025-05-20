@@ -62,7 +62,7 @@ namespace Application
                     bool isRoleValid = roleOfUserList.Any(x => x.name.Equals(role));
                     if (!isRoleValid)
                     {
-                        throw new Exception("Invalid role");
+                        throw new System.Exception("Invalid role");
                     }
 
                     ITableViewDao tableViewDao = new TableViewXAdminDao(adminConnection);
@@ -92,7 +92,7 @@ namespace Application
 
                 m_window.SignInSuccessHandler(role);
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 m_window.SignInFailedHandler();
                 Console.WriteLine(ex.Message);

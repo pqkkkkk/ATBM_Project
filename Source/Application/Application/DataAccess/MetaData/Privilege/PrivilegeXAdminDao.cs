@@ -52,9 +52,9 @@ namespace Application.DataAccess.MetaData.Privilege
                     return result;
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
-                throw new Exception(e.Message);
+                throw new System.Exception(e.Message);
             }
         }
 
@@ -94,9 +94,9 @@ namespace Application.DataAccess.MetaData.Privilege
                     return userRoles;
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
-                throw new Exception(e.Message);
+                throw new System.Exception(e.Message);
             }
         }
 
@@ -149,9 +149,9 @@ namespace Application.DataAccess.MetaData.Privilege
                     return privileges;
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
-                throw new Exception(e.Message);
+                throw new System.Exception(e.Message);
             }
         }
 
@@ -182,9 +182,9 @@ namespace Application.DataAccess.MetaData.Privilege
                     return colums;
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
-                throw new Exception(e.Message);
+                throw new System.Exception(e.Message);
             }
         }
 
@@ -232,9 +232,9 @@ namespace Application.DataAccess.MetaData.Privilege
                     return privileges;
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
-                throw new Exception(e.Message);
+                throw new System.Exception(e.Message);
             }
         }
 
@@ -265,9 +265,9 @@ namespace Application.DataAccess.MetaData.Privilege
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
-                throw new Exception(e.Message);
+                throw new System.Exception(e.Message);
             }
         }
 
@@ -305,9 +305,9 @@ namespace Application.DataAccess.MetaData.Privilege
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
-                throw new Exception(e.Message);
+                throw new System.Exception(e.Message);
             }
         }
 
@@ -342,9 +342,9 @@ namespace Application.DataAccess.MetaData.Privilege
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
-                throw new Exception(e.Message);
+                throw new System.Exception(e.Message);
             }
         }
 

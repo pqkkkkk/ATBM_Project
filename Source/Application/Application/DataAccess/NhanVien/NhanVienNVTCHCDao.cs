@@ -40,7 +40,7 @@ namespace Application.DataAccess.NhanVien
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
                 return false;
@@ -69,7 +69,7 @@ namespace Application.DataAccess.NhanVien
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
                 return false;
@@ -117,7 +117,7 @@ namespace Application.DataAccess.NhanVien
                     }            
                 }
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
             }
@@ -153,7 +153,7 @@ namespace Application.DataAccess.NhanVien
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
                 return false;

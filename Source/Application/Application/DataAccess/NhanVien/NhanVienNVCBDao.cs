@@ -88,7 +88,7 @@ namespace Application.DataAccess.NhanVien
                     return rowsAffected > 0;
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 sqlConnection.Close();
                 return false;

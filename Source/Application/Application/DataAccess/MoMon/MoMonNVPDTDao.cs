@@ -39,7 +39,7 @@ namespace Application.DataAccess.MoMon
                     return true;
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 sqlConnection.Close();
                 return false;
@@ -64,7 +64,7 @@ namespace Application.DataAccess.MoMon
                     return true;
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 sqlConnection.Close();
                 return false;
@@ -132,7 +132,7 @@ namespace Application.DataAccess.MoMon
                     return rowsAffected > 0;
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 sqlConnection.Close();
                 return false;

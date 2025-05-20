@@ -14,7 +14,12 @@
         <converter:TabViewBGConverter x:Key="TabViewBGConverter"/>
     </UserControl.Resources>
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
         <NavigationView
+            Grid.Column="0"
             SelectionChanged="OnTabViewChanged"
             MenuItemsSource="{x:Bind tableList}">
             <NavigationView.MenuItemTemplate>
@@ -24,5 +29,25 @@
                 </DataTemplate>
             </NavigationView.MenuItemTemplate>
         </NavigationView>
+        <StackPanel
+            Grid.Column="1">
+            <Button
+                Background="White"
+                x:Name="btnTest"
+                Content="Test"
+                Foreground="Black"
+                Click="btnTest_Click"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"/>
+            <Button
+                Background="White"
+                x:Name="btnTest2"
+                Content="SubStr"
+                Foreground="Black"
+                Click="btnTest2_Click"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Margin="0,50,0,0"/>
+        </StackPanel>
     </Grid>
 </UserControl>
