@@ -18,7 +18,7 @@ namespace Application.DataAccess.MetaData.TableView
         {
             sqlConnection = oracleConnection;
         }
-        public List<OracleObject> getAllTableView()
+        public List<OracleObject> getAllTable()
         {
             if (sqlConnection.State != ConnectionState.Open)
             {
@@ -47,6 +47,11 @@ namespace Application.DataAccess.MetaData.TableView
                 }
             }
             return oracleObjects;  
+        }
+
+        public string? GetTextOfView(string viewName)
+        {
+            throw new NotImplementedException();
         }
     }
 }

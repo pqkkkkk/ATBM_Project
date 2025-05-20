@@ -53,7 +53,7 @@ namespace Application.ViewModels
                     return (int)CreateUserResult.UserCreationFailed;
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 return (int)CreateUserResult.UnknownError;
             }
@@ -101,7 +101,7 @@ namespace Application.ViewModels
                     return (int)UpdateUserResult.UserUpdateFailed;
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 return (int)UpdateUserResult.UnknownError;
             }

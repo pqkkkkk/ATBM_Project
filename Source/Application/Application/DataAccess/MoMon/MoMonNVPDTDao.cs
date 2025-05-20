@@ -39,7 +39,11 @@ namespace Application.DataAccess.MoMon
                     return true;
                 }
             }
+<<<<<<< HEAD
             catch (Exception e)
+=======
+            catch (System.Exception e)
+>>>>>>> 4faf2d14a50582d7d7e1fc5157e1e224208108d8
             {
                 sqlConnection.Close();
                 return false;
@@ -64,7 +68,11 @@ namespace Application.DataAccess.MoMon
                     return true;
                 }
             }
+<<<<<<< HEAD
             catch (Exception e)
+=======
+            catch (System.Exception e)
+>>>>>>> 4faf2d14a50582d7d7e1fc5157e1e224208108d8
             {
                 sqlConnection.Close();
                 return false;
@@ -132,7 +140,11 @@ namespace Application.DataAccess.MoMon
                     return rowsAffected > 0;
                 }
             }
+<<<<<<< HEAD
             catch (Exception e)
+=======
+            catch (System.Exception e)
+>>>>>>> 4faf2d14a50582d7d7e1fc5157e1e224208108d8
             {
                 sqlConnection.Close();
                 return false;

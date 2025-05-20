@@ -35,7 +35,11 @@ namespace Application.DataAccess.DangKy
                 sqlConnection.Close();
                 return true;
             }
+<<<<<<< HEAD
             catch (Exception ex)
+=======
+            catch (System.Exception ex)
+>>>>>>> 4faf2d14a50582d7d7e1fc5157e1e224208108d8
             {
                 return false;
             }
@@ -65,7 +69,11 @@ namespace Application.DataAccess.DangKy
                     return rowsAffected > 0;
                 }
             }
+<<<<<<< HEAD
             catch (Exception ex)
+=======
+            catch (System.Exception ex)
+>>>>>>> 4faf2d14a50582d7d7e1fc5157e1e224208108d8
             {
                 return false;
             }

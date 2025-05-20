@@ -31,6 +31,7 @@ namespace Application
     public partial class App : Microsoft.UI.Xaml.Application
     {
         public IServiceProvider? serviceProvider { get; private set; }
+        public List<Model.OracleObject> tableList { get; set; } = new List<Model.OracleObject>();
 
         public App()
         {
@@ -54,20 +55,26 @@ namespace Application
                 {
                     var adminConnectString = $"User Id=X_ADMIN;Password=123;Data Source=localhost:1521/ORCLPDB";
                     var adminConnection = new OracleConnection(adminConnectString);
+
                     IPrivilegeDao privilegeDao = new PrivilegeXAdminDao(adminConnection);
                     var roleOfUserList = privilegeDao.GetAllRolesOfUser(actual_username);
 
                     bool isRoleValid = roleOfUserList.Any(x => x.name.Equals(role));
                     if (!isRoleValid)
                     {
-                        throw new Exception("Invalid role");
+                        throw new System.Exception("Invalid role");
                     }
+
+                    ITableViewDao tableViewDao = new TableViewXAdminDao(adminConnection);
+                    tableList = tableViewDao.getAllTable();
+                    tableList.RemoveAll(x => x.objectName == "USER_ROLES");
+
                 }
 
                 string connectionString = "";
                 
                 if(username.Equals("sys"))
-                    connectionString = $"User Id={actual_username};Password={password};Data Source=localhost:1521/ORCLPDB;DBA Privilege=SYSDBA";
+                    connectionString = $"User Id={actual_username};Password={password};Data Source=localhost:1521/XEPDB1;DBA Privilege=SYSDBA";
                 else
                     connectionString = $"User Id={actual_username};Password={password};Data Source=localhost:1521/ORCLPDB";
                 var sqlConnection = new OracleConnection(connectionString);
@@ -85,7 +92,7 @@ namespace Application
 
                 m_window.SignInSuccessHandler(role);
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 m_window.SignInFailedHandler();
                 Console.WriteLine(ex.Message);

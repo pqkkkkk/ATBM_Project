@@ -4,12 +4,20 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Application.Views.User"
+    xmlns:local1="using:Application.Converts"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     mc:Ignorable="d">
 
-    <Grid>
+    <UserControl.Resources>
+        <local1:DatetimeToStringConverter x:Key="DatetimeConverter"/>
+        <local1:NullableIntToStringConverter x:Key="IntToStringConverter"/>
+        <local1:NullableDoubleToStringConverter x:Key="DoubleToStringConverter"/>  
+    </UserControl.Resources>
+
+    <Grid
+        Padding="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -21,8 +29,8 @@
             Spacing="10" 
             Margin="0,0,0,20">
             <Button 
-                 Content="Detail"
-                 Click="DetailClickHandler"
+                 Content="Save"
+                 Click="SaveClickHandler"
                  Background="#9C27B0" 
                  Foreground="White" 
                  Width="100"/>
@@ -59,6 +67,7 @@
         </StackPanel>
 
         <!-- Data Content -->
+<<<<<<< HEAD
         <controls:DataGrid
              x:Name="dataList"
             IsReadOnly="False"
@@ -67,5 +76,19 @@
             RowEditEnded="DataGridRowEditEndedHandler"
              Grid.Row="1"/>
         
+=======
+        <ScrollViewer
+            Grid.Row="1"
+            VerticalScrollBarVisibility="Auto"
+            HorizontalScrollBarVisibility="Auto">
+            <controls:DataGrid
+                x:Name="dataList"
+                IsReadOnly="False"
+                AutoGeneratingColumn="OnAutoGeneratingColumn"
+                RowEditEnded="DataGridRowEditEndedHandler"
+                BeginningEdit="OnBeginningEdit"
+                ItemsSource="{x:Bind dangKyList, Mode=OneWay}"/>
+        </ScrollViewer>
+>>>>>>> 4faf2d14a50582d7d7e1fc5157e1e224208108d8
     </Grid>
 </UserControl>

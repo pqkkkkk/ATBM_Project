@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,6 +16,12 @@ using Application.DataAccess;
 using Application.DataAccess.DangKy;
 using System.Collections.ObjectModel;
 using Application.Model;
+<<<<<<< HEAD
+=======
+using System.Diagnostics;
+using Application.Event;
+using Windows.UI.WebUI;
+>>>>>>> 4faf2d14a50582d7d7e1fc5157e1e224208108d8
 using CommunityToolkit.WinUI.UI.Controls;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -31,10 +37,16 @@ namespace Application.Views.User
         public event DeletedClickedHandler DeleteClicked;
         public delegate void AddedClickedHandler();
         public event AddedClickedHandler AddClicked;
+<<<<<<< HEAD
 
         public delegate void RowEditEnededHandler(object item);
         public event DeletedClickedHandler RowEditEnded;
 
+=======
+        public delegate void RowEditEndedHandler(object item);
+        public event RowEditEndedHandler RowEditEnded;
+        public event EventHandler<BeginningEditEvent> BeginningEdit;
+>>>>>>> 4faf2d14a50582d7d7e1fc5157e1e224208108d8
 
         public static readonly DependencyProperty sinhVienListDependencyProperty =
             DependencyProperty.Register(nameof(sinhVienList),
@@ -51,10 +63,24 @@ namespace Application.Views.User
                 typeof(ObservableCollection<Model.MoMon>),
                 typeof(DataContentUC),
                 new PropertyMetadata(null));
+<<<<<<< HEAD
         public ObservableCollection<Model.SinhVien> sinhVienList { get; set; }
         public ObservableCollection<Model.DangKy> dangKyList { get; set; }
         public ObservableCollection<Model.NhanVien> nhanVienList { get; set; }
         public ObservableCollection<Model.MoMon> moMonList { get; set; }
+=======
+        public static readonly DependencyProperty nhanVienListDependencyProperty =
+            DependencyProperty.Register(nameof(nhanvienList),
+                typeof(ObservableCollection<Model.NhanVien>),
+                typeof(DataContentUC),
+                new PropertyMetadata(null));
+                
+        public ObservableCollection<Model.SinhVien> sinhVienList { get; set; }
+        public ObservableCollection<Model.DangKy> dangKyList { get; set; }
+        public ObservableCollection<Model.MoMon> moMonList { get; set; }
+        public ObservableCollection<Model.NhanVien> nhanvienList { get; set; }
+
+>>>>>>> 4faf2d14a50582d7d7e1fc5157e1e224208108d8
         public DataContentUC()
         {
             this.InitializeComponent();
@@ -70,17 +96,36 @@ namespace Application.Views.User
                 case "DangKy":
                     dataList.ItemsSource = dangKyList;
                     break;
+<<<<<<< HEAD
                 case "NhanVien":
                     dataList.ItemsSource = nhanVienList;
                     break;
                 case "MoMon":
                     dataList.ItemsSource = moMonList;
                     break;
+=======
+                case "MoMon":
+                    dataList.ItemsSource = moMonList;
+                    break;
+                case "NhanVien":
+                    dataList.ItemsSource = nhanvienList;
+                    break;
+>>>>>>> 4faf2d14a50582d7d7e1fc5157e1e224208108d8
                 default:
                     break;
             }
         }
-        private void DetailClickHandler(object sender, RoutedEventArgs e)
+        private void DeleteClickHandler(object sender, RoutedEventArgs e)
+        {
+            var selectedItem = dataList.SelectedItem;
+            DeleteClicked?.Invoke(selectedItem);
+        }
+        public void UpdateSelectedItemOfDataListAfterAddNewItem()
+        {
+            dataList.SelectedItem = dataList.ItemsSource.Cast<object>().LastOrDefault();
+            
+        }
+        private void SaveClickHandler(object sender, RoutedEventArgs e)
         {
 
         }
@@ -94,11 +139,15 @@ namespace Application.Views.User
         {
             UpdateClicked?.Invoke();
         }
-
-        private void DeleteClickHandler(object sender, RoutedEventArgs e)
+        private void DataGridRowEditEndedHandler(object sender, CommunityToolkit.WinUI.UI.Controls.DataGridRowEditEndedEventArgs args)
         {
+<<<<<<< HEAD
             var selectedItem = dataList.SelectedItem;
             DeleteClicked?.Invoke(selectedItem);
+=======
+            var item = args.Row.DataContext;
+            RowEditEnded?.Invoke(item);
+>>>>>>> 4faf2d14a50582d7d7e1fc5157e1e224208108d8
         }
         private void DataGridRowEditEndedHandler(object sender, CommunityToolkit.WinUI.UI.Controls.DataGridRowEditEndedEventArgs args)
         {
@@ -116,6 +165,77 @@ namespace Application.Views.User
             if (firstItem == null)
                 return;
 
+<<<<<<< HEAD
+=======
+        private void OnAutoGeneratingColumn(object sender, CommunityToolkit.WinUI.UI.Controls.DataGridAutoGeneratingColumnEventArgs e)
+        {
+            if (e.PropertyName == "isInDB")
+            {
+                e.Cancel = true;
+            }
+            // Sử lý kiểu Datetime và int
+            if (e.Column is DataGridTextColumn textColumn)
+            {
+                if (e.PropertyType == typeof(int) || e.PropertyType == typeof(int?))
+                {
+                    textColumn.Binding = new Binding
+                    {
+                        Path = new PropertyPath(e.PropertyName),
+                        Mode = BindingMode.TwoWay,
+                        Converter = (IValueConverter)this.Resources["IntToStringConverter"],
+                        UpdateSourceTrigger = UpdateSourceTrigger.LostFocus
+                    };
+                }
+                if (e.PropertyType == typeof(DateTime) || e.PropertyType == typeof(DateTime?))
+                {
+                    textColumn.Binding = new Binding
+                    {
+                        Path = new PropertyPath(e.PropertyName),
+                        Mode = BindingMode.TwoWay,
+                        Converter = (IValueConverter)this.Resources["DatetimeConverter"],
+                        UpdateSourceTrigger = UpdateSourceTrigger.LostFocus
+                    };
+                }
+                if (e.PropertyType == typeof(double) || e.PropertyType == typeof(double?))
+                {
+                    textColumn.Binding = new Binding
+                    {
+                        Path = new PropertyPath(e.PropertyName),
+                        Mode = BindingMode.TwoWay,
+                        Converter = (IValueConverter)this.Resources["DoubleToStringConverter"],
+                        UpdateSourceTrigger = UpdateSourceTrigger.LostFocus,
+                    };
+                }
+            }
+        }
+        private void OnBeginningEdit(object sender, CommunityToolkit.WinUI.UI.Controls.DataGridBeginningEditEventArgs e)
+        {
+            var column = e.Column.Header.ToString();
+            var eventArg = new BeginningEditEvent()
+            {
+                columnName = column,
+                canEdit = false
+            };
+
+            BeginningEdit?.Invoke(this, eventArg);
+
+            if (eventArg.canEdit == false)
+            {
+                e.Cancel = true;
+            }
+        }
+        private void OnAutoGenerateColumns(object sender, CommunityToolkit.WinUI.UI.Controls.DataGridAutoGeneratingColumnEventArgs e)
+        {
+            if (e.PropertyName == "isInDB")
+            {
+                e.Cancel = true;
+            }
+            var dataGrid = (DataGrid)sender;
+            var firstItem = dataGrid.ItemsSource?.Cast<object>()?.FirstOrDefault();
+            if (firstItem == null)
+                return;
+
+>>>>>>> 4faf2d14a50582d7d7e1fc5157e1e224208108d8
             if (firstItem.GetType().Name == "MoMon")
             {
                 var targetProperties = new HashSet<string> { "hk", "nam" };
@@ -144,9 +264,12 @@ namespace Application.Views.User
                 }
             }
         }
+<<<<<<< HEAD
         public void UpdateSelectedItemOfDataListAfterAddNewItem()
         {
             dataList.SelectedItem = dataList.ItemsSource.Cast<object>().LastOrDefault();
         }
+=======
+>>>>>>> 4faf2d14a50582d7d7e1fc5157e1e224208108d8
     }
 }

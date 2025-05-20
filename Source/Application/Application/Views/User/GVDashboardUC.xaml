@@ -80,10 +80,18 @@
                 x:Name="dataContent"
                 dangKyList="{x:Bind viewModel.dangKyList, Mode=OneWay}"
                 sinhVienList="{x:Bind viewModel.sinhVienList, Mode=OneWay}"
+<<<<<<< HEAD
+=======
+                nhanvienList="{x:Bind viewModel.nhanVienList, Mode=OneWay}"
+>>>>>>> 4faf2d14a50582d7d7e1fc5157e1e224208108d8
                 moMonList="{x:Bind viewModel.moMonList, Mode=OneWay}"
                 DeleteClicked="OnDeleteClicked"
                 AddClicked="OnAddClicked"
                 UpdateClicked="OnUpdateClicked"
+<<<<<<< HEAD
+=======
+                BeginningEdit="CheckTheColumnOfRowIsEditable"
+>>>>>>> 4faf2d14a50582d7d7e1fc5157e1e224208108d8
                 Grid.Row="0"/>
         </Grid>
     </Grid>

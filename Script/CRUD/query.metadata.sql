@@ -25,20 +25,20 @@ SELECT * FROM user_role_privs;
 SELECT *
 FROM user_sys_privs WHERE privilege LIKE '%ANY%';
 --  select all privileges which this user has on tables
-SELECT * FROM user_tab_privs;
+SELECT * FROM user_tab_privs WHERE grantee = 'X_SV0001';
 
 SELECT * FROM user_col_privs;
 -- select all privileges which specific role has
 SELECT *
-FROM role_tab_privs WHERE OWNER = 'C##ADMIN1';
+FROM role_tab_privs WHERE ROLE = 'XR_SV';
 
 
 -- DBA Views
 SELECT * FROM DBA_USERS;
 SELECT * FROM DBA_SYS_PRIVS;
 SELECT * FROM DBA_ROLES;
-SELECT * FROM DBA_ROLE_PRIVS WHERE GRANTEE = 'X_SV001';
-SELECT * FROM DBA_TAB_PRIVS WHERE TABLE_NAME = 'DBA_TAB_PRIVS';
+SELECT * FROM DBA_ROLE_PRIVS WHERE GRANTEE = 'X_SV0001';
+SELECT * FROM DBA_TAB_PRIVS WHERE GRANTEE LIKE 'XR_%';
 SELECT * FROM ROLE_TAB_PRIVS;
 SELECT * FROM DBA_COL_PRIVS;
 -- get all procedures of a user
@@ -49,8 +49,13 @@ SELECT * FROM v$pdbs;
 -- Query metadata of X_ADMIN schema
     -- Tables 
     SELECT *
-    FROM   all_tables
-    WHERE  owner = 'X_ADMIN';
+    FROM   all_objects
+    WHERE  owner = 'X_ADMIN' and object_type = 'TABLE';
+
+            SELECT *
+        FROM ALL_OBJECTS
+        WHERE OBJECT_TYPE = UPPER('Table') AND OWNER = 'X_ADMIN';
+
     -- Views
     SELECT view_name
     FROM   all_views
@@ -64,27 +69,28 @@ SELECT * FROM v$pdbs;
 
     -- Roles
     SELECT *
-    FROM   user_role_privs;
+    FROM   user_role_privs 
+    WHERE  grantee LIKE 'X_%';
     SELECT * 
-    FROM ROLE_TAB_PRIVS;
+    FROM ROLE_TAB_PRIVS WHERE ROLE LIKE 'XR_%';
     SELECT * FROM all_users;
 
-SELECT * from X_ADMIN.SINHVIEN;
-SELECT * from NHANVIEN;
-SELECT * FROM SESSION_ROLES;
+SELECT * 
+FROM DBA_POLICIES
+WHERE OBJECT_NAME = 'DANGKY';
 
-DECLARE
-    isSV INTEGER;
-    isGV INTEGER;
-    username VARCHAR2(10);
-BEGIN
-    username := SYS_CONTEXT('X_UNIVERITY_CONTEXT','USER_NAME');
-    DBMS_OUTPUT.PUT_LINE('username: ' || username);
-    isSV:= SYS_CONTEXT('X_UNIVERITY_CONTEXT','IS_SV');
-    DBMS_OUTPUT.PUT_LINE('isSV: ' || isSV);
-    isGV:= SYS_CONTEXT('X_UNIVERITY_CONTEXT','IS_GV');
-    DBMS_OUTPUT.PUT_LINE('isGV: ' || isGV);
-END;
-/
+SELECT *
+FROM   all_objects
+WHERE  owner = 'X_ADMIN'
+AND  object_type = 'VIEW';
 
-SELECT * FROM SESSION_ROLEs;
+SELECT *
+FROM USER_TAB_PRIVS;
+SELECT * 
+FROM USER_COL_PRIVS;
+SELECT * 
+FROM ROLE_TAB_PRIVS WHERE OWNER = 'X_ADMIN';
+
+SELECT * FROM ALL_VIEWS WHERE OWNER = 'X_ADMIN';
+
+-- if text != null then substr to get table name

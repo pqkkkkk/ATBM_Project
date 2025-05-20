@@ -13,6 +13,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Application.ViewModels.User;
+using System.Threading.Tasks;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -37,20 +38,76 @@ namespace Application.Views.User
             viewModel.UpdateSelectedTabView(selectedTab);
             TabViewChanged?.Invoke(selectedTab);
         }
+<<<<<<< HEAD
 
         private void OnDeleteClicked(object obj)
+=======
+        private async void OnAddClicked()
+>>>>>>> 4faf2d14a50582d7d7e1fc5157e1e224208108d8
         {
-            viewModel.DeleteItem();
+            int addResult =  viewModel.AddItem();
+            
+            if(addResult == 0)
+            {
+                var notification = new ContentDialog
+                {
+                    XamlRoot = this.XamlRoot,
+                    Title = "Error",
+                    Content = "You dont't have permission for add to this table",
+                    CloseButtonText = "OK"
+                };
+                await notification.ShowAsync();
+            }
         }
 
-        private void OnAddClicked()
+
+        private async void OnDeleteClicked(object item)
         {
-            viewModel.AddItem();
+            int deleteResult = viewModel.DeleteItem();
+            if (deleteResult == 0)
+            {
+                var notification = new ContentDialog
+                {
+                    XamlRoot = this.XamlRoot,
+                    Title = "Error",
+                    Content = "You dont't have permission for delete to this table",
+                    CloseButtonText = "OK"
+                };
+                await notification.ShowAsync();
+            }
         }
 
-        private void OnUpdateClicked()
+        private void CheckTheColumnOfRowIsEditable(object sender, Event.BeginningEditEvent e)
         {
-            viewModel.UpdateItem();
+            e.canEdit = viewModel.CheckTheColumnOfRowIsEditable(e.columnName);
+        }
+
+        private async void SaveItem(object item)
+        {
+            int result = viewModel.SaveItem(item);
+
+            if(result == 1)
+            {
+                var notification = new ContentDialog
+                {
+                    XamlRoot = this.XamlRoot,
+                    Title = "Success",
+                    Content = "Item saved successfully.",
+                    CloseButtonText = "OK"
+                };
+                await notification.ShowAsync();
+            }
+            else
+            {
+                var notification = new ContentDialog
+                {
+                    XamlRoot = this.XamlRoot,
+                    Title = "Error",
+                    Content = "Failed to save item.",
+                    CloseButtonText = "OK"
+                };
+                await notification.ShowAsync();
+            }
         }
     }
 }

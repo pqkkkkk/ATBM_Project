@@ -33,18 +33,28 @@ namespace Application.ViewModels.User
         public ObservableCollection<Model.NhanVien> nhanVienList { get; set; }
         public ObservableCollection<Model.SinhVien> sinhVienList { get; set; }
 
+<<<<<<< HEAD
+=======
+        public Dictionary<string, IList> editableColumnMap { get; set; }
+        public Dictionary<string, IList> permissionMap { get; set; }
+
+>>>>>>> 4faf2d14a50582d7d7e1fc5157e1e224208108d8
         public NVPDTViewModel()
         {
             selectedTabView = "DangKy";
             var serviceProvider = (Microsoft.UI.Xaml.Application.Current as App)?.serviceProvider;
             var sqlConnection = serviceProvider?.GetService(typeof(OracleConnection)) as OracleConnection;
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 4faf2d14a50582d7d7e1fc5157e1e224208108d8
             daoList = new Dictionary<string, IBaseDao>();
             daoList.Add("DangKy", new DangKyNVPDTDao(sqlConnection));
             daoList.Add("DonVi", new DonViSVDao());
             daoList.Add("HocPhan", new HocPhanSVDao());
             daoList.Add("MoMon", new MoMonNVPDTDao(sqlConnection));
+<<<<<<< HEAD
             daoList.Add("NhanVien", new NhanVienSVDao());
             daoList.Add("SinhVien", new SinhVienNVPDTDao(sqlConnection));
 
@@ -54,6 +64,16 @@ namespace Application.ViewModels.User
             hocPhanList = new ObservableCollection<Model.HocPhan>();
             moMonList = new ObservableCollection<Model.MoMon>(daoList["MoMon"].Load(null).Cast<Model.MoMon>().ToList());
             nhanVienList = new ObservableCollection<Model.NhanVien>();
+=======
+            daoList.Add("NhanVien", new NhanVienNVCBDao(sqlConnection));
+            daoList.Add("SinhVien", new SinhVienNVPDTDao(sqlConnection));
+
+            dangKyList = new ObservableCollection<Model.DangKy>(daoList["DangKy"].Load(null).Cast<Model.DangKy>().ToList());
+            donViList = new ObservableCollection<Model.DonVi>();
+            hocPhanList = new ObservableCollection<Model.HocPhan>();
+            moMonList = new ObservableCollection<Model.MoMon>(daoList["MoMon"].Load(null).Cast<Model.MoMon>().ToList());
+            nhanVienList = new ObservableCollection<Model.NhanVien>(daoList["NhanVien"].Load(null).Cast<Model.NhanVien>().ToList());
+>>>>>>> 4faf2d14a50582d7d7e1fc5157e1e224208108d8
             sinhVienList = new ObservableCollection<Model.SinhVien>(daoList["SinhVien"].Load(null).Cast<Model.SinhVien>().ToList());
 
             newItemList = new Dictionary<string, object>();
@@ -76,6 +96,27 @@ namespace Application.ViewModels.User
                 { "NhanVien", nhanVienList },
                 {"SinhVien", sinhVienList}
             };
+<<<<<<< HEAD
+=======
+            editableColumnMap = new Dictionary<string, IList>
+            {
+                { "DangKy", new List<string> { "maSV", "maMM"} },
+                { "DonVi", new List<string> { } },
+                { "HocPhan", new List<string> { "maHP", "tenHP" } },
+                { "MoMon", new List<string> {"maMM","maHP","maGV","hk","nam" } },
+                { "NhanVien", new List<string> {"dt"} },
+                { "SinhVien", new List<string> { "tinhTrang" } }
+            };
+            permissionMap = new Dictionary<string, IList>
+            {
+                { "DangKy", new List<string> {"delete", "insert","update", "select"} },
+                { "DonVi", new List<string> { } },
+                { "HocPhan", new List<string> { } },
+                { "MoMon", new List<string> {"select","update","insert","delete" } },
+                { "NhanVien", new List<string> {"select","update" } },
+                { "SinhVien", new List<string> {"select", "update" } }
+            };
+>>>>>>> 4faf2d14a50582d7d7e1fc5157e1e224208108d8
         }
         public int DeleteItem(object item)
         {
@@ -122,6 +163,18 @@ namespace Application.ViewModels.User
         {
             this.selectedTabView = selectedTabView;
         }
+<<<<<<< HEAD
+=======
+        public bool CheckTheColumnOfRowIsEditable(string columnName)
+        {
+            if (editableColumnMap.TryGetValue(selectedTabView, out var list))
+            {
+                return list.Contains(columnName);
+            }
+
+            return false;
+        }
+>>>>>>> 4faf2d14a50582d7d7e1fc5157e1e224208108d8
         private void updateItemList(Dictionary<string, object> itemList)
         {
             itemList["DangKy"] = new Model.DangKy();

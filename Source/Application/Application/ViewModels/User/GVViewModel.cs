@@ -13,12 +13,23 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections;
+using Application.DataAccess.MetaData.Privilege;
+using Application.DataAccess.MetaData.TableView;
 
 namespace Application.ViewModels.User
 {
     public class GVViewModel : INotifyPropertyChanged
     {
         public string selectedTabView { get; set; }
+<<<<<<< HEAD
+=======
+
+        private Helper.Helper helper;
+        private IPrivilegeDao privilegeDao;
+        private ITableViewDao tableViewDao;
+
+>>>>>>> 4faf2d14a50582d7d7e1fc5157e1e224208108d8
         public Dictionary<string, IBaseDao> daoList { get; set; }
         public ObservableCollection<Model.DangKy> dangKyList { get; set; }
         public ObservableCollection<Model.DonVi> donViList { get; set; }
@@ -27,19 +38,38 @@ namespace Application.ViewModels.User
         public ObservableCollection<Model.NhanVien> nhanVienList { get; set; }
         public ObservableCollection<Model.SinhVien> sinhVienList { get; set; }
 
+<<<<<<< HEAD
         public GVViewModel()
         {
+=======
+        private readonly Dictionary<string, IList> editableColumnMap;
+        private readonly Dictionary<string, IList> permissionMap;
+
+        public GVViewModel()
+        {
+            helper = new Helper.Helper();
+
+>>>>>>> 4faf2d14a50582d7d7e1fc5157e1e224208108d8
             selectedTabView = "DangKy";
             var serviceProvider = (Microsoft.UI.Xaml.Application.Current as App)?.serviceProvider;
             var sqlConnection = serviceProvider?.GetService(typeof(OracleConnection)) as OracleConnection;
 
+<<<<<<< HEAD
 
+=======
+            privilegeDao = new PrivilegeUserDao(sqlConnection);
+            tableViewDao = new TableViewUserDao(sqlConnection);
+>>>>>>> 4faf2d14a50582d7d7e1fc5157e1e224208108d8
             daoList = new Dictionary<string, IBaseDao>();
             daoList.Add("DangKy", new DangKyGVDao(sqlConnection));
             daoList.Add("DonVi", new DonViSVDao());
             daoList.Add("HocPhan", new HocPhanSVDao());
             daoList.Add("MoMon", new MoMonGVDao(sqlConnection));
+<<<<<<< HEAD
             daoList.Add("NhanVien", new NhanVienSVDao());
+=======
+            daoList.Add("NhanVien", new NhanVienNVCBDao(sqlConnection));
+>>>>>>> 4faf2d14a50582d7d7e1fc5157e1e224208108d8
             daoList.Add("SinhVien", new SinhVienGVDao(sqlConnection));
 
             dangKyList = new ObservableCollection<Model.DangKy>(daoList["DangKy"].Load(null).Cast<Model.DangKy>().ToList());
@@ -47,8 +77,99 @@ namespace Application.ViewModels.User
             donViList = new ObservableCollection<Model.DonVi>();
             hocPhanList = new ObservableCollection<Model.HocPhan>();
             moMonList = new ObservableCollection<Model.MoMon>(daoList["MoMon"].Load(null).Cast<Model.MoMon>().ToList());
+<<<<<<< HEAD
             nhanVienList = new ObservableCollection<Model.NhanVien>();
             sinhVienList = new ObservableCollection<Model.SinhVien>(daoList["SinhVien"].Load(null).Cast<Model.SinhVien>().ToList());
+=======
+            nhanVienList = new ObservableCollection<Model.NhanVien>(daoList["NhanVien"].Load(null).Cast<Model.NhanVien>().ToList());
+            sinhVienList = new ObservableCollection<Model.SinhVien>(daoList["SinhVien"].Load(null).Cast<Model.SinhVien>().ToList());
+
+            editableColumnMap = new Dictionary<string, IList>
+            {
+                { "DangKy", new List<string> {} },
+                { "DonVi", new List<string> { } },
+                { "HocPhan", new List<string> { } },
+                { "MoMon", new List<string> { } },
+                { "NhanVien", new List<string> {"dt" } },
+                { "SinhVien", new List<string> { } }
+            };
+            permissionMap = new Dictionary<string, IList>
+            {
+                { "DangKy", new List<string> { "select"} },
+                { "DonVi", new List<string> { } },
+                { "HocPhan", new List<string> { } },
+                { "MoMon", new List<string> {"select" } },
+                { "NhanVien", new List<string> {"select", "update" } },
+                { "SinhVien", new List<string> {"select" } }
+            };
+        }
+        public void LoadPrivilegeOfRole()
+        {
+            Dictionary<string, IList> editableColumnMapTest = new Dictionary<string, IList>();
+            Dictionary<string, IList> permissionMapTest = new Dictionary<string, IList>();
+
+            var tableList = (Microsoft.UI.Xaml.Application.Current as App)?.tableList;
+
+            if (tableList == null)
+                return;
+
+            foreach (var table in tableList)
+            {
+                permissionMapTest.Add(table.objectName, new List<string> { });
+                editableColumnMapTest.Add(table.objectName, new List<string> { });
+            }
+
+            List<Model.Privilege> privileges = privilegeDao.GetPrivilegesOfUserOnSpecificObjectType("XR_GV", "TABLE");
+
+            foreach (var privilege in privileges)
+            {
+                string tableName = privilege.tableName;
+                if (permissionMapTest.TryGetValue(tableName, out var permissionList))
+                {
+                    if (permissionList.Contains(privilege.privilege) == false)
+                        permissionList.Add(privilege.privilege);
+                }
+
+                if (editableColumnMapTest.TryGetValue(tableName, out var columnList))
+                {
+                    if (privilege.privilege == "UPDATE")
+                    {
+                        if (privilege.columnName != null)
+                            columnList.Add(privilege.columnName);
+                    }
+                }
+            }
+            foreach (var privilege in privileges)
+            {
+                string viewName = privilege.tableName;
+                string? textOfView = tableViewDao.GetTextOfView(viewName);
+                if (textOfView == null)
+                    continue;
+
+                string tableName = helper.GetTableNameFromTextOfView(textOfView);
+                if(tableName.Contains("X_ADMIN"))
+                {
+                    tableName = tableName.Replace("X_ADMIN.", "");
+                }
+
+                if (permissionMapTest.TryGetValue(tableName, out var permissionList))
+                {
+                    if (permissionList.Contains(privilege.privilege) == false)
+                        permissionList.Add(privilege.privilege);
+                }
+
+                if (editableColumnMapTest.TryGetValue(tableName, out var columnList))
+                {
+                    if (privilege.privilege == "UPDATE")
+                    {
+                        if (privilege.columnName != null)
+                            columnList.Add(privilege.columnName);
+                    }
+                }
+
+            }
+            return;
+>>>>>>> 4faf2d14a50582d7d7e1fc5157e1e224208108d8
         }
         public int DeleteItem()
         {
@@ -66,6 +187,18 @@ namespace Application.ViewModels.User
         {
             this.selectedTabView = selectedTabView;
         }
+<<<<<<< HEAD
+=======
+        public bool CheckTheColumnOfRowIsEditable(string columnName)
+        {
+            if (editableColumnMap.TryGetValue(selectedTabView, out var list))
+            {
+                return list.Contains(columnName);
+            }
+
+            return false;
+        }
+>>>>>>> 4faf2d14a50582d7d7e1fc5157e1e224208108d8
         public event PropertyChangedEventHandler? PropertyChanged;
     }
 }

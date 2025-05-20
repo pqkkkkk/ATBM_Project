@@ -38,7 +38,7 @@ namespace Application.DataAccess.MetaData.User
                     return check;
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 sqlConnection.Close();
                 return false;
@@ -68,7 +68,7 @@ namespace Application.DataAccess.MetaData.User
                     return true;
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 sqlConnection.Close();
                 return false;
@@ -96,7 +96,7 @@ namespace Application.DataAccess.MetaData.User
                     return true;
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 sqlConnection.Close();
                 return false;
@@ -111,7 +111,7 @@ namespace Application.DataAccess.MetaData.User
             {
                 sqlConnection.Open();
             }
-            using (OracleCommand cmd = new OracleCommand("X_ADMIN_getAllUsers", sqlConnection))
+            using (OracleCommand cmd = new OracleCommand("X_ADMIN.X_ADMIN_getAllUsers", sqlConnection))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.Add("user_list", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
@@ -171,7 +171,7 @@ namespace Application.DataAccess.MetaData.User
                     return true;
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 sqlConnection.Close();
                 return false;

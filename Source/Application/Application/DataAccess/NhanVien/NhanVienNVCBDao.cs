@@ -33,9 +33,16 @@ namespace Application.DataAccess.NhanVien
                 sqlConnection.Open();
             }
             List<Model.NhanVien> result = new List<Model.NhanVien>();
+<<<<<<< HEAD
             using (var cmd = new OracleCommand("SELECT * FROM X_ADMIN.view_NVCB_NV", sqlConnection))
             {
                 cmd.CommandType = CommandType.Text;
+=======
+            using (var cmd = new OracleCommand("X_ADMIN.X_ADMIN_Select_NHANVIEN_ForNVCB", sqlConnection))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("p_result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+>>>>>>> 4faf2d14a50582d7d7e1fc5157e1e224208108d8
 
                 using (var reader = cmd.ExecuteReader())
                 {
@@ -72,7 +79,11 @@ namespace Application.DataAccess.NhanVien
                 {
                     sqlConnection.Open();
                 }
+<<<<<<< HEAD
                 using (var cmd = new OracleCommand("X_ADMIN.X_ADMIN_update_DT", sqlConnection))
+=======
+                using (var cmd = new OracleCommand("X_ADMIN.X_ADMIN_Update_NHANVIEN_ForNVCB", sqlConnection))
+>>>>>>> 4faf2d14a50582d7d7e1fc5157e1e224208108d8
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("newDt", OracleDbType.Varchar2).Value = nv.dt;
@@ -87,7 +98,11 @@ namespace Application.DataAccess.NhanVien
                     return rowsAffected > 0;
                 }
             }
+<<<<<<< HEAD
             catch (Exception e)
+=======
+            catch (System.Exception e)
+>>>>>>> 4faf2d14a50582d7d7e1fc5157e1e224208108d8
             {
                 sqlConnection.Close();
                 return false;

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="Application.Views.TestUC"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Application.Views"
+    xmlns:converter="using:Application.Converts"
+    xmlns:model="using:Application.Model"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <converter:TabViewBGConverter x:Key="TabViewBGConverter"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <NavigationView
+            Grid.Column="0"
+            SelectionChanged="OnTabViewChanged"
+            MenuItemsSource="{x:Bind tableList}">
+            <NavigationView.MenuItemTemplate>
+                <DataTemplate
+                    x:DataType="model:OracleObject">
+                    <TextBlock Text="{x:Bind objectName}"/>
+                </DataTemplate>
+            </NavigationView.MenuItemTemplate>
+        </NavigationView>
+        <StackPanel
+            Grid.Column="1">
+            <Button
+                Background="White"
+                x:Name="btnTest"
+                Content="Test"
+                Foreground="Black"
+                Click="btnTest_Click"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"/>
+            <Button
+                Background="White"
+                x:Name="btnTest2"
+                Content="SubStr"
+                Foreground="Black"
+                Click="btnTest2_Click"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Margin="0,50,0,0"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
