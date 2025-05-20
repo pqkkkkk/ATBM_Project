@@ -51,7 +51,7 @@ namespace Application.ViewModels
                     return (int)CreateRoleResult.RoleCreationFailed;
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 return (int)CreateRoleResult.UnknownError;
             }

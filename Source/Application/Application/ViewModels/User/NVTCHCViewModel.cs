@@ -102,7 +102,7 @@ namespace Application.ViewModels.User
 
                 return 1;
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 Debug.WriteLine(ex.Message);
                 return 0;

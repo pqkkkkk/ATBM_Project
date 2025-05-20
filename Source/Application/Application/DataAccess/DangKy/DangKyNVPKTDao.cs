@@ -59,7 +59,7 @@ namespace Application.DataAccess.DangKy
                     }
                 }
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
             }
@@ -92,7 +92,7 @@ namespace Application.DataAccess.DangKy
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
                 return false;

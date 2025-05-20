@@ -51,9 +51,9 @@ namespace Application.DataAccess.MetaData.Privilege
                     return userPrivileges;
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
-                throw new Exception(e.Message);
+                throw new System.Exception(e.Message);
             }
         }
         public void GrantPrivileges(string name, string privilege,
@@ -74,9 +74,9 @@ namespace Application.DataAccess.MetaData.Privilege
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
-                throw new Exception(e.Message);
+                throw new System.Exception(e.Message);
             }
         }
         public void RevokePrivilegesOfUserOnSpecificObjectType(string name, string privilege, string table_name)
@@ -95,9 +95,9 @@ namespace Application.DataAccess.MetaData.Privilege
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
-                throw new Exception(e.Message);
+                throw new System.Exception(e.Message);
             }
         }
         public void CreateView(string viewName, string columns, string tableName, string condition)
@@ -117,9 +117,9 @@ namespace Application.DataAccess.MetaData.Privilege
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
-                throw new Exception(e.Message);
+                throw new System.Exception(e.Message);
             }
         }
         public List<Model.Privilege> GetPrivilegesOfUserOnSpecificObjectType(string name, string objectType)
@@ -154,9 +154,9 @@ namespace Application.DataAccess.MetaData.Privilege
                     return privileges;
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
-                throw new Exception(e.Message);
+                throw new System.Exception(e.Message);
             }
         }
         public List<Model.ColumnOfObject> GetColumns(string objectName)
@@ -186,9 +186,9 @@ namespace Application.DataAccess.MetaData.Privilege
                     return colums;
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
-                throw new Exception(e.Message);
+                throw new System.Exception(e.Message);
             }
         }
 
@@ -219,9 +219,9 @@ namespace Application.DataAccess.MetaData.Privilege
                     return userRoles;
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
-                throw new Exception(e.Message);
+                throw new System.Exception(e.Message);
             }
         }
 
@@ -253,9 +253,9 @@ namespace Application.DataAccess.MetaData.Privilege
                     return privileges;
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
-                throw new Exception(e.Message);
+                throw new System.Exception(e.Message);
             }
         }
 
@@ -288,9 +288,9 @@ namespace Application.DataAccess.MetaData.Privilege
                     return result;
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
-                throw new Exception(e.Message);
+                throw new System.Exception(e.Message);
             }
         }
 
@@ -328,9 +328,9 @@ namespace Application.DataAccess.MetaData.Privilege
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
-                throw new Exception(e.Message);
+                throw new System.Exception(e.Message);
             }
 
         }
@@ -367,9 +367,9 @@ namespace Application.DataAccess.MetaData.Privilege
                     return privileges;
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
-                throw new Exception(e.Message);
+                throw new System.Exception(e.Message);
             }
         }
 
@@ -387,9 +387,9 @@ namespace Application.DataAccess.MetaData.Privilege
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
-                throw new Exception(e.Message);
+                throw new System.Exception(e.Message);
             }
         }
 
@@ -410,9 +410,9 @@ namespace Application.DataAccess.MetaData.Privilege
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
-                throw new Exception(e.Message);
+                throw new System.Exception(e.Message);
             }
         }
 
@@ -446,9 +446,9 @@ namespace Application.DataAccess.MetaData.Privilege
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
-                throw new Exception(e.Message);
+                throw new System.Exception(e.Message);
             }
         }
 
@@ -478,9 +478,9 @@ namespace Application.DataAccess.MetaData.Privilege
                     return privileges;
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
-                throw new Exception(e.Message);
+                throw new System.Exception(e.Message);
             }
         }
 
@@ -510,9 +510,9 @@ namespace Application.DataAccess.MetaData.Privilege
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
-                throw new Exception(e.Message);
+                throw new System.Exception(e.Message);
             }
         }
     }

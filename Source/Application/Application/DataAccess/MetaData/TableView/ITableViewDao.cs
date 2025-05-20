@@ -10,5 +10,6 @@ namespace Application.DataAccess.MetaData.TableView
     public interface ITableViewDao
     {
         List<OracleObject> getAllTable();
+        string? GetTextOfView(string viewName);
     }
 }

@@ -40,7 +40,7 @@ namespace Application.DataAccess.MetaData.User
                     return check;
                 }
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 sqlConnection.Close();
                 return false;
@@ -68,7 +68,7 @@ namespace Application.DataAccess.MetaData.User
                 sqlConnection.Close();
                 return true;
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 sqlConnection.Close();
                 return false;
@@ -95,7 +95,7 @@ namespace Application.DataAccess.MetaData.User
                 sqlConnection.Close();
                 return true;
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 sqlConnection.Close();
                 return false;
@@ -123,7 +123,7 @@ namespace Application.DataAccess.MetaData.User
                 sqlConnection.Close();
                 return true;
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 sqlConnection.Close();
                 return false;

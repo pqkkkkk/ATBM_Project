@@ -87,7 +87,7 @@ namespace Application.DataAccess.SinhVien
                     return rowsAffected > 0;
                 }
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 return false;
             }

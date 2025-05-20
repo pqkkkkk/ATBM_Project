@@ -35,7 +35,7 @@ namespace Application.DataAccess.DangKy
                 sqlConnection.Close();
                 return true;
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 return false;
             }
@@ -65,7 +65,7 @@ namespace Application.DataAccess.DangKy
                     return rowsAffected > 0;
                 }
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 return false;
             }

@@ -178,7 +178,7 @@ namespace Application.ViewModels
             try
             {
                 if (selectedItem.type == "")
-                    throw new Exception("No item selected");
+                    throw new System.Exception("No item selected");
 
                 if (selectedItem.type == "systemprivilege")
                     privilegeDao.RevokeSystemPrivilegesFromUser(selectedUserOrRole.name, selectedItem.privilege);
@@ -191,7 +191,7 @@ namespace Application.ViewModels
                 itemList = new ObservableCollection<Privilege>(LoadData().Cast<Privilege>());
                 return 1;
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 if (e.Message == "No item selected")
                 {
@@ -213,7 +213,7 @@ namespace Application.ViewModels
                 roleDao.GrantRole(username, GetActualNameOfUserOrRole(roleName, false),withGrantOption);
                 LoadRoleOfSelectedUser();
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 Console.WriteLine(e.Message);
             }
@@ -224,7 +224,7 @@ namespace Application.ViewModels
             {
                 if(selectedRole.name == "")
                 {
-                    throw new Exception("No role selected");
+                    throw new System.Exception("No role selected");
                 }
 
                 string username = GetActualNameOfUserOrRole(selectedUserOrRole.name, selectedUserOrRole.isUser);
@@ -233,7 +233,7 @@ namespace Application.ViewModels
                 LoadRoleOfSelectedUser();
                 return 1;
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 if(e.Message == "No role selected")
                 {
@@ -253,7 +253,7 @@ namespace Application.ViewModels
             {
                 if (procedureName == "" || procedureName == null)
                 {
-                    throw new Exception("No procedure selected");
+                    throw new System.Exception("No procedure selected");
                 }
 
             
@@ -265,7 +265,7 @@ namespace Application.ViewModels
                 itemList = new ObservableCollection<Model.Privilege>(LoadData().Cast<Model.Privilege>());
                 return 1;
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 if (e.Message == "No procedure selected")
                 {
@@ -284,7 +284,7 @@ namespace Application.ViewModels
             {
                 if (privilege == "" || privilege == null)
                 {
-                    throw new Exception("No system privilege selected");
+                    throw new System.Exception("No system privilege selected");
                 }
 
                 string username = GetActualNameOfUserOrRole(selectedUserOrRole.name, selectedUserOrRole.isUser);
@@ -293,7 +293,7 @@ namespace Application.ViewModels
                 itemList = new ObservableCollection<Model.Privilege>(LoadData().Cast<Model.Privilege>());
                 return 1;
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 if (e.Message == "No system privilege selected")
                 {
@@ -312,11 +312,11 @@ namespace Application.ViewModels
             {
                 if (objectName == "" || objectName == null)
                 {
-                    throw new Exception("No table or view selected");
+                    throw new System.Exception("No table or view selected");
                 }
                 if (privilege == "" || privilege == null)
                 {
-                    throw new Exception("No privilege selected");
+                    throw new System.Exception("No privilege selected");
                 }
 
                 string username = GetActualNameOfUserOrRole(selectedUserOrRole.name, selectedUserOrRole.isUser);
@@ -337,7 +337,7 @@ namespace Application.ViewModels
                     
                     if (columns == "")
                     {
-                        throw new Exception("No column selected");
+                        throw new System.Exception("No column selected");
                     }
 
                     if(privilege.Equals("SELECT"))
@@ -351,7 +351,7 @@ namespace Application.ViewModels
                 itemList = new ObservableCollection<Model.Privilege>(LoadData().Cast<Model.Privilege>());
                 return 1;
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 if (e.Message == "No table or view selected" || e.Message == "No privilege selected" || e.Message == "No column selected")
                 {
@@ -370,7 +370,7 @@ namespace Application.ViewModels
             {
                 roleOfUsers = new ObservableCollection<Model.Role>(privilegeDao.GetAllRolesOfUser(GetActualNameOfUserOrRole(selectedUserOrRole.name, selectedUserOrRole.isUser)));
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 Console.WriteLine(e.Message);
             }
