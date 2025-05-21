@@ -84,6 +84,7 @@
                 DeleteClicked="OnDeleteClicked"
                 AddClicked="OnAddClicked"
                 BeginningEdit="CheckTheColumnOfRowIsEditable"
+                RowEditEnded="SaveItem"
                 Grid.Row="0"/>
         </Grid>
     </Grid>

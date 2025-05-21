@@ -4,7 +4,9 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Exception;
 using Oracle.ManagedDataAccess.Client;
+using Oracle.ManagedDataAccess.Types;
 
 namespace Application.DataAccess.NhanVien
 {
@@ -18,12 +20,12 @@ namespace Application.DataAccess.NhanVien
         }
         public bool Add(object obj)
         {
-            throw new NotImplementedException();
+            throw new NoPrivilegeException();
         }
 
         public bool Delete(object obj)
         {
-            throw new NotImplementedException();
+            throw new NoPrivilegeException();
         }
 
         public List<object> Load(object obj)
@@ -50,7 +52,8 @@ namespace Application.DataAccess.NhanVien
                             ngSinh = reader["ngSinh"] != DBNull.Value ? DateOnly.FromDateTime(Convert.ToDateTime(reader["ngSinh"])) : null,
                             dt = reader["dt"].ToString(),
                             vaiTro = reader["vaiTro"].ToString(),
-                            maDV = reader["maDV"].ToString()
+                            maDV = reader["maDV"].ToString(),
+                            isInDB = true
                         };
 
                         result.Add(nv);
@@ -63,7 +66,33 @@ namespace Application.DataAccess.NhanVien
 
         public bool Update(object obj)
         {
-            throw new NotImplementedException();
+            try
+            {
+                Model.NhanVien nv = (Model.NhanVien)obj;
+                if (sqlConnection.State != ConnectionState.Open)
+                {
+                    sqlConnection.Open();
+                }
+                using (var cmd = new OracleCommand("X_ADMIN.X_ADMIN_Update_NHANVIEN_ForNVCB", sqlConnection))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("newDt", OracleDbType.Varchar2).Value = nv.dt;
+                    cmd.Parameters.Add("username", OracleDbType.Varchar2).Value = nv.maNV;
+                    var rowParam = cmd.Parameters.Add("ROW_AFFECTED", OracleDbType.Int32);
+                    rowParam.Direction = ParameterDirection.Output;
+
+                    cmd.ExecuteNonQuery();
+                    int rowsAffected = ((OracleDecimal)rowParam.Value).ToInt32();
+
+                    sqlConnection.Close();
+                    return rowsAffected > 0;
+                }
+            }
+            catch (System.Exception e)
+            {
+                sqlConnection.Close();
+                return false;
+            }
         }
     }
 }
