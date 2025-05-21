@@ -44,7 +44,7 @@ namespace Application
                     mainContent.Children.Add(new NVCBDashboardUC());
                     break;
                 case "GV":
-                    mainContent.Children.Add(new TestUC());
+                    mainContent.Children.Add(new GVDashboardUC());
                     break;
                 case "NVPDT":
                     mainContent.Children.Add(new NVPDTDashboardUC());
