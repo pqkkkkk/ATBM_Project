@@ -156,6 +156,18 @@ namespace Application.ViewModels.User
 
             return false;
         }
+        private void updateItemList(Dictionary<string, object> itemList)
+        {
+            itemList["DangKy"] = new Model.DangKy()
+            {
+                isInDB = false
+            };
+            itemList["DonVi"] = new Model.DonVi();
+            itemList["HocPhan"] = new Model.HocPhan();
+            itemList["MoMon"] = new Model.MoMon();
+            itemList["NhanVien"] = new Model.NhanVien();
+            itemList["SinhVien"] = new Model.SinhVien();
+        }
         public event PropertyChangedEventHandler? PropertyChanged;
     }
 }
