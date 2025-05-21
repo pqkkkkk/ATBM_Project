@@ -53,7 +53,7 @@ namespace Application
                 string actual_role = "XR_" + role.ToUpper();
                 if (role != "ADMIN")
                 {
-                    var adminConnectString = $"User Id=X_ADMIN;Password=123;Data Source=localhost:1521/XEPDB1";
+                    var adminConnectString = $"User Id=X_ADMIN;Password=123;Data Source=localhost:1521/ORCLPDB";
                     var adminConnection = new OracleConnection(adminConnectString);
 
                     IPrivilegeDao privilegeDao = new PrivilegeXAdminDao(adminConnection);
@@ -74,9 +74,9 @@ namespace Application
                 string connectionString = "";
                 
                 if(username.Equals("sys"))
-                    connectionString = $"User Id={actual_username};Password={password};Data Source=localhost:1521/XEPDB1;DBA Privilege=SYSDBA";
+                    connectionString = $"User Id={actual_username};Password={password};Data Source=localhost:1521/ORCLPDB;DBA Privilege=SYSDBA";
                 else
-                    connectionString = $"User Id={actual_username};Password={password};Data Source=localhost:1521/XEPDB1";
+                    connectionString = $"User Id={actual_username};Password={password};Data Source=localhost:1521/ORCLPDB";
                 var sqlConnection = new OracleConnection(connectionString);
                 await sqlConnection.OpenAsync();
 

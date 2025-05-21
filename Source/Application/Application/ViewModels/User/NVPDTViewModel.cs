@@ -57,7 +57,10 @@ namespace Application.ViewModels.User
             sinhVienList = new ObservableCollection<Model.SinhVien>(daoList["SinhVien"].Load(null).Cast<Model.SinhVien>().ToList());
 
             newItemList = new Dictionary<string, object>();
-            newItemList.Add("DangKy", new Model.DangKy());
+            newItemList.Add("DangKy", new Model.DangKy()
+            {
+                isInDB = false
+            });
             newItemList.Add("DonVi", new Model.DonVi());
             newItemList.Add("HocPhan", new Model.HocPhan());
             newItemList.Add("MoMon", new Model.MoMon());
@@ -151,7 +154,10 @@ namespace Application.ViewModels.User
         }
         private void updateItemList(Dictionary<string, object> itemList)
         {
-            itemList["DangKy"] = new Model.DangKy();
+            itemList["DangKy"] = new Model.DangKy()
+            {
+                isInDB = false
+            };
             itemList["DonVi"] = new Model.DonVi();
             itemList["HocPhan"] = new Model.HocPhan();
             itemList["MoMon"] = new Model.MoMon();
