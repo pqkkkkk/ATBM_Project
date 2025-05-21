@@ -28,7 +28,7 @@ namespace Application.ViewModels.User
         private readonly Dictionary<string, IList> listMap;
         private readonly Dictionary<string, IList> editableColumnMap;
         private readonly Dictionary<string, IList> permissionMap;
-        private Dictionary<string, object> newItemList;
+        private Dictionary<string, Func<object>> newItemFactoryMap;
         public ObservableCollection<Model.NhanVien> nhanVienList { get; set; }
 
         public NVTCHCViewModel()
@@ -56,11 +56,15 @@ namespace Application.ViewModels.User
                 { "NhanVien", new List<string> { "select", "insert", "update", "delete" } },
             };
 
-            newItemList = new Dictionary<string, object>();
-            newItemList.Add("NhanVien", new Model.NhanVien()
+            newItemFactoryMap = new Dictionary<string, Func<object>>
             {
-                isInDB = false,
-            });
+                ["DangKy"] = () => new Model.DangKy { isInDB = false },
+                ["DonVi"] = () => new Model.DonVi(),
+                ["HocPhan"] = () => new Model.HocPhan(),
+                ["MoMon"] = () => new Model.MoMon(),
+                ["NhanVien"] = () => new Model.NhanVien() { isInDB = false},
+                ["SinhVien"] = () => new Model.SinhVien { isInDB = false },
+            };
         }
         public int DeleteItem(object item)
         {
@@ -120,8 +124,9 @@ namespace Application.ViewModels.User
             }
 
             if (listMap.TryGetValue(selectedTabView, out var list)
-                && newItemList.TryGetValue(selectedTabView, out var newItem))
+                && newItemFactoryMap.TryGetValue(selectedTabView, out var factory))
             {
+                var newItem = factory();
                 list.Add(newItem);
                 return 1;
             }
@@ -140,14 +145,6 @@ namespace Application.ViewModels.User
         public void UpdateSelectedTabView(string selectedTabView)
         {
             this.selectedTabView = selectedTabView;
-        }
-
-        public void resetNewItem()
-        {
-            newItemList[selectedTabView] = new Model.NhanVien()
-            {
-                isInDB = false,
-            };
         }
     }
 }

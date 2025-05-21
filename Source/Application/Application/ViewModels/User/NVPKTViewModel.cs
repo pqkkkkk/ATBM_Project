@@ -27,7 +27,7 @@ namespace Application.ViewModels.User
         private readonly Dictionary<string, IList> listMap;
         private readonly Dictionary<string, IList> editableColumnMap;
         private readonly Dictionary<string, IList> permissionMap;
-        private Dictionary<string, object> newItemList;
+        private Dictionary<string, Func<object>> newItemFactoryMap;
 
         public ObservableCollection<Model.DangKy> dangKyList { get; set; }
         public ObservableCollection<Model.NhanVien> nhanVienList { get; set; }
@@ -57,11 +57,15 @@ namespace Application.ViewModels.User
             {
                 { "DangKy", new List<string> { "select", "update"} },
             };
-            newItemList = new Dictionary<string, object>();
-            newItemList.Add("DangKy", new Model.DangKy()
+            newItemFactoryMap = new Dictionary<string, Func<object>>
             {
-                isInDB = false,
-            });
+                ["DangKy"] = () => new Model.DangKy { isInDB = false },
+                ["DonVi"] = () => new Model.DonVi(),
+                ["HocPhan"] = () => new Model.HocPhan(),
+                ["MoMon"] = () => new Model.MoMon(),
+                ["NhanVien"] = () => new Model.NhanVien(),
+                ["SinhVien"] = () => new Model.SinhVien { isInDB = false },
+            };
 
         }
         public int SaveItem(object item)
@@ -102,14 +106,6 @@ namespace Application.ViewModels.User
         public void UpdateSelectedTabView(string selectedTabView)
         {
             this.selectedTabView = selectedTabView;
-        }
-
-        public void resetNewItem()
-        {
-            newItemList[selectedTabView] = new Model.DangKy()
-            {
-                isInDB = false,
-            };
         }
     }
 }
