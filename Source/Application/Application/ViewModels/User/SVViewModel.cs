@@ -37,7 +37,7 @@ namespace Application.ViewModels.User
         public ObservableCollection<Model.NhanVien> nhanVienList { get; set; }
         public ObservableCollection<Model.SinhVien> sinhVienList { get; set; }
 
-        private Dictionary<string, object> newItemList;
+        private Dictionary<string, Func<object>> newItemFactoryMap;
         private readonly Dictionary<string, IList> editableColumnMap;
         private readonly Dictionary<string, IList> permissionMap;
         private readonly Dictionary<string, IList> listMap;
@@ -60,7 +60,6 @@ namespace Application.ViewModels.User
             daoList.Add("SinhVien", new SinhVienSVDao(sqlConnection));
 
             dangKyList = new ObservableCollection<Model.DangKy>(daoList["DangKy"].Load(null).Cast<Model.DangKy>().ToList());
-
             donViList = new ObservableCollection<Model.DonVi>();
             hocPhanList = new ObservableCollection<Model.HocPhan>();
             moMonList = new ObservableCollection<Model.MoMon>(daoList["MoMon"].Load(null).Cast<Model.MoMon>().ToList());
@@ -77,22 +76,14 @@ namespace Application.ViewModels.User
                 {"SinhVien", sinhVienList}
             };
 
-            newItemList = new Dictionary<string, object>
+            newItemFactoryMap = new Dictionary<string, Func<object>>
             {
-                { "DangKy", new Model.DangKy(){
-                    isInDB = false
-                    }
-                },
-                { "DonVi", new Model.DonVi() },
-                { "HocPhan", new Model.HocPhan() },
-                { "MoMon", new Model.MoMon() },
-                { "NhanVien", new Model.NhanVien() },
-                {
-                "SinhVien", new Model.SinhVien()
-                    {
-                        isInDB = false,
-                    }
-                }
+                ["DangKy"] = () => new Model.DangKy { isInDB = false },
+                ["DonVi"] = () => new Model.DonVi(),
+                ["HocPhan"] = () => new Model.HocPhan(),
+                ["MoMon"] = () => new Model.MoMon(),
+                ["NhanVien"] = () => new Model.NhanVien(),
+                ["SinhVien"] = () => new Model.SinhVien { isInDB = false },
             };
 
             permissionMap = new Dictionary<string, IList>
@@ -210,6 +201,7 @@ namespace Application.ViewModels.User
         {
             return 0;
         }
+
         public int AddItem()
         {
             if(permissionMap.TryGetValue(selectedTabView, out var permissionList))
@@ -221,8 +213,9 @@ namespace Application.ViewModels.User
             }
 
             if (listMap.TryGetValue(selectedTabView, out var list)
-              && newItemList.TryGetValue(selectedTabView, out var newItem))
+              && newItemFactoryMap.TryGetValue(selectedTabView, out var factory))
             {
+                var newItem = factory();
                 list.Add(newItem);
                 return 1;
             }

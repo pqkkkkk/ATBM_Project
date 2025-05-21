@@ -31,7 +31,7 @@ namespace Application.ViewModels.User
         private readonly Dictionary<string, IList> editableColumnMap;
         private readonly Dictionary<string, IList> listMap;
         private readonly Dictionary<string, IList> permissionMap;
-        private Dictionary<string, object> newItemList;
+        private Dictionary<string, Func<object>> newItemFactoryMap;
 
         public TRGDVViewModel()
         {
@@ -83,7 +83,15 @@ namespace Application.ViewModels.User
                 { "NhanVien", new List<string> {"select" } },
                 { "SinhVien", new List<string> { } }
             };
-            newItemList = new Dictionary<string, object>();
+            newItemFactoryMap = new Dictionary<string, Func<object>>
+            {
+                ["DangKy"] = () => new Model.DangKy { isInDB = false },
+                ["DonVi"] = () => new Model.DonVi(),
+                ["HocPhan"] = () => new Model.HocPhan(),
+                ["MoMon"] = () => new Model.MoMon(),
+                ["NhanVien"] = () => new Model.NhanVien(),
+                ["SinhVien"] = () => new Model.SinhVien { isInDB = false },
+            };
         }
         public int DeleteItem()
         {
@@ -104,8 +112,9 @@ namespace Application.ViewModels.User
             }
 
             if (listMap.TryGetValue(selectedTabView, out var list)
-              && newItemList.TryGetValue(selectedTabView, out var newItem))
+              && newItemFactoryMap.TryGetValue(selectedTabView, out var factory))
             {
+                var newItem = factory();
                 list.Add(newItem);
                 return 1;
             }

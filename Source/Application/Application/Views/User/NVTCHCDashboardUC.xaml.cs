@@ -126,7 +126,6 @@ namespace Application.Views.User
             }
 
             AddedNewItem?.Invoke();
-            nvTCHCviewModel.resetNewItem();
         }
        
         private async void OnUpdateClicked()
