@@ -104,7 +104,7 @@ namespace Application.ViewModels.User
                 result.Add(table.objectName, new List<string> { });
             }
 
-            List<Model.Privilege> privileges = privilegeDao.GetPrivilegesOfUserOnSpecificObjectType("XR_NVCTSV", "TABLE");
+            List<Model.Privilege> privileges = privilegeDao.GetPrivilegesOfUserOnSpecificObjectType("XR_NVTCHC", "TABLE");
 
             foreach (var privilege in privileges)
             {
@@ -151,7 +151,7 @@ namespace Application.ViewModels.User
                 result.Add(table.objectName, new List<string> { });
             }
 
-            List<Model.Privilege> privileges = privilegeDao.GetPrivilegesOfUserOnSpecificObjectType("XR_TRGDV", "TABLE");
+            List<Model.Privilege> privileges = privilegeDao.GetPrivilegesOfUserOnSpecificObjectType("XR_NVTCHC", "TABLE");
 
             foreach (var privilege in privileges)
             {
@@ -161,8 +161,17 @@ namespace Application.ViewModels.User
                 {
                     if (privilege.privilege == "UPDATE")
                     {
-                        if (privilege.columnName != null)
+                        if (privilege.columnName != "")
                             columnList.Add(privilege.columnName);
+                        else
+                        {
+                            List<string> columnListOfTable = tableViewDao.GetColumnListOfTableOrView(tableName);
+                            foreach (var column in columnListOfTable)
+                            {
+                                if (columnList.Contains(column) == false)
+                                    columnList.Add(column);
+                            }
+                        }
                     }
                 }
             }
@@ -183,8 +192,17 @@ namespace Application.ViewModels.User
                 {
                     if (privilege.privilege == "UPDATE")
                     {
-                        if (privilege.columnName != null)
+                        if (privilege.columnName != "")
                             columnList.Add(privilege.columnName);
+                        else
+                        {
+                            List<string> columnListOfTable = tableViewDao.GetColumnListOfTableOrView(viewName);
+                            foreach (var column in columnListOfTable)
+                            {
+                                if (columnList.Contains(column) == false)
+                                    columnList.Add(column);
+                            }
+                        }
                     }
                 }
 

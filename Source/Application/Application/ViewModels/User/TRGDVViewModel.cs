@@ -103,7 +103,7 @@ namespace Application.ViewModels.User
                 result.Add(table.objectName, new List<string> { });
             }
 
-            List<Model.Privilege> privileges = privilegeDao.GetPrivilegesOfUserOnSpecificObjectType("XR_TRGDV", "TABLE");
+            List<Model.Privilege> privileges = privilegeDao.GetPrivilegesOfUserOnSpecificObjectType("XR_NVTCHC", "TABLE");
 
             foreach (var privilege in privileges)
             {
@@ -122,7 +122,7 @@ namespace Application.ViewModels.User
                     continue;
 
                 string tableName = helper.GetTableNameFromTextOfView(textOfView);
-                if(tableName.Contains("X_ADMIN") == true)
+                if (tableName.Contains("X_ADMIN") == true)
                 {
                     tableName = tableName.Replace("X_ADMIN.", "");
                 }
@@ -136,7 +136,7 @@ namespace Application.ViewModels.User
             }
             return result;
         }
-        public Dictionary<string,IList> LoadEditableColumnsOfUser()
+        public Dictionary<string, IList> LoadEditableColumnsOfUser()
         {
             Dictionary<string, IList> result = new Dictionary<string, IList>();
 
@@ -150,7 +150,7 @@ namespace Application.ViewModels.User
                 result.Add(table.objectName, new List<string> { });
             }
 
-            List<Model.Privilege> privileges = privilegeDao.GetPrivilegesOfUserOnSpecificObjectType("XR_TRGDV", "TABLE");
+            List<Model.Privilege> privileges = privilegeDao.GetPrivilegesOfUserOnSpecificObjectType("XR_NVTCHC", "TABLE");
 
             foreach (var privilege in privileges)
             {
@@ -160,8 +160,17 @@ namespace Application.ViewModels.User
                 {
                     if (privilege.privilege == "UPDATE")
                     {
-                        if (privilege.columnName != null)
+                        if (privilege.columnName != "")
                             columnList.Add(privilege.columnName);
+                        else
+                        {
+                            List<string> columnListOfTable = tableViewDao.GetColumnListOfTableOrView(tableName);
+                            foreach (var column in columnListOfTable)
+                            {
+                                if (columnList.Contains(column) == false)
+                                    columnList.Add(column);
+                            }
+                        }
                     }
                 }
             }
@@ -173,7 +182,7 @@ namespace Application.ViewModels.User
                     continue;
 
                 string tableName = helper.GetTableNameFromTextOfView(textOfView);
-                if(tableName.Contains("X_ADMIN") == true)
+                if (tableName.Contains("X_ADMIN") == true)
                 {
                     tableName = tableName.Replace("X_ADMIN.", "");
                 }
@@ -182,8 +191,17 @@ namespace Application.ViewModels.User
                 {
                     if (privilege.privilege == "UPDATE")
                     {
-                        if (privilege.columnName != null)
+                        if (privilege.columnName != "")
                             columnList.Add(privilege.columnName);
+                        else
+                        {
+                            List<string> columnListOfTable = tableViewDao.GetColumnListOfTableOrView(viewName);
+                            foreach (var column in columnListOfTable)
+                            {
+                                if (columnList.Contains(column) == false)
+                                    columnList.Add(column);
+                            }
+                        }
                     }
                 }
 
