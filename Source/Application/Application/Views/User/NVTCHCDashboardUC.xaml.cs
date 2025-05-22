@@ -134,7 +134,7 @@ namespace Application.Views.User
 
         private void CheckTheColumnOfRowIsEditable(object sender, Event.BeginningEditEvent e)
         {
-            e.canEdit = nvTCHCviewModel.CheckTheColumnOfRowIsEditable(e.columnName);
+            e.canEdit = nvTCHCviewModel.CheckTheColumnOfRowIsEditable(e.columnName.ToUpper());
         }
     }
 }

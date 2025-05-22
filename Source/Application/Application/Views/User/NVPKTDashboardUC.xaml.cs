@@ -104,7 +104,7 @@ namespace Application.Views.User
         }
         private void CheckCanEditSelectedColumn(object sender, Event.BeginningEditEvent e)
         {
-            e.canEdit = nvPKTViewModel.CheckTheColumnOfRowIsEditable(e.columnName);
+            e.canEdit = nvPKTViewModel.CheckTheColumnOfRowIsEditable(e.columnName.ToUpper());
         }
     }
 }

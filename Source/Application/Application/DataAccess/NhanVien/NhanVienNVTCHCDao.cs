@@ -104,7 +104,7 @@ namespace Application.DataAccess.NhanVien
                                 maNV = reader["maNV"].ToString(),
                                 hoTen = reader["hoTen"].ToString(),
                                 phai = reader["phai"].ToString(),
-                                ngSinh = DateOnly.FromDateTime(Convert.ToDateTime(reader["ngSinh"])),
+                                ngSinh = Convert.ToDateTime(reader["ngSinh"]),
                                 luong = reader["luong"] != DBNull.Value ? Convert.ToInt32(reader["luong"]) : 0,
                                 phuCap = reader["phuCap"] != DBNull.Value ? Convert.ToInt32(reader["phuCap"]) : 0,
                                 dt = reader["dt"].ToString(),
@@ -141,14 +141,14 @@ namespace Application.DataAccess.NhanVien
                     cmd.CommandType = CommandType.StoredProcedure;
                     var nv = (Model.NhanVien)obj;
                     cmd.Parameters.Add("MaNLD", OracleDbType.Varchar2).Value = nv.maNV;
-                    cmd.Parameters.Add("HoTen", OracleDbType.Varchar2).Value = nv.hoTen;
-                    cmd.Parameters.Add("PHAI", OracleDbType.Varchar2).Value = nv.phai;
+                    cmd.Parameters.Add("p_hoten", OracleDbType.Varchar2).Value = nv.hoTen;
+                    cmd.Parameters.Add("p_PHAI", OracleDbType.Varchar2).Value = nv.phai;
                     cmd.Parameters.Add("NgaySinh", OracleDbType.Date).Value = nv.ngSinh;
-                    cmd.Parameters.Add("Luong", OracleDbType.Int32).Value = nv.luong;
-                    cmd.Parameters.Add("PhuCap", OracleDbType.Int32).Value = nv.phuCap;
+                    cmd.Parameters.Add("p_luong", OracleDbType.Int32).Value = nv.luong;
+                    cmd.Parameters.Add("p_phuCap", OracleDbType.Int32).Value = nv.phuCap;
                     cmd.Parameters.Add("SDT", OracleDbType.Varchar2).Value = nv.dt;
-                    cmd.Parameters.Add("VaiTro", OracleDbType.Varchar2).Value = nv.vaiTro;
-                    cmd.Parameters.Add("MaDV", OracleDbType.Varchar2).Value = nv.maDV;
+                    cmd.Parameters.Add("p_VaiTro", OracleDbType.Varchar2).Value = nv.vaiTro;
+                    cmd.Parameters.Add("p_MaDV", OracleDbType.Varchar2).Value = nv.maDV;
 
                     cmd.ExecuteNonQuery();
                 }
