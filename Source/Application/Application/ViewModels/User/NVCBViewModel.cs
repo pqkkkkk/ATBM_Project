@@ -23,6 +23,7 @@ namespace Application.ViewModels.User
     public class NVCBViewModel : INotifyPropertyChanged
     {
         public string selectedTabView { get; set; }
+        public ObservableCollection<Model.OracleObject> tabViewList { get; set; }
 
         private Helper.Helper helper;
         private IPrivilegeDao privilegeDao;
@@ -45,7 +46,10 @@ namespace Application.ViewModels.User
         {
             helper = new Helper.Helper();
 
+            var tableList = (Microsoft.UI.Xaml.Application.Current as App)?.tableList;
+            tabViewList = new ObservableCollection<Model.OracleObject>(tableList);
             selectedTabView = "DANGKY";
+
             var serviceProvider = (Microsoft.UI.Xaml.Application.Current as App)?.serviceProvider;
             var sqlConnection = serviceProvider?.GetService(typeof(OracleConnection)) as OracleConnection;
 

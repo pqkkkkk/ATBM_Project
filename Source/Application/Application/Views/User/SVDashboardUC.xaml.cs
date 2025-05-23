@@ -31,13 +31,6 @@ namespace Application.Views.User
             this.InitializeComponent();
             TabViewChanged += dataContent.SetDataSource;
         }
-
-        private void OnTabViewChanged(object sender, RoutedEventArgs e)
-        {
-            string selectedTab = (sender as Button).Tag.ToString();
-            viewModel.UpdateSelectedTabView(selectedTab);
-            TabViewChanged?.Invoke(selectedTab);
-        }
         private async void OnAddClicked()
         {
             int addResult =  viewModel.AddItem();
@@ -103,6 +96,18 @@ namespace Application.Views.User
                 };
                 await notification.ShowAsync();
             }
+        }
+
+        private void OnTabViewChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+        {
+            var selectedItem = sender.SelectedItem as Model.OracleObject;
+            if (selectedItem == null)
+            {
+                return;
+            }
+            string selectedTab = selectedItem.objectName;
+            viewModel.UpdateSelectedTabView(selectedTab);
+            TabViewChanged?.Invoke(selectedTab);
         }
     }
 }

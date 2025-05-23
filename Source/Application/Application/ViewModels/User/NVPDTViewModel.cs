@@ -26,6 +26,7 @@ namespace Application.ViewModels.User
     public class NVPDTViewModel : INotifyPropertyChanged
     {
         public string selectedTabView { get; set; }
+        public ObservableCollection<Model.OracleObject> tabViewList { get; set; }
 
         private Helper.Helper helper;
         private IPrivilegeDao privilegeDao;
@@ -50,6 +51,8 @@ namespace Application.ViewModels.User
         {
             helper = new Helper.Helper();
 
+            var tableList = (Microsoft.UI.Xaml.Application.Current as App)?.tableList;
+            tabViewList = new ObservableCollection<Model.OracleObject>(tableList);
             selectedTabView = "DANGKY";
 
             var serviceProvider = (Microsoft.UI.Xaml.Application.Current as App)?.serviceProvider;
@@ -284,8 +287,14 @@ namespace Application.ViewModels.User
         }
         public int DeleteItem(object item)
         {
-            if (daoList[selectedTabView.ToUpper()].Delete(item)) 
+            if (daoList[selectedTabView.ToUpper()].Delete(item))
+            {
+                if (listMap.TryGetValue(selectedTabView.ToUpper(), out var list))
+                {
+                    list.Remove(item);
+                }
                 return 1;
+            }
             return 0;
         }
         public int UpdateItem()
@@ -306,6 +315,14 @@ namespace Application.ViewModels.User
                     {
                         item.isInDB = true;
                         return 1;
+                    }
+                    else
+                    {
+                        if(listMap.TryGetValue(selectedTabView.ToUpper(), out var list))
+                        {
+                            list.Remove(item);
+                        }
+                        throw new System.Exception("Add failed");
                     }
                 }
             }

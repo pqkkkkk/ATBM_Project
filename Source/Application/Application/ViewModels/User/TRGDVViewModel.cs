@@ -19,6 +19,7 @@ using Application.DataAccess.MetaData.TableView;
 using Application.Helper;
 using Application.Model;
 using System.Diagnostics;
+using Microsoft.UI.Xaml.Documents;
 
 namespace Application.ViewModels.User
 {
@@ -27,7 +28,9 @@ namespace Application.ViewModels.User
         private readonly IPrivilegeDao privilegeDao;
         private readonly ITableViewDao tableViewDao;
         private readonly Helper.Helper helper;
+
         public string selectedTabView { get; set; }
+        public ObservableCollection<Model.OracleObject> tabViewList { get; set; }
         public Dictionary<string, IBaseDao> daoList { get; set; }
         public ObservableCollection<Model.DangKy> dangKyList { get; set; }
         public ObservableCollection<Model.DonVi> donViList { get; set; }
@@ -45,7 +48,10 @@ namespace Application.ViewModels.User
         {
             helper = new Helper.Helper();
 
+            var tableList = (Microsoft.UI.Xaml.Application.Current as App)?.tableList;
+            tabViewList = new ObservableCollection<Model.OracleObject>(tableList);
             selectedTabView = "DANGKY";
+
             var serviceProvider = (Microsoft.UI.Xaml.Application.Current as App)?.serviceProvider;
             var sqlConnection = serviceProvider?.GetService(typeof(OracleConnection)) as OracleConnection;
 
@@ -223,11 +229,9 @@ namespace Application.ViewModels.User
 
                 if (item is IPersistable e)
                 {
-                    bool updateResult = false;
-
                     if (e.isInDB == true)
                     {
-                       updateResult =  dao.Update(item);
+                        bool updateResult =  dao.Update(item);
                         if (updateResult == false)
                         {
                             throw new System.Exception("Update failed");
@@ -235,7 +239,15 @@ namespace Application.ViewModels.User
                     }
                     else
                     {
-                        dao.Add(item);
+                        bool result = dao.Add(item);
+                        if (result == false)
+                        {
+                            if(listMap.TryGetValue(selectedTabView.ToUpper(), out var list))
+                            {
+                                list.Remove(item);
+                            }
+                            throw new System.Exception("Insert failed");
+                        }
                         e.isInDB = true;
                     }
                 }

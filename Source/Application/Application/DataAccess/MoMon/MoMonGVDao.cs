@@ -32,7 +32,7 @@ namespace Application.DataAccess.MoMon
                 sqlConnection.Open();
             }
             List<Model.MoMon> result = new List<Model.MoMon>();
-            using (var cmd = new OracleCommand("SELECT * FROM X_ADMIN.view_GV_MM", sqlConnection))
+            using (var cmd = new OracleCommand("SELECT * FROM X_ADMIN.view_GV_MOMON", sqlConnection))
             {
                 cmd.CommandType = CommandType.Text;
 

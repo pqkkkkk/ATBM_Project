@@ -29,6 +29,8 @@ namespace Application.ViewModels.User
         private readonly OracleConnection sqlConnection;
 
         public string selectedTabView { get; set; }
+        public ObservableCollection<Model.OracleObject> tabViewList { get; set; }
+
         public IPrivilegeDao privilegeDao { get; set; }
         public ITableViewDao tableViewDao { get; set; }
         public Dictionary<string, IBaseDao> daoList { get; set; }
@@ -42,6 +44,8 @@ namespace Application.ViewModels.User
         {
             helper = new Helper.Helper();
 
+            var tableList = (Microsoft.UI.Xaml.Application.Current as App)?.tableList;
+            tabViewList = new ObservableCollection<Model.OracleObject>(tableList);
             selectedTabView = "DANGKY";
 
             var serviceProvider = (Microsoft.UI.Xaml.Application.Current as App)?.serviceProvider;
@@ -213,12 +217,27 @@ namespace Application.ViewModels.User
                 {
                     if (e.isInDB == true)
                     {
-                        daoList[selectedTabView].Update(item);
+                        
+                        bool result =  daoList[selectedTabView].Update(item);
+
+                        if(result == false)
+                        {
+                            throw new System.Exception("Update failed");
+                        }
                     }
                     else
                     {
-                        daoList[selectedTabView].Add(item);
-                        e.isInDB = true;
+                        bool result =  daoList[selectedTabView].Add(item);
+                        if (result == false)
+                        {
+                            if(listMap.TryGetValue(selectedTabView.ToUpper(), out var list))
+                            {
+                                list.Remove(item);
+                            }
+                            throw new System.Exception("Insert failed");
+                        }
+                        else
+                            e.isInDB = true;
                     }
                 }
 

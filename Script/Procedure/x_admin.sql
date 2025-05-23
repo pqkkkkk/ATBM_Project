@@ -32,7 +32,7 @@
             RAISE;
     END;
     /
-
+    GRANT EXECUTE ON X_ADMIN_createUser TO XR_NVTCHC;
 -- Xoá user
     CREATE OR REPLACE PROCEDURE X_ADMIN_deleteUser(user_name in VARCHAR2)
     AS
@@ -45,6 +45,7 @@
         RAISE;
     END;
     /
+    GRANT EXECUTE ON X_ADMIN_deleteUser TO XR_NVTCHC;
 
     CREATE OR REPLACE PROCEDURE X_ADMIN_updatePassword(
         username in VARCHAR2,
@@ -235,6 +236,7 @@
             RAISE;
     END;
     /
+    GRANT EXECUTE ON X_ADMIN_grantRole TO XR_NVTCHC;
 -- revoke role khỏi 1 user
     CREATE OR REPLACE PROCEDURE X_ADMIN_revokeRoleFromUser(
         role_ IN VARCHAR2,        

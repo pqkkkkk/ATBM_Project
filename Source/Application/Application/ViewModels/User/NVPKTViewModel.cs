@@ -19,6 +19,7 @@ using Application.DataAccess.NhanVien;
 using Application.DataAccess.SinhVien;
 using Application.Helper;
 using Application.Model;
+using Microsoft.UI.Xaml.Documents;
 using Oracle.ManagedDataAccess.Client;
 
 namespace Application.ViewModels.User
@@ -28,7 +29,10 @@ namespace Application.ViewModels.User
         public event PropertyChangedEventHandler? PropertyChanged;
         private Helper.Helper helper;
         private readonly OracleConnection sqlConnection;
+
         public string selectedTabView { get; set; }
+        public ObservableCollection<Model.OracleObject> tabViewList { get; set; }
+
         public IPrivilegeDao privilegeDao { get; set; }
         public ITableViewDao tableViewDao { get; set; }
         public Dictionary<string, IBaseDao> daoList { get; set; }
@@ -43,6 +47,8 @@ namespace Application.ViewModels.User
         {
             helper = new Helper.Helper();
 
+            var tableList = (Microsoft.UI.Xaml.Application.Current as App)?.tableList;
+            tabViewList = new ObservableCollection<Model.OracleObject>(tableList);
             selectedTabView = "DANGKY";
 
             var serviceProvider = (Microsoft.UI.Xaml.Application.Current as App)?.serviceProvider;
@@ -206,7 +212,15 @@ namespace Application.ViewModels.User
                     }
                     else
                     {
-                        daoList[selectedTabView].Add(item);
+                        bool result =  daoList[selectedTabView].Add(item);
+                        if (!result)
+                        {
+                            if (listMap.TryGetValue(selectedTabView, out var list))
+                            {
+                                list.Remove(item);
+                            }
+                            throw new System.Exception("Add failed");
+                        }
                         e.isInDB = true;
                     }
                 }

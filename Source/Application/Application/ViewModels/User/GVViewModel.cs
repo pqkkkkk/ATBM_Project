@@ -22,6 +22,7 @@ namespace Application.ViewModels.User
     public class GVViewModel : INotifyPropertyChanged
     {
         public string selectedTabView { get; set; }
+        public ObservableCollection<Model.OracleObject> tabViewList { get; set; }
 
         private Helper.Helper helper;
         private IPrivilegeDao privilegeDao;
@@ -42,7 +43,10 @@ namespace Application.ViewModels.User
         {
             helper = new Helper.Helper();
 
+            var tableList = (Microsoft.UI.Xaml.Application.Current as App)?.tableList;
+            tabViewList = new ObservableCollection<Model.OracleObject>(tableList);
             selectedTabView = "DANGKY";
+
             var serviceProvider = (Microsoft.UI.Xaml.Application.Current as App)?.serviceProvider;
             var sqlConnection = serviceProvider?.GetService(typeof(OracleConnection)) as OracleConnection;
 
@@ -50,10 +54,10 @@ namespace Application.ViewModels.User
             tableViewDao = new TableViewUserDao(sqlConnection);
             daoList = new Dictionary<string, IBaseDao>();
             daoList.Add("DANGKY", new DangKyGVDao(sqlConnection));
-            daoList.Add("DonVi", new DonViSVDao());
-            daoList.Add("HocPhan", new HocPhanSVDao());
+            daoList.Add("DONVI", new DonViSVDao());
+            daoList.Add("HOCPHAN", new HocPhanSVDao());
             daoList.Add("MOMON", new MoMonGVDao(sqlConnection));
-            daoList.Add("NhanVien", new NhanVienNVCBDao(sqlConnection));
+            daoList.Add("NHANVIEN", new NhanVienNVCBDao(sqlConnection));
             daoList.Add("SINHVIEN", new SinhVienGVDao(sqlConnection));
 
             dangKyList = new ObservableCollection<Model.DangKy>(daoList["DANGKY"].Load(null).Cast<Model.DangKy>().ToList());
@@ -61,7 +65,7 @@ namespace Application.ViewModels.User
             donViList = new ObservableCollection<Model.DonVi>();
             hocPhanList = new ObservableCollection<Model.HocPhan>();
             moMonList = new ObservableCollection<Model.MoMon>(daoList["MOMON"].Load(null).Cast<Model.MoMon>().ToList());
-            nhanVienList = new ObservableCollection<Model.NhanVien>(daoList["NhanVien"].Load(null).Cast<Model.NhanVien>().ToList());
+            nhanVienList = new ObservableCollection<Model.NhanVien>(daoList["NHANVIEN"].Load(null).Cast<Model.NhanVien>().ToList());
             sinhVienList = new ObservableCollection<Model.SinhVien>(daoList["SINHVIEN"].Load(null).Cast<Model.SinhVien>().ToList());
 
             LoadPrivilegeOfRole();

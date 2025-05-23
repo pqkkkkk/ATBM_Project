@@ -25,6 +25,7 @@ namespace Application.ViewModels.User
     {
         private Helper.Helper helper;
         public string selectedTabView { get; set; }
+        public ObservableCollection<Model.OracleObject> tabViewList { get; set; }
 
         public IPrivilegeDao privilegeDao { get; set; }
         public ITableViewDao tableViewDao { get; set; }
@@ -45,7 +46,10 @@ namespace Application.ViewModels.User
         {
             helper = new Helper.Helper();
 
+            var tableList = (Microsoft.UI.Xaml.Application.Current as App)?.tableList;
+            tabViewList = new ObservableCollection<Model.OracleObject>(tableList);
             selectedTabView = "DANGKY";
+
             var serviceProvider = (Microsoft.UI.Xaml.Application.Current as App)?.serviceProvider;
             var sqlConnection = serviceProvider?.GetService(typeof(OracleConnection)) as OracleConnection;
 
@@ -219,11 +223,24 @@ namespace Application.ViewModels.User
                 {
                     if (e.isInDB == true)
                     {
-                        dao.Update(item);
+                        bool result = dao.Update(item);
+
+                        if (!result)
+                        {
+                            throw new System.Exception("Update failed");
+                        }
                     }
                     else
                     {
-                        dao.Add(item);
+                        bool result = dao.Add(item);
+                        if (!result)
+                        {
+                            if(listMap.TryGetValue(selectedTabView.ToUpper(), out var list))
+                            {
+                                list.Remove(item);
+                            }
+                            throw new System.Exception("Insert failed");
+                        }
                         e.isInDB = true;
                     }
                 }

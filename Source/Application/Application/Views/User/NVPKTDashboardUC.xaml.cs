@@ -22,27 +22,19 @@ namespace Application.Views.User
 {
     public sealed partial class NVPKTDashboardUC : UserControl
     {
-        public NVPKTViewModel nvPKTViewModel { get; set; }
+        public NVPKTViewModel viewModel { get; set; }
         public event TabViewChangedEventHandler? TabViewChanged;
         public NVPKTDashboardUC()
         {
-            nvPKTViewModel = new NVPKTViewModel();
+            viewModel = new NVPKTViewModel();
             this.InitializeComponent();
             TabViewChanged += dataContent.SetDataSource;
             dataContent.BeginningEdit += CheckCanEditSelectedColumn;
 
         }
-
-        private void OnTabViewChanged(object sender, RoutedEventArgs e)
-        {
-            string selectedTab = (sender as Button).Tag.ToString();
-            nvPKTViewModel.UpdateSelectedTabView(selectedTab);
-            TabViewChanged?.Invoke(selectedTab);
-        }
-
         private async void SaveItem(object item)
         {
-            int result = nvPKTViewModel.SaveItem(item);
+            int result = viewModel.SaveItem(item);
 
             if (result == 1)
             {
@@ -104,7 +96,19 @@ namespace Application.Views.User
         }
         private void CheckCanEditSelectedColumn(object sender, Event.BeginningEditEvent e)
         {
-            e.canEdit = nvPKTViewModel.CheckTheColumnOfRowIsEditable(e.columnName.ToUpper());
+            e.canEdit = viewModel.CheckTheColumnOfRowIsEditable(e.columnName.ToUpper());
+        }
+
+        private void OnTabViewChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+        {
+            var selectedItem = sender.SelectedItem as Model.OracleObject;
+            if (selectedItem == null)
+            {
+                return;
+            }
+            string selectedTab = selectedItem.objectName;
+            viewModel.UpdateSelectedTabView(selectedTab);
+            TabViewChanged?.Invoke(selectedTab);
         }
     }
 }

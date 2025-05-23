@@ -33,14 +33,6 @@ namespace Application.Views.User
             this.InitializeComponent();
             TabViewChanged += dataContent.SetDataSource;
         }
-
-        private void OnTabViewChanged(object sender, RoutedEventArgs e)
-        {
-            string selectedTab = (sender as Button).Tag.ToString();
-            viewModel.UpdateSelectedTabView(selectedTab);
-            TabViewChanged?.Invoke(selectedTab);
-        }
-
         private void CheckTheColumnOfRowIsEditable(object sender, Event.BeginningEditEvent e)
         {
             e.canEdit = viewModel.CheckTheColumnOfRowIsEditable(e.columnName);
@@ -112,5 +104,16 @@ namespace Application.Views.User
 
         }
 
+        private void OnTabViewChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+        {
+            var selectedItem = sender.SelectedItem as Model.OracleObject;
+            if (selectedItem == null)
+            {
+                return;
+            }
+            string selectedTab = selectedItem.objectName;
+            viewModel.UpdateSelectedTabView(selectedTab);
+            TabViewChanged?.Invoke(selectedTab);
+        }
     }
 }
