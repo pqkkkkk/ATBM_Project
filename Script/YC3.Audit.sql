@@ -35,7 +35,7 @@ SELECT * FROM UNIFIED_AUDIT_TRAIL ORDER BY EVENT_TIMESTAMP DESC;
 ALTER SYSTEM SET audit_sys_operations=TRUE SCOPE=SPFILE;
 
 
-SELECT * FROM DBA_AUDIT_POLICIES
+SELECT * FROM DBA_AUDIT_POLICIES;
 
 -----------------------------3.1--------------------------------
 --Ta dùng Fine-grained Audit để thực hiện audit

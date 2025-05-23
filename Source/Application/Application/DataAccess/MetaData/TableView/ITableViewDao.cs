@@ -12,6 +12,5 @@ namespace Application.DataAccess.MetaData.TableView
         List<OracleObject> getAllTable();
         string? GetTextOfView(string viewName);
         List<string> GetColumnListOfTableOrView(string tableName);
-
     }
 }

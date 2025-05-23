@@ -33,8 +33,8 @@ namespace Application.DataAccess.MetaData.TableView
 
                 const string owner = "X_ADMIN";
                 const string sql = @"SELECT COLUMN_NAME 
-                             FROM ALL_TAB_COLUMNS 
-                             WHERE OWNER = :owner AND TABLE_NAME = :tableName";
+                                     FROM ALL_TAB_COLUMNS 
+                                     WHERE OWNER = :owner AND TABLE_NAME = :tableName";
 
                 using var cmd = new OracleCommand(sql, sqlConnection);
                 cmd.CommandType = CommandType.Text;

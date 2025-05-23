@@ -86,59 +86,91 @@ namespace Application.ViewModels.User
                 ["SinhVien"] = () => new Model.SinhVien { isInDB = false },
             };
 
-            permissionMap = new Dictionary<string, IList>
-            {
-                { "DangKy", new List<string> { "insert","update", "select"} },
-                { "DonVi", new List<string> { } },
-                { "HocPhan", new List<string> { } },
-                { "MoMon", new List<string> {"select" } },
-                { "NhanVien", new List<string> { } },
-                { "SinhVien", new List<string> {"select", "update" } }
-            };
-
-            editableColumnMap = new Dictionary<string, IList>
-            {
-                { "DangKy", new List<string> { "maSV", "maMM"} },
-                { "DonVi", new List<string> { } },
-                { "HocPhan", new List<string> { "maHP", "tenHP" } },
-                { "MoMon", new List<string> { } },
-                { "NhanVien", new List<string> { } },
-                { "SinhVien", new List<string> { "dChi", "dt" } }
-            };
+            permissionMap = LoadPrivilegesOfUser();
+            editableColumnMap = LoadEditableColumnsOfUser();
         }
-        public void LoadPrivilegeOfRole()
+        public Dictionary<string, IList> LoadPrivilegesOfUser()
         {
-            Dictionary<string, IList> editableColumnMapTest = new Dictionary<string, IList>();
-            Dictionary<string, IList> permissionMapTest = new Dictionary<string, IList>();
+            Dictionary<string, IList> result = new Dictionary<string, IList>();
 
             var tableList = (Microsoft.UI.Xaml.Application.Current as App)?.tableList;
 
             if (tableList == null)
-                return;
+                return result;
 
             foreach (var table in tableList)
             {
-                permissionMapTest.Add(table.objectName, new List<string> { });
-                editableColumnMapTest.Add(table.objectName, new List<string> { });
+                result.Add(table.objectName, new List<string> { });
             }
 
-            List<Model.Privilege> privileges = privilegeDao.GetPrivilegesOfUserOnSpecificObjectType("XR_SV", "TABLE");
+            List<Model.Privilege> privileges = privilegeDao.GetPrivilegesOfUserOnSpecificObjectType("XR_NVTCHC", "TABLE");
 
-            foreach(var privilege in privileges)
+            foreach (var privilege in privileges)
             {
                 string tableName = privilege.tableName;
-                if(permissionMapTest.TryGetValue(tableName, out var permissionList))
+                if (result.TryGetValue(tableName, out var permissionList))
+                {
+                    if (permissionList.Contains(privilege.privilege) == false)
+                        permissionList.Add(privilege.privilege);
+                }
+            }
+            foreach (var privilege in privileges)
+            {
+                string viewName = privilege.tableName;
+                string? textOfView = tableViewDao.GetTextOfView(viewName);
+                if (textOfView == null)
+                    continue;
+
+                string tableName = helper.GetTableNameFromTextOfView(textOfView);
+                if (tableName.Contains("X_ADMIN") == true)
+                {
+                    tableName = tableName.Replace("X_ADMIN.", "");
+                }
+
+                if (result.TryGetValue(tableName, out var permissionList))
                 {
                     if (permissionList.Contains(privilege.privilege) == false)
                         permissionList.Add(privilege.privilege);
                 }
 
-                if (editableColumnMapTest.TryGetValue(tableName, out var columnList))
+            }
+            return result;
+        }
+        public Dictionary<string, IList> LoadEditableColumnsOfUser()
+        {
+            Dictionary<string, IList> result = new Dictionary<string, IList>();
+
+            var tableList = (Microsoft.UI.Xaml.Application.Current as App)?.tableList;
+
+            if (tableList == null)
+                return result;
+
+            foreach (var table in tableList)
+            {
+                result.Add(table.objectName, new List<string> { });
+            }
+
+            List<Model.Privilege> privileges = privilegeDao.GetPrivilegesOfUserOnSpecificObjectType("XR_NVTCHC", "TABLE");
+
+            foreach (var privilege in privileges)
+            {
+                string tableName = privilege.tableName;
+
+                if (result.TryGetValue(tableName, out var columnList))
                 {
                     if (privilege.privilege == "UPDATE")
                     {
-                        if (privilege.columnName != null)
+                        if (privilege.columnName != "")
                             columnList.Add(privilege.columnName);
+                        else
+                        {
+                            List<string> columnListOfTable = tableViewDao.GetColumnListOfTableOrView(tableName);
+                            foreach (var column in columnListOfTable)
+                            {
+                                if (columnList.Contains(column) == false)
+                                    columnList.Add(column);
+                            }
+                        }
                     }
                 }
             }
@@ -150,25 +182,33 @@ namespace Application.ViewModels.User
                     continue;
 
                 string tableName = helper.GetTableNameFromTextOfView(textOfView);
-
-                if (permissionMapTest.TryGetValue(tableName, out var permissionList))
+                if (tableName.Contains("X_ADMIN") == true)
                 {
-                    if (permissionList.Contains(privilege.privilege) == false)
-                        permissionList.Add(privilege.privilege);
+                    tableName = tableName.Replace("X_ADMIN.", "");
                 }
 
-                if (editableColumnMapTest.TryGetValue(tableName, out var columnList))
+                if (result.TryGetValue(tableName, out var columnList))
                 {
                     if (privilege.privilege == "UPDATE")
                     {
-                        if (privilege.columnName != null)
+                        if (privilege.columnName != "")
                             columnList.Add(privilege.columnName);
+                        else
+                        {
+                            List<string> columnListOfTable = tableViewDao.GetColumnListOfTableOrView(viewName);
+                            foreach (var column in columnListOfTable)
+                            {
+                                if (columnList.Contains(column) == false)
+                                    columnList.Add(column);
+                            }
+                        }
                     }
                 }
 
             }
-            return;
+            return result;
         }
+
         public int SaveItem(object item)
         {
             try
@@ -197,16 +237,49 @@ namespace Application.ViewModels.User
             }
 
         }
-        public int DeleteItem()
+        public int DeleteItem(object item)
         {
-            return 0;
+            try
+            {
+                var dao = daoList[selectedTabView];
+
+                if (item is IPersistable e)
+                {
+                    bool deleteResult = false;
+                    if (e.isInDB == true)
+                    {
+                        deleteResult = dao.Delete(item);
+                    }
+
+                    if (deleteResult)
+                    {
+                        var list = listMap[selectedTabView];
+                        list.Remove(item);
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                }
+                else
+                {
+                    var list = listMap[selectedTabView];
+                    list.Remove(item);
+                }
+                return 1;
+            }
+            catch (System.Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return 0;
+            }
         }
 
         public int AddItem()
         {
-            if(permissionMap.TryGetValue(selectedTabView, out var permissionList))
+            if(permissionMap.TryGetValue(selectedTabView.ToUpper(), out var permissionList))
             {
-                if (permissionList.Contains("insert") == false)
+                if (permissionList.Contains("insert".ToUpper()) == false)
                 {
                     return 0;
                 }
@@ -228,9 +301,9 @@ namespace Application.ViewModels.User
         }
         public bool CheckTheColumnOfRowIsEditable(string columnName)
         {
-            if (editableColumnMap.TryGetValue(selectedTabView, out var list))
+            if (editableColumnMap.TryGetValue(selectedTabView.ToUpper(), out var list))
             {
-                return list.Contains(columnName);
+                return list.Contains(columnName.ToUpper());
             }
 
             return false;

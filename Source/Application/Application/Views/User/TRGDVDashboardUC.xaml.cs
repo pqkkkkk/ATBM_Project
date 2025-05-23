@@ -77,6 +77,34 @@ namespace Application.Views.User
         {
             e.canEdit = viewModel.CheckTheColumnOfRowIsEditable(e.columnName);
         }
+
+        private async void SaveItem(object item)
+        {
+            int result = viewModel.SaveItem(item);
+
+            if (result == 1)
+            {
+                var notification = new ContentDialog
+                {
+                    XamlRoot = this.XamlRoot,
+                    Title = "Success",
+                    Content = "Item saved successfully.",
+                    CloseButtonText = "OK"
+                };
+                await notification.ShowAsync();
+            }
+            else
+            {
+                var notification = new ContentDialog
+                {
+                    XamlRoot = this.XamlRoot,
+                    Title = "Error",
+                    Content = "Failed to save item.",
+                    CloseButtonText = "OK"
+                };
+                await notification.ShowAsync();
+            }
+        }
     }
 
 }
