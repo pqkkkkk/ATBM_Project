@@ -16,26 +16,26 @@
 -- UPDATE TRÊN BẢNG NHÂN VIÊN
     CREATE OR REPLACE PROCEDURE X_ADMIN_UPDATE_NHANVIEN_TABLE_FOR_NVTCHC (
         MaNLD    IN VARCHAR2,
-        HoTen    IN VARCHAR2,
-        PHAI     IN VARCHAR2,
+        p_HoTen    IN VARCHAR2,
+        p_PHAI     IN VARCHAR2,
         NgaySinh IN DATE,
-        Luong    IN INTEGER,
-        PhuCap   IN INTEGER,
+        p_Luong    IN INTEGER,
+        p_PhuCap   IN INTEGER,
         SDT      IN VARCHAR2,
-        VaiTro   IN VARCHAR2,
-        MaDV     IN VARCHAR2
+        p_VaiTro   IN VARCHAR2,
+        p_MaDV     IN VARCHAR2
     ) AS
     BEGIN
         UPDATE X_ADMIN.NHANVIEN
         SET
-            HOTEN  = HoTen,
-            PHAI   = PHAI,
+            HOTEN  = p_HoTen,
+            PHAI   = p_PHAI,
             NGSINH = NgaySinh,
-            LUONG  = Luong,
-            PHUCAP = PhuCap,
+            LUONG  = p_Luong,
+            PHUCAP = p_PhuCap,
             DT     = SDT,
-            VAITRO = VaiTro,
-            MADV   = MaDV
+            VAITRO = p_VaiTro,
+            MADV   = p_MaDV
         WHERE MANV = MaNLD;
         
     EXCEPTION
@@ -83,3 +83,5 @@
     GRANT EXECUTE ON X_ADMIN_INSERT_NHANVIEN_TABLE_FOR_NVTCHC TO XR_NVTCHC;
 
 COMMIT;
+
+SELECT * FROM NHANVIEN;

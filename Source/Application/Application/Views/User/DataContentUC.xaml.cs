@@ -125,40 +125,7 @@ namespace Application.Views.User
             {
                 e.Cancel = true;
             }
-            // Sử lý kiểu Datetime và int
-            if (e.Column is DataGridTextColumn textColumn)
-            {
-                if (e.PropertyType == typeof(int) || e.PropertyType == typeof(int?))
-                {
-                    textColumn.Binding = new Binding
-                    {
-                        Path = new PropertyPath(e.PropertyName),
-                        Mode = BindingMode.TwoWay,
-                        Converter = (IValueConverter)this.Resources["IntToStringConverter"],
-                        UpdateSourceTrigger = UpdateSourceTrigger.LostFocus
-                    };
-                }
-                if (e.PropertyType == typeof(DateTime) || e.PropertyType == typeof(DateTime?))
-                {
-                    textColumn.Binding = new Binding
-                    {
-                        Path = new PropertyPath(e.PropertyName),
-                        Mode = BindingMode.TwoWay,
-                        Converter = (IValueConverter)this.Resources["DatetimeConverter"],
-                        UpdateSourceTrigger = UpdateSourceTrigger.LostFocus
-                    };
-                }
-                if (e.PropertyType == typeof(double) || e.PropertyType == typeof(double?))
-                {
-                    textColumn.Binding = new Binding
-                    {
-                        Path = new PropertyPath(e.PropertyName),
-                        Mode = BindingMode.TwoWay,
-                        Converter = (IValueConverter)this.Resources["DoubleToStringConverter"],
-                        UpdateSourceTrigger = UpdateSourceTrigger.LostFocus,
-                    };
-                }
-            }
+            Application.Helper.Helper.bindingConverterWhileAutoGeneratingColumn(this.Resources,e);
         }
         private void OnBeginningEdit(object sender, CommunityToolkit.WinUI.UI.Controls.DataGridBeginningEditEventArgs e)
         {

@@ -28,7 +28,8 @@ namespace Application.Views
         public ObservableCollection<Model.Role> roleList { get; set; }
         public SignInUC()
         {
-            string adminConnectString = $"User Id=X_ADMIN;Password=123;Data Source=localhost:1521/ORCLPDB";
+            string adminConnectString = $"User Id=X_ADMIN;Password=123;Data Source=localhost:1521/XEPDB1";
+            
             var sqlConnection = new OracleConnection(adminConnectString);
             IRoleDao roleDao = new RoleXAdminDao(sqlConnection);
 

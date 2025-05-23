@@ -13,7 +13,7 @@ namespace Application.Model
         public string? maNV { get; set; }
         public string? hoTen { get; set; }
         public string? phai { get; set; }
-        public DateOnly? ngSinh { get; set; }
+        public DateTime? ngSinh { get; set; }
         public int? luong { get; set; }
         public int? phuCap { get; set; }
         public string? DT { get; set; }
