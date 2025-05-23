@@ -113,13 +113,13 @@ namespace Application.ViewModels.User
                     tableName = tableName.Replace("X_ADMIN.", "");
                 }
 
-                if (permissionMap.TryGetValue(tableName, out var permissionList))
+                if (permissionMap.TryGetValue(tableName.ToUpper(), out var permissionList))
                 {
                     if (permissionList.Contains(privilege.privilege) == false)
                         permissionList.Add(privilege.privilege);
                 }
 
-                if (editableColumnMap.TryGetValue(tableName, out var columnList))
+                if (editableColumnMap.TryGetValue(tableName.ToUpper(), out var columnList))
                 {
                     if (privilege.privilege == "UPDATE")
                     {
@@ -145,13 +145,13 @@ namespace Application.ViewModels.User
         }
         public void UpdateSelectedTabView(string selectedTabView)
         {
-            this.selectedTabView = selectedTabView;
+            this.selectedTabView = selectedTabView.ToUpper();
         }
         public bool CheckTheColumnOfRowIsEditable(string columnName)
         {
-            if (editableColumnMap.TryGetValue(selectedTabView, out var list))
+            if (editableColumnMap.TryGetValue(selectedTabView.ToUpper(), out var list))
             {
-                return list.Contains(columnName);
+                return list.Contains(columnName.ToUpper());
             }
 
             return false;

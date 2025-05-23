@@ -60,8 +60,8 @@ namespace Application.ViewModels.User
 
             daoList = new Dictionary<string, IBaseDao>();
             daoList.Add("DANGKY", new DangKyNVPDTDao(sqlConnection));
-            daoList.Add("DonVi", new DonViSVDao());
-            daoList.Add("HocPhan", new HocPhanSVDao());
+            daoList.Add("DONVI", new DonViSVDao());
+            daoList.Add("HOCPHAN", new HocPhanSVDao());
             daoList.Add("MOMON", new MoMonNVPDTDao(sqlConnection));
             daoList.Add("NHANVIEN", new NhanVienNVCBDao(sqlConnection));
             daoList.Add("SINHVIEN", new SinhVienNVPDTDao(sqlConnection));
@@ -76,8 +76,8 @@ namespace Application.ViewModels.User
             newItemFactoryMap = new Dictionary<string, Func<object>>
             {
                 ["DANGKY"] = () => new Model.DangKy { isInDB = false },
-                ["DonVi"] = () => new Model.DonVi(),
-                ["HocPhan"] = () => new Model.HocPhan(),
+                ["DONVI"] = () => new Model.DonVi(),
+                ["HOCPHAN"] = () => new Model.HocPhan(),
                 ["MOMON"] = () => new Model.MoMon(),
                 ["NHANVIEN"] = () => new Model.NhanVien(),
                 ["SINHVIEN"] = () => new Model.SinhVien { isInDB = false },
@@ -86,8 +86,8 @@ namespace Application.ViewModels.User
             listMap = new Dictionary<string, IList>
             {
                 {  "DANGKY", dangKyList },
-                { "DonVi", donViList },
-                { "HocPhan", hocPhanList },
+                { "DONVI", donViList },
+                { "HOCPHAN", hocPhanList },
                 { "MOMON", moMonList },
                 { "NHANVIEN", nhanVienList },
                 {"SINHVIEN", sinhVienList}
@@ -227,15 +227,15 @@ namespace Application.ViewModels.User
 
             foreach (var table in tableList)
             {
-                permissionMap.Add(table.objectName, new List<string> { });
-                editableColumnMap.Add(table.objectName, new List<string> { });
+                permissionMap.Add(table.objectName.ToUpper(), new List<string> { });
+                editableColumnMap.Add(table.objectName.ToUpper(), new List<string> { });
             }
 
             List<Model.Privilege> privileges = privilegeDao.GetPrivilegesOfUserOnSpecificObjectType("XR_GV", "TABLE");
 
             foreach (var privilege in privileges)
             {
-                string tableName = privilege.tableName;
+                string tableName = privilege.tableName.ToUpper();
                 if (permissionMap.TryGetValue(tableName, out var permissionList))
                 {
                     if (permissionList.Contains(privilege.privilege) == false)
@@ -258,7 +258,7 @@ namespace Application.ViewModels.User
                 if (textOfView == null)
                     continue;
 
-                string tableName = helper.GetTableNameFromTextOfView(textOfView);
+                string tableName = helper.GetTableNameFromTextOfView(textOfView).ToUpper();
                 if (tableName.Contains("X_ADMIN"))
                 {
                     tableName = tableName.Replace("X_ADMIN.", "");
@@ -284,7 +284,7 @@ namespace Application.ViewModels.User
         }
         public int DeleteItem(object item)
         {
-            if (daoList[selectedTabView].Delete(item)) 
+            if (daoList[selectedTabView.ToUpper()].Delete(item)) 
                 return 1;
             return 0;
         }
@@ -298,11 +298,11 @@ namespace Application.ViewModels.User
             {
                 if(item.isInDB == true)
                 {
-                    if (daoList[selectedTabView].Update(item)) return 1;
+                    if (daoList[selectedTabView.ToUpper()].Update(item)) return 1;
                 }
                 else
                 {
-                    if(daoList[selectedTabView].Add(item))
+                    if(daoList[selectedTabView.ToUpper()].Add(item))
                     {
                         item.isInDB = true;
                         return 1;
@@ -313,15 +313,15 @@ namespace Application.ViewModels.User
         }
         public int AddItem()
         {
-            if (permissionMap.TryGetValue(selectedTabView, out var permissionList))
+            if (permissionMap.TryGetValue(selectedTabView.ToUpper(), out var permissionList))
             {
                 if (permissionList.Contains("INSERT") == false)
                 {
                     return 0;
                 }
             }
-            if (listMap.TryGetValue(selectedTabView, out var list)
-                && newItemFactoryMap.TryGetValue(selectedTabView, out var factory))
+            if (listMap.TryGetValue(selectedTabView.ToUpper(), out var list)
+                && newItemFactoryMap.TryGetValue(selectedTabView.ToUpper(), out var factory))
             {
                 var newItem = factory();
                 list.Add(newItem);
@@ -332,13 +332,13 @@ namespace Application.ViewModels.User
         }
         public void UpdateSelectedTabView(string selectedTabView)
         {
-            this.selectedTabView = selectedTabView;
+            this.selectedTabView = selectedTabView.ToUpper();
         }
         public bool CheckTheColumnOfRowIsEditable(string columnName)
         {
-            if (editableColumnMap.TryGetValue(selectedTabView, out var list))
+            if (editableColumnMap.TryGetValue(selectedTabView.ToUpper(), out var list))
             {
-                return list.Contains(columnName);
+                return list.Contains(columnName.ToUpper());
             }
 
             return false;

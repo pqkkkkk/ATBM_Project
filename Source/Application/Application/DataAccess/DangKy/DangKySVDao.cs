@@ -28,8 +28,8 @@ namespace Application.DataAccess.DangKy
             using (OracleCommand cmd = new OracleCommand("X_ADMIN.X_ADMIN_Insert_DANGKY_Table_ForSV", sqlConnection))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.Add("p_maSV", OracleDbType.Varchar2).Value = dk.MASV;
-                cmd.Parameters.Add("p_maMM", OracleDbType.Varchar2).Value = dk.MAMM;
+                cmd.Parameters.Add("p_maSV", OracleDbType.Varchar2).Value = dk.maSV;
+                cmd.Parameters.Add("p_maMM", OracleDbType.Varchar2).Value = dk.maMM;
                 cmd.ExecuteNonQuery();
                 sqlConnection.Close();
                 return true;
@@ -78,8 +78,8 @@ namespace Application.DataAccess.DangKy
                     {
                         var dk = new Model.DangKy
                         {
-                            MASV = reader["maSV"].ToString(),
-                            MAMM = reader["maMM"].ToString(),
+                            maSV = reader["maSV"].ToString(),
+                            maMM = reader["maMM"].ToString(),
                             diemTH = reader["diemTH"] != DBNull.Value ? Convert.ToInt16(reader["diemTH"]) : null,
                             diemCT = reader["diemCT"] != DBNull.Value ?  Convert.ToInt16(reader["diemCT"]) : null,
                             diemCK = reader["diemCK"] != DBNull.Value ? Convert.ToInt16(reader["diemCK"]) : null,

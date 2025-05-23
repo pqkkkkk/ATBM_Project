@@ -87,38 +87,5 @@ namespace Application.DataAccess.MetaData.TableView
             }
             return result;
         }
-
-        public List<string> GetColumnListOfTableOrView(string tableName)
-        {
-            var result = new List<string>();
-            try
-            {
-                if (sqlConnection.State != ConnectionState.Open)
-                    sqlConnection.Open();
-
-                const string owner = "X_ADMIN";
-                const string sql = @"SELECT COLUMN_NAME 
-                             FROM ALL_TAB_COLUMNS 
-                             WHERE OWNER = :owner AND TABLE_NAME = :tableName";
-
-                using var cmd = new OracleCommand(sql, sqlConnection);
-                cmd.CommandType = CommandType.Text;
-                cmd.Parameters.Add("owner", OracleDbType.Varchar2).Value = owner;
-                cmd.Parameters.Add("tableName", OracleDbType.Varchar2).Value = tableName.ToUpper();
-
-                using var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    var columnName = reader["COLUMN_NAME"] as string;
-                    if (!string.IsNullOrEmpty(columnName))
-                        result.Add(columnName);
-                }
-            }
-            catch (System.Exception e)
-            {
-                throw new System.Exception(e.Message, e);
-            }
-            return result;
-        }
     }
 }

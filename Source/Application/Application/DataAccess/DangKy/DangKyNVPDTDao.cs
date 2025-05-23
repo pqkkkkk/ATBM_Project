@@ -28,8 +28,8 @@ namespace Application.DataAccess.DangKy
                 using (var cmd = new OracleCommand("X_ADMIN.X_ADMIN_insert_DANGKY_NVPDT", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.Add(new OracleParameter("MaSV_", dk.MASV));
-                    cmd.Parameters.Add(new OracleParameter("MaMM_", dk.MAMM));
+                    cmd.Parameters.Add(new OracleParameter("MaSV_", dk.maSV));
+                    cmd.Parameters.Add(new OracleParameter("MaMM_", dk.maMM));
                     cmd.ExecuteNonQuery();
                 }
                 sqlConnection.Close();
@@ -53,8 +53,8 @@ namespace Application.DataAccess.DangKy
                 using (var cmd = new OracleCommand("X_ADMIN.X_ADMIN_delete_DANGKY_NVPDT", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.Add(new OracleParameter("MaSV_", dk.MASV));
-                    cmd.Parameters.Add(new OracleParameter("MaMM_", dk.MAMM));
+                    cmd.Parameters.Add(new OracleParameter("MaSV_", dk.maSV));
+                    cmd.Parameters.Add(new OracleParameter("MaMM_", dk.maMM));
 
                     var rowAffectedParam = new OracleParameter("ROW_AFFECTED", OracleDbType.Int32);
                     rowAffectedParam.Direction = ParameterDirection.Output;
@@ -95,8 +95,8 @@ namespace Application.DataAccess.DangKy
                     {
                         var dk = new Model.DangKy
                         {
-                            MASV = reader["maSV"].ToString(),
-                            MAMM = reader["maMM"].ToString(),
+                            maSV = reader["maSV"].ToString(),
+                            maMM = reader["maMM"].ToString(),
                             diemTH = reader["diemTH"] == DBNull.Value ? (double?)null : Convert.ToDouble(reader["diemTH"]),
                             diemCT = reader["diemCT"] == DBNull.Value ? (double?)null : Convert.ToDouble(reader["diemCT"]),
                             diemCK = reader["diemCK"] == DBNull.Value ? (double?)null : Convert.ToDouble(reader["diemCK"]),
