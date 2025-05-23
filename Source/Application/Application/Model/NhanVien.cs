@@ -16,7 +16,7 @@ namespace Application.Model
         public DateTime? ngSinh { get; set; }
         public int? luong { get; set; }
         public int? phuCap { get; set; }
-        public string? dt { get; set; }
+        public string? DT { get; set; }
         public string? vaiTro { get; set; }
         public string? maDV { get; set; }
         public bool? isInDB { get; set; }
@@ -29,7 +29,7 @@ namespace Application.Model
             ngSinh = null;
             luong = null;
             phuCap = null;
-            dt = "";
+            DT = "";
             vaiTro = "";
             maDV = "";
         }

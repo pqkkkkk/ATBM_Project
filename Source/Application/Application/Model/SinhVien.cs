@@ -16,7 +16,7 @@ namespace Application.Model
         public string? dChi { get; set; }
         public string? dt { get; set; }
         public string? khoa { get; set; }
-        public string? tinhTrang { get; set; }
+        public string? TINHTRANG { get; set; }
         public bool? isInDB { get; set; }
 
         public SinhVien()
@@ -28,7 +28,7 @@ namespace Application.Model
             dChi = "Địa chỉ";
             dt = "Điện thoại";
             khoa = "Khoa";
-            tinhTrang = "Tình trạng";
+            TINHTRANG = "Tình trạng";
         }
         public event PropertyChangedEventHandler? PropertyChanged;
     }
