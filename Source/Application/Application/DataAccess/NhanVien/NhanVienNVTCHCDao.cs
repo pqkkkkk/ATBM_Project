@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Oracle.ManagedDataAccess.Client;
+using Oracle.ManagedDataAccess.Types;
 
 namespace Application.DataAccess.NhanVien
 {
@@ -33,7 +34,7 @@ namespace Application.DataAccess.NhanVien
                     cmd.Parameters.Add("NgaySinh", OracleDbType.Date).Value = nv.ngSinh;
                     cmd.Parameters.Add("Luong", OracleDbType.Int32).Value = nv.luong;
                     cmd.Parameters.Add("PhuCap", OracleDbType.Int32).Value = nv.phuCap;
-                    cmd.Parameters.Add("SDT", OracleDbType.Varchar2).Value = nv.DT;
+                    cmd.Parameters.Add("SDT", OracleDbType.Varchar2).Value = nv.dt;
                     cmd.Parameters.Add("VaiTro", OracleDbType.Varchar2).Value = nv.vaiTro;
                     cmd.Parameters.Add("MaDV", OracleDbType.Varchar2).Value = nv.maDV;
 
@@ -65,6 +66,7 @@ namespace Application.DataAccess.NhanVien
                     cmd.CommandType = CommandType.StoredProcedure;
                     var nv = (Model.NhanVien)obj;
                     cmd.Parameters.Add("MaNLD", OracleDbType.Varchar2).Value = nv.maNV;
+                    cmd.Parameters.Add("VaiTro", OracleDbType.Varchar2).Value = nv.vaiTro;
 
                     cmd.ExecuteNonQuery();
                 }
@@ -107,7 +109,7 @@ namespace Application.DataAccess.NhanVien
                                 ngSinh = Convert.ToDateTime(reader["ngSinh"]),
                                 luong = reader["luong"] != DBNull.Value ? Convert.ToInt32(reader["luong"]) : 0,
                                 phuCap = reader["phuCap"] != DBNull.Value ? Convert.ToInt32(reader["phuCap"]) : 0,
-                                DT = reader["dt"].ToString(),
+                                dt = reader["dt"].ToString(),
                                 vaiTro = reader["vaiTro"].ToString(),
                                 maDV = reader["maDV"].ToString(),
                                 isInDB = true
@@ -149,8 +151,12 @@ namespace Application.DataAccess.NhanVien
                     cmd.Parameters.Add("SDT", OracleDbType.Varchar2).Value = nv.dt;
                     cmd.Parameters.Add("p_VaiTro", OracleDbType.Varchar2).Value = nv.vaiTro;
                     cmd.Parameters.Add("p_MaDV", OracleDbType.Varchar2).Value = nv.maDV;
-
+                    cmd.Parameters.Add("p_row_affected", OracleDbType.Int32).Direction = ParameterDirection.Output;
                     cmd.ExecuteNonQuery();
+
+                    int rowAffected = ((OracleDecimal)cmd.Parameters["p_row_affected"].Value).ToInt32();
+
+                    return rowAffected > 0;
                 }
             }
             catch (System.Exception ex)
@@ -162,7 +168,6 @@ namespace Application.DataAccess.NhanVien
             {
                 sqlConnection.Close();
             }
-            return true;
         }
     }
 }

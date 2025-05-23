@@ -25,10 +25,10 @@ namespace Application.Views.User
         public event TabViewChangedEventHandler? TabViewChanged;
         public delegate void AddedNewItemEventHandler();
         public event AddedNewItemEventHandler? AddedNewItem;
-        public NVTCHCViewModel nvTCHCviewModel { get; set; }
+        public NVTCHCViewModel viewModel { get; set; }
         public NVTCHCDashboardUC()
         {
-            nvTCHCviewModel = new NVTCHCViewModel();
+            viewModel = new NVTCHCViewModel();
             this.InitializeComponent();
             TabViewChanged += dataContent.SetDataSource;
             AddedNewItem += dataContent.UpdateSelectedItemOfDataListAfterAddNewItem;
@@ -36,12 +36,12 @@ namespace Application.Views.User
         private void OnTabViewChanged(object sender, RoutedEventArgs e)
         {
             string selectedTab = (sender as Button).Tag.ToString();
-            nvTCHCviewModel.UpdateSelectedTabView(selectedTab);
+            viewModel.UpdateSelectedTabView(selectedTab);
             TabViewChanged?.Invoke(selectedTab);
         }
         private async void SaveItem(object item)
         {
-            int result = nvTCHCviewModel.SaveItem(item);
+            int result = viewModel.SaveItem(item);
 
             if (result == 1)
             {
@@ -83,7 +83,7 @@ namespace Application.Views.User
                 return;
             }
 
-            int deleteResult = nvTCHCviewModel.DeleteItem(item);
+            int deleteResult = viewModel.DeleteItem(item);
             if (deleteResult == 1)
             {
                 var notification = new ContentDialog
@@ -110,7 +110,7 @@ namespace Application.Views.User
 
         private async void OnAddClicked()
         {
-            int addResult = nvTCHCviewModel.AddItem();
+            int addResult = viewModel.AddItem();
 
             if (addResult == 0)
             {
@@ -134,7 +134,19 @@ namespace Application.Views.User
 
         private void CheckTheColumnOfRowIsEditable(object sender, Event.BeginningEditEvent e)
         {
-            e.canEdit = nvTCHCviewModel.CheckTheColumnOfRowIsEditable(e.columnName.ToUpper());
+            e.canEdit = viewModel.CheckTheColumnOfRowIsEditable(e.columnName.ToUpper());
+        }
+
+        private void OnTabViewChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+        {
+            var selectedItem = sender.SelectedItem as Model.OracleObject;
+            if (selectedItem == null)
+            {
+                return;
+            }
+            string selectedTab = selectedItem.objectName;
+            viewModel.UpdateSelectedTabView(selectedTab);
+            TabViewChanged?.Invoke(selectedTab);
         }
     }
 }

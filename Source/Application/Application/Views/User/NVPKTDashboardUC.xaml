@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Application.Views.User"
+    xmlns:model="using:Application.Model"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:converter="using:Application.Converts"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -21,53 +22,30 @@
         </Grid.ColumnDefinitions>
 
         <!-- Sidebar Navigation -->
-        <Grid Grid.Column="0" Background="#F0F0F0" Width="200" Padding="3">
-            <StackPanel>
-                <TextBlock Text="X University" 
-                        FontSize="20" 
-                        FontWeight="Bold" 
-                        Margin="0,0,0,20" 
-                        Foreground="#333"/>
-
-                <StackPanel Spacing="10">
-                    <Button Content="NhanVien" 
-                         Click="OnTabViewChanged"
-                         Tag="NHANVIEN"
-                         Foreground="Black"
-                         Style="{x:Bind nvPKTViewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='NhanVien'}" 
-                         HorizontalAlignment="Stretch"/>
-                    <Button Content="SinhVien"
-                         Tag="SINHVIEN"
-                         Foreground="Black"
-                         Click="OnTabViewChanged"
-                         Style="{x:Bind nvPKTViewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='SinhVien'}"
-                         HorizontalAlignment="Stretch"/>
-                    <Button Content="DonVi"
-                         Tag="DONVI"
-                         Click="OnTabViewChanged"
-                         Foreground="Black"
-                         Style="{x:Bind nvPKTViewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='DonVi'}" 
-                         HorizontalAlignment="Stretch"/>
-                    <Button Content="HocPhan"
-                         Tag="HOCPHAN"
-                         Click="OnTabViewChanged"
-                         Foreground="Black"
-                         Style="{x:Bind nvPKTViewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='HocPhan'}"
-                         HorizontalAlignment="Stretch"/>
-                    <Button Content="MoMon" 
-                         Tag="MOMON"
-                         Click="OnTabViewChanged"
-                         Foreground="Black"
-                         Style="{x:Bind nvPKTViewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='MoMon'}"
-                         HorizontalAlignment="Stretch"/>
-                    <Button Content="DangKy" 
-                         Tag="DANGKY"
-                         Click="OnTabViewChanged"
-                         Foreground="Black"
-                         Style="{x:Bind nvPKTViewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='DangKy'}"
-                         HorizontalAlignment="Stretch"/>
-                </StackPanel>
-            </StackPanel>
+        <Grid Grid.Column="0" Background="#2E2E2E"  Width="200" Padding="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="X University" 
+                FontSize="20" 
+                Grid.Row="0"
+                FontWeight="Bold" 
+                Margin="20,10,0,20" 
+                Foreground="White"/>
+            <NavigationView
+                IsSettingsVisible="False"
+                IsTitleBarAutoPaddingEnabled="False"
+                Grid.Row="1"
+                SelectionChanged="OnTabViewChanged"
+                MenuItemsSource="{x:Bind viewModel.tabViewList, Mode=OneWay}">
+                <NavigationView.MenuItemTemplate>
+                    <DataTemplate
+                    x:DataType="model:OracleObject">
+                        <TextBlock Text="{x:Bind objectName}"/>
+                    </DataTemplate>
+                </NavigationView.MenuItemTemplate>
+            </NavigationView>
         </Grid>
 
         <!-- Main Content Area -->
@@ -78,8 +56,8 @@
 
             <local:DataContentUC
                 x:Name="dataContent"
-                dangKyList="{x:Bind nvPKTViewModel.dangKyList, Mode=OneWay}"
-                nhanvienList="{x:Bind nvPKTViewModel.nhanVienList, Mode=OneWay}"
+                dangKyList="{x:Bind viewModel.dangKyList, Mode=OneWay}"
+                nhanvienList="{x:Bind viewModel.nhanVienList, Mode=OneWay}"
                 DeleteClicked="OnDeleteClicked"
                 AddClicked="OnAddClicked"
                 UpdateClicked="OnUpdateClicked"

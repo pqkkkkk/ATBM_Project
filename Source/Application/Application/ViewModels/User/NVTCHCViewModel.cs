@@ -29,6 +29,8 @@ namespace Application.ViewModels.User
         private readonly OracleConnection sqlConnection;
 
         public string selectedTabView { get; set; }
+        public ObservableCollection<Model.OracleObject> tabViewList { get; set; }
+
         public IPrivilegeDao privilegeDao { get; set; }
         public ITableViewDao tableViewDao { get; set; }
         public Dictionary<string, IBaseDao> daoList { get; set; }
@@ -42,6 +44,8 @@ namespace Application.ViewModels.User
         {
             helper = new Helper.Helper();
 
+            var tableList = (Microsoft.UI.Xaml.Application.Current as App)?.tableList;
+            tabViewList = new ObservableCollection<Model.OracleObject>(tableList);
             selectedTabView = "DANGKY";
 
             var serviceProvider = (Microsoft.UI.Xaml.Application.Current as App)?.serviceProvider;
@@ -51,8 +55,7 @@ namespace Application.ViewModels.User
             tableViewDao = new TableViewUserDao(sqlConnection);
             privilegeDao = new PrivilegeUserDao(sqlConnection);
 
-            nhanVienList = new ObservableCollection<NhanVien>();
-            LoadData();
+            nhanVienList = new ObservableCollection<Model.NhanVien>(daoList["NHANVIEN"].Load(null).Cast<Model.NhanVien>().ToList());
 
             listMap = new Dictionary<string, IList>
             {
@@ -83,14 +86,14 @@ namespace Application.ViewModels.User
 
             foreach (var table in tableList)
             {
-                result.Add(table.objectName, new List<string> { });
+                result.Add(table.objectName.ToUpper(), new List<string> { });
             }
 
             List<Model.Privilege> privileges = privilegeDao.GetPrivilegesOfUserOnSpecificObjectType("XR_NVTCHC", "TABLE");
 
             foreach (var privilege in privileges)
             {
-                string tableName = privilege.tableName;
+                string tableName = privilege.tableName.ToUpper();
                 if (result.TryGetValue(tableName, out var permissionList))
                 {
                     if (permissionList.Contains(privilege.privilege) == false)
@@ -99,12 +102,12 @@ namespace Application.ViewModels.User
             }
             foreach (var privilege in privileges)
             {
-                string viewName = privilege.tableName;
+                string viewName = privilege.tableName.ToUpper();
                 string? textOfView = tableViewDao.GetTextOfView(viewName);
                 if (textOfView == null)
                     continue;
 
-                string tableName = helper.GetTableNameFromTextOfView(textOfView);
+                string tableName = helper.GetTableNameFromTextOfView(textOfView).ToUpper();
                 if (tableName.Contains("X_ADMIN") == true)
                 {
                     tableName = tableName.Replace("X_ADMIN.", "");
@@ -130,14 +133,14 @@ namespace Application.ViewModels.User
 
             foreach (var table in tableList)
             {
-                result.Add(table.objectName, new List<string> { });
+                result.Add(table.objectName.ToUpper(), new List<string> { });
             }
 
             List<Model.Privilege> privileges = privilegeDao.GetPrivilegesOfUserOnSpecificObjectType("XR_NVTCHC", "TABLE");
 
             foreach (var privilege in privileges)
             {
-                string tableName = privilege.tableName;
+                string tableName = privilege.tableName.ToUpper();
 
                 if (result.TryGetValue(tableName, out var columnList))
                 {
@@ -159,12 +162,12 @@ namespace Application.ViewModels.User
             }
             foreach (var privilege in privileges)
             {
-                string viewName = privilege.tableName;
+                string viewName = privilege.tableName.ToUpper();
                 string? textOfView = tableViewDao.GetTextOfView(viewName);
                 if (textOfView == null)
                     continue;
 
-                string tableName = helper.GetTableNameFromTextOfView(textOfView);
+                string tableName = helper.GetTableNameFromTextOfView(textOfView).ToUpper();
                 if (tableName.Contains("X_ADMIN") == true)
                 {
                     tableName = tableName.Replace("X_ADMIN.", "");
@@ -191,38 +194,6 @@ namespace Application.ViewModels.User
             }
             return result;
         }
-        public List<string> GetColumnListOfTableOrView(string tableName)
-        {
-            var result = new List<string>();
-            try
-            {
-                if (sqlConnection.State != ConnectionState.Open)
-                    sqlConnection.Open();
-
-                const string owner = "X_ADMIN";
-                const string sql = @"SELECT COLUMN_NAME 
-                             FROM ALL_TAB_COLUMNS 
-                             WHERE OWNER = :owner AND TABLE_NAME = :tableName";
-
-                using var cmd = new OracleCommand(sql, sqlConnection);
-                cmd.CommandType = CommandType.Text;
-                cmd.Parameters.Add("owner", OracleDbType.Varchar2).Value = owner;
-                cmd.Parameters.Add("tableName", OracleDbType.Varchar2).Value = tableName.ToUpper();
-
-                using var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    var columnName = reader["COLUMN_NAME"] as string;
-                    if (!string.IsNullOrEmpty(columnName))
-                        result.Add(columnName);
-                }
-            }
-            catch (System.Exception e)
-            {
-                throw new System.Exception(e.Message, e);
-            }
-            return result;
-        }
         public int DeleteItem(object item)
         {
             if (item is IPersistable e)
@@ -238,12 +209,6 @@ namespace Application.ViewModels.User
             }
             return 0;
         }
-
-        public void LoadData()
-        {
-            nhanVienList = new ObservableCollection<Model.NhanVien>(daoList["NHANVIEN"].Load(null).Cast<Model.NhanVien>().ToList());
-        }
-
         public int SaveItem(object item)
         {
             try
@@ -252,12 +217,27 @@ namespace Application.ViewModels.User
                 {
                     if (e.isInDB == true)
                     {
-                        daoList[selectedTabView].Update(item);
+                        
+                        bool result =  daoList[selectedTabView].Update(item);
+
+                        if(result == false)
+                        {
+                            throw new System.Exception("Update failed");
+                        }
                     }
                     else
                     {
-                        daoList[selectedTabView].Add(item);
-                        e.isInDB = true;
+                        bool result =  daoList[selectedTabView].Add(item);
+                        if (result == false)
+                        {
+                            if(listMap.TryGetValue(selectedTabView.ToUpper(), out var list))
+                            {
+                                list.Remove(item);
+                            }
+                            throw new System.Exception("Insert failed");
+                        }
+                        else
+                            e.isInDB = true;
                     }
                 }
 
@@ -272,7 +252,7 @@ namespace Application.ViewModels.User
         }
         public int AddItem()
         {
-            if (permissionMap.TryGetValue(selectedTabView, out var permissionList))
+            if (permissionMap.TryGetValue(selectedTabView.ToUpper(), out var permissionList))
             {
                 if (permissionList.Contains("INSERT") == false)
                 {
@@ -280,8 +260,8 @@ namespace Application.ViewModels.User
                 }
             }
 
-            if (listMap.TryGetValue(selectedTabView, out var list)
-                && newItemFactoryMap.TryGetValue(selectedTabView, out var factory))
+            if (listMap.TryGetValue(selectedTabView.ToUpper(), out var list)
+                && newItemFactoryMap.TryGetValue(selectedTabView.ToUpper(), out var factory))
             {
                 var newItem = factory();
                 list.Add(newItem);
@@ -292,16 +272,16 @@ namespace Application.ViewModels.User
         }
         public bool CheckTheColumnOfRowIsEditable(string columnName)
         {
-            if (editableColumnMap.TryGetValue(selectedTabView, out var list))
+            if (editableColumnMap.TryGetValue(selectedTabView.ToUpper(), out var list))
             {
-                return list.Contains(columnName);
+                return list.Contains(columnName.ToUpper());
             }
 
             return false;
         }
         public void UpdateSelectedTabView(string selectedTabView)
         {
-            this.selectedTabView = selectedTabView;
+            this.selectedTabView = selectedTabView.ToUpper();
         }
     }
 }

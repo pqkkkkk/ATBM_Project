@@ -10,8 +10,8 @@ namespace Application.Model
 
     public class DangKy : INotifyPropertyChanged, IPersistable
     {
-        public string? MASV { get; set; }
-        public string? MAMM { get; set; }
+        public string? maSV { get; set; }
+        public string? maMM { get; set; }
         public double? diemTH { get; set; }
         public double? diemCT { get; set; }
         public double? diemCK { get; set; }
@@ -21,8 +21,8 @@ namespace Application.Model
         public DangKy()
         {
             isInDB = true;
-            MAMM = "Nhập mã mở môn";
-            MASV = "Nhập mã sinh viên";
+            maMM = "Nhập mã mở môn";
+            maSV = "Nhập mã sinh viên";
         }
         public event PropertyChangedEventHandler? PropertyChanged;
     }

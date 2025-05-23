@@ -23,6 +23,7 @@ namespace Application.ViewModels.User
     public class NVCBViewModel : INotifyPropertyChanged
     {
         public string selectedTabView { get; set; }
+        public ObservableCollection<Model.OracleObject> tabViewList { get; set; }
 
         private Helper.Helper helper;
         private IPrivilegeDao privilegeDao;
@@ -45,18 +46,21 @@ namespace Application.ViewModels.User
         {
             helper = new Helper.Helper();
 
-            selectedTabView = "DangKy";
+            var tableList = (Microsoft.UI.Xaml.Application.Current as App)?.tableList;
+            tabViewList = new ObservableCollection<Model.OracleObject>(tableList);
+            selectedTabView = "DANGKY";
+
             var serviceProvider = (Microsoft.UI.Xaml.Application.Current as App)?.serviceProvider;
             var sqlConnection = serviceProvider?.GetService(typeof(OracleConnection)) as OracleConnection;
 
             privilegeDao = new PrivilegeUserDao(sqlConnection);
             tableViewDao = new TableViewUserDao(sqlConnection);
             daoList = new Dictionary<string, IBaseDao>();
-            daoList.Add("DangKy", new DangKySVDao(sqlConnection));
-            daoList.Add("DonVi", new DonViSVDao());
-            daoList.Add("HocPhan", new HocPhanSVDao());
+            daoList.Add("DANGKY", new DangKySVDao(sqlConnection));
+            daoList.Add("DONVI", new DonViSVDao());
+            daoList.Add("HOCPHAN", new HocPhanSVDao());
             daoList.Add("NHANVIEN", new NhanVienNVCBDao(sqlConnection));
-            daoList.Add("SinhVien", new SinhVienSVDao(sqlConnection));
+            daoList.Add("SINHVIEN", new SinhVienSVDao(sqlConnection));
 
             dangKyList = new ObservableCollection<Model.DangKy>();
            
@@ -78,15 +82,15 @@ namespace Application.ViewModels.User
 
             foreach (var table in tableList)
             {
-                permissionMap.Add(table.objectName, new List<string> { });
-                editableColumnMap.Add(table.objectName, new List<string> { });
+                permissionMap.Add(table.objectName.ToUpper(), new List<string> { });
+                editableColumnMap.Add(table.objectName.ToUpper(), new List<string> { });
             }
 
             List<Model.Privilege> privileges = privilegeDao.GetPrivilegesOfUserOnSpecificObjectType("XR_NVCB", "TABLE");
 
             foreach (var privilege in privileges)
             {
-                string tableName = privilege.tableName;
+                string tableName = privilege.tableName.ToUpper();
                 if (permissionMap.TryGetValue(tableName, out var permissionList))
                 {
                     if (permissionList.Contains(privilege.privilege) == false)
@@ -109,7 +113,7 @@ namespace Application.ViewModels.User
                 if (textOfView == null)
                     continue;
 
-                string tableName = helper.GetTableNameFromTextOfView(textOfView);
+                string tableName = helper.GetTableNameFromTextOfView(textOfView).ToUpper();
                 if (tableName.Contains("X_ADMIN"))
                 {
                     tableName = tableName.Replace("X_ADMIN.", "");
@@ -156,13 +160,13 @@ namespace Application.ViewModels.User
 
         public void UpdateSelectedTabView(string selectedTabView)
         {
-            this.selectedTabView = selectedTabView;
+            this.selectedTabView = selectedTabView.ToUpper();
         }
         public bool CheckTheColumnOfRowIsEditable(string columnName)
         {
-            if (editableColumnMap.TryGetValue(selectedTabView, out var list))
+            if (editableColumnMap.TryGetValue(selectedTabView.ToUpper(), out var list))
             {
-                return list.Contains(columnName);
+                return list.Contains(columnName.ToUpper());
             }
 
             return false;

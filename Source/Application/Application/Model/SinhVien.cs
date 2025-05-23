@@ -12,7 +12,7 @@ namespace Application.Model
         public string? maSV { get; set; }
         public string? hoTen { get; set; }
         public string? phai { get; set; }
-        public DateOnly? ngSinh { get; set; }
+        public DateTime? ngSinh { get; set; }
         public string? dChi { get; set; }
         public string? dt { get; set; }
         public string? khoa { get; set; }
@@ -24,7 +24,7 @@ namespace Application.Model
             maSV = "Mã SV";
             hoTen = "Họ tên";
             phai = "Phái";
-            ngSinh = DateOnly.FromDateTime(DateTime.Now);
+            ngSinh = DateTime.Now;
             dChi = "Địa chỉ";
             dt = "Điện thoại";
             khoa = "Khoa";

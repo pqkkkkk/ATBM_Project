@@ -33,7 +33,7 @@ namespace Application.DataAccess.SinhVien
                 cmd.Parameters.Add("p_maSV", OracleDbType.Varchar2).Value = sv.maSV;
                 cmd.Parameters.Add("p_hoTen", OracleDbType.Varchar2).Value = sv.hoTen;
                 cmd.Parameters.Add("p_phai", OracleDbType.Varchar2).Value = sv.phai;
-                cmd.Parameters.Add("p_ngSinh", OracleDbType.Date).Value = sv.ngSinh?.ToDateTime(new TimeOnly(0, 0));
+                cmd.Parameters.Add("p_ngSinh", OracleDbType.Date).Value = sv.ngSinh;
                 cmd.Parameters.Add("p_dChi", OracleDbType.Varchar2).Value = sv.dChi;
                 cmd.Parameters.Add("p_dt", OracleDbType.Varchar2).Value = sv.dt;
                 cmd.Parameters.Add("p_khoa", OracleDbType.Varchar2).Value = sv.khoa;
@@ -89,7 +89,7 @@ namespace Application.DataAccess.SinhVien
                             maSV = reader["maSV"].ToString(),
                             hoTen = reader["hoTen"].ToString(),
                             phai = reader["phai"].ToString(),
-                            ngSinh = DateOnly.FromDateTime(Convert.ToDateTime(reader["ngSinh"])),
+                            ngSinh = Convert.ToDateTime(reader["ngSinh"]),
                             dChi = reader["dChi"].ToString(),
                             dt = reader["dt"].ToString(),
                             khoa = reader["khoa"].ToString(),
@@ -120,7 +120,7 @@ namespace Application.DataAccess.SinhVien
                 cmd.Parameters.Add("p_maSV", OracleDbType.Varchar2).Value = sv.maSV;
                 cmd.Parameters.Add("p_hoTen", OracleDbType.Varchar2).Value = sv.hoTen;
                 cmd.Parameters.Add("p_phai", OracleDbType.Varchar2).Value = sv.phai;
-                cmd.Parameters.Add("p_ngSinh", OracleDbType.Date).Value = sv.ngSinh?.ToDateTime(new TimeOnly(0, 0));
+                cmd.Parameters.Add("p_ngSinh", OracleDbType.Date).Value = sv.ngSinh;
                 cmd.Parameters.Add("p_dChi", OracleDbType.Varchar2).Value = sv.dChi;
                 cmd.Parameters.Add("p_dt", OracleDbType.Varchar2).Value = sv.dt;
                 cmd.Parameters.Add("p_khoa", OracleDbType.Varchar2).Value = sv.khoa;

@@ -56,8 +56,6 @@
 
 
 --Cài VPD cho từng vai trò với thao tác INSERT, UPDATE, DELETE với các trường MASV, MAMM:
-   INSERT INTO X_ADMIN.DANGKY(MASV, MAMM)
-   VALUES ('SV0001', 'MM012');
    CREATE OR REPLACE FUNCTION DANGKY_INS_DEL_UPD
       (p_schema VARCHAR2, p_obj VARCHAR2)
    RETURN VARCHAR2 
@@ -85,7 +83,7 @@
      ELSIF isNVPDT >= 1 THEN
        RETURN 'MAMM IN (
        SELECT MaMM 
-       FROM MOMON
+       FROM X_ADMIN.MOMON
        WHERE CURRENT_DATE - TRUNC(TO_DATE(NAM || ''-'' || 
           CASE HK WHEN 1 THEN ''09'' WHEN 2 THEN ''01'' WHEN 3 THEN ''05'' END, ''YYYY-MM'')) 
           BETWEEN 0 AND 13

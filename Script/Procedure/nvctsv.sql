@@ -24,6 +24,13 @@ CREATE OR REPLACE PROCEDURE X_ADMIN_Insert_SINHVIEN_Table_ForNVCTSV(
     BEGIN
         INSERT INTO X_ADMIN.SINHVIEN (MASV, HOTEN, PHAI, NGSINH, DCHI, DT, KHOA)
         VALUES (p_maSV, p_hoTen, p_phai, p_ngSinh, p_dChi, p_dt, p_khoa);
+
+        INSERT INTO X_ADMIN.USER_ROLES (USERNAME, ROLENAME)
+        VALUES (p_maSV, 'XR_SV');
+
+        X_ADMIN.X_ADMIN_CREATEUSER('X_' || p_maSV, '123');
+        X_ADMIN.X_ADMIN_GRANTROLE('XR_SV','X_' || p_maSV, 'NO');
+
     EXCEPTION
         WHEN OTHERS THEN
             DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
@@ -60,6 +67,8 @@ CREATE OR REPLACE PROCEDURE X_ADMIN_Delete_SINHVIEN_Table_ForNVCTSV(
     BEGIN
         DELETE FROM X_ADMIN.SINHVIEN
         WHERE MASV = p_maSV;
+        EXECUTE IMMEDIATE 'DELETE FROM X_ADMIN.USER_ROLES WHERE USERNAME = ''' || p_maSV || ''' AND ROLENAME = ''XR_SV''';
+        X_ADMIN.X_ADMIN_DELETEUSER('X_' || p_maSV);
         
         rowAffected := SQL%ROWCOUNT;
     EXCEPTION

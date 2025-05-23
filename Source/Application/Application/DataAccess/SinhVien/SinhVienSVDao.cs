@@ -47,7 +47,7 @@ namespace Application.DataAccess.SinhVien
                             maSV = reader["maSV"].ToString(),
                             hoTen = reader["hoTen"].ToString(),
                             phai = reader["phai"].ToString(),
-                            ngSinh = DateOnly.FromDateTime(Convert.ToDateTime(reader["ngSinh"])),
+                            ngSinh = Convert.ToDateTime(reader["ngSinh"]),
                             dChi = reader["dChi"].ToString(),
                             dt = reader["dt"].ToString(),
                             khoa = reader["khoa"].ToString(),

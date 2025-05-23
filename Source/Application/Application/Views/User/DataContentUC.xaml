@@ -76,8 +76,7 @@
                 IsReadOnly="False"
                 AutoGeneratingColumn="OnAutoGeneratingColumn"
                 RowEditEnded="DataGridRowEditEndedHandler"
-                BeginningEdit="OnBeginningEdit"
-                ItemsSource="{x:Bind dangKyList, Mode=OneWay}"/>
+                BeginningEdit="OnBeginningEdit"/>
         </ScrollViewer>
     </Grid>
 </UserControl>

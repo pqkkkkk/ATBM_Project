@@ -35,14 +35,6 @@ namespace Application.Views.User
             TabViewChanged += dataContent.SetDataSource;
             AddedNewItem += dataContent.UpdateSelectedItemOfDataListAfterAddNewItem;
         }
-
-        private void OnTabViewChanged(object sender, RoutedEventArgs e)
-        {
-            string selectedTab = (sender as Button).Tag.ToString();
-            viewModel.UpdateSelectedTabView(selectedTab);
-            TabViewChanged?.Invoke(selectedTab);
-        }
-
         private async void SaveItem(object item)
         {
             int result = viewModel.SaveItem(item);
@@ -123,6 +115,18 @@ namespace Application.Views.User
         private void CheckTheColumnOfRowIsEditable(object sender, Event.BeginningEditEvent e)
         {
             e.canEdit = viewModel.CheckTheColumnOfRowIsEditable(e.columnName);
+        }
+
+        private void OnTabViewChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+        {
+            var selectedItem = sender.SelectedItem as Model.OracleObject;
+            if (selectedItem == null)
+            {
+                return;
+            }
+            string selectedTab = selectedItem.objectName;
+            viewModel.UpdateSelectedTabView(selectedTab);
+            TabViewChanged?.Invoke(selectedTab);
         }
     }
 }
