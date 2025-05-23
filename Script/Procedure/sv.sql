@@ -61,7 +61,41 @@
         END;
         /
     GRANT EXECUTE ON X_ADMIN_Insert_DANGKY_Table_ForSV TO PUBLIC;
-
+-- UPDATE trên bảng DANGKY
+    CREATE OR REPLACE PROCEDURE X_ADMIN_Update_DANGKY_Table_ForSV(
+        p_maSV IN VARCHAR2,
+        p_maMM IN VARCHAR2
+    )
+        AS
+        BEGIN
+            UPDATE X_ADMIN.DANGKY
+            SET MAMM = p_maMM
+            WHERE MASV = p_maSV;
+        EXCEPTION
+            WHEN OTHERS THEN
+                DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+                RAISE;
+        END;
+        /
+    GRANT EXECUTE ON X_ADMIN_Update_DANGKY_Table_ForSV TO PUBLIC;
+-- DELETE trên bảng DANGKY
+    CREATE OR REPLACE PROCEDURE X_ADMIN_Delete_DANGKY_Table_ForSV(
+        p_maSV IN VARCHAR2,
+        p_maMM IN VARCHAR2,
+        p_row_affected OUT INTEGER
+    )
+        AS
+        BEGIN
+            DELETE FROM X_ADMIN.DANGKY
+            WHERE MASV = p_maSV AND MAMM = p_maMM;
+            p_row_affected := SQL%ROWCOUNT;
+        EXCEPTION
+            WHEN OTHERS THEN
+                DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+                RAISE;
+        END;
+        /
+    GRANT EXECUTE ON X_ADMIN_Delete_DANGKY_Table_ForSV TO PUBLIC;
 -- SELECT trên bảng MOMON
     CREATE OR REPLACE PROCEDURE X_ADMIN_Select_MOMON_Table_ForSV(
         p_result OUT SYS_REFCURSOR

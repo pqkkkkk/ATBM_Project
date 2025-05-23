@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Oracle.ManagedDataAccess.Client;
+using Oracle.ManagedDataAccess.Types;
 
 namespace Application.DataAccess.DangKy
 {
@@ -37,7 +38,26 @@ namespace Application.DataAccess.DangKy
 
         public bool Delete(object obj)
         {
-            throw new NotImplementedException();
+            var dk = obj as Model.DangKy;
+
+            if (sqlConnection.State != ConnectionState.Open)
+            {
+                sqlConnection.Open();
+            }
+
+            using (OracleCommand cmd = new OracleCommand("X_ADMIN.X_ADMIN_Delete_DANGKY_Table_ForSV", sqlConnection))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("p_maSV", OracleDbType.Varchar2).Value = dk.maSV;
+                cmd.Parameters.Add("p_maMM", OracleDbType.Varchar2).Value = dk.maMM;
+                cmd.Parameters.Add("p_row_affected", OracleDbType.Int32).Direction = ParameterDirection.Output;
+                cmd.ExecuteNonQuery();
+                int rowAffected = ((OracleDecimal)cmd.Parameters["p_row_affected"].Value).ToInt32();
+                sqlConnection.Close();
+
+                return rowAffected > 0;
+
+            }
         }
 
         public List<object> Load(object obj)
@@ -76,7 +96,22 @@ namespace Application.DataAccess.DangKy
 
         public bool Update(object obj)
         {
-            throw new NotImplementedException();
+            var dk = obj as Model.DangKy;
+
+            if (sqlConnection.State != ConnectionState.Open)
+            {
+                sqlConnection.Open();
+            }
+
+            using (OracleCommand cmd = new OracleCommand("X_ADMIN.X_ADMIN_Update_DANGKY_Table_ForSV", sqlConnection))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("p_maSV", OracleDbType.Varchar2).Value = dk.maSV;
+                cmd.Parameters.Add("p_maMM", OracleDbType.Varchar2).Value = dk.maMM;
+                cmd.ExecuteNonQuery();
+                sqlConnection.Close();
+                return true;
+            }
         }
 
     }

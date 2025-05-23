@@ -49,6 +49,11 @@ namespace Application.DataAccess.MetaData.TableView
             return oracleObjects;  
         }
 
+        public List<string> GetColumnListOfTableOrView(string tableName)
+        {
+            throw new NotImplementedException();
+        }
+
         public string? GetTextOfView(string viewName)
         {
             throw new NotImplementedException();

@@ -58,7 +58,7 @@ namespace Application.Views.User
 
         private async void OnDeleteClicked(object item)
         {
-            int deleteResult = viewModel.DeleteItem();
+            int deleteResult = viewModel.DeleteItem(item);
             if (deleteResult == 0)
             {
                 var notification = new ContentDialog
