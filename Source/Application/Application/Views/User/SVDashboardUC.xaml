@@ -30,41 +30,41 @@
                         Foreground="#333"/>
 
                 <StackPanel Spacing="10">
-                    <Button Content="NhanVien" 
+                    <Button Content="NHANVIEN" 
                          Click="OnTabViewChanged"
-                         Tag="NhanVien"
+                         Tag="NHANVIEN"
                          Foreground="Black"
-                         Style="{x:Bind viewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='NhanVien'}" 
+                         Style="{x:Bind viewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='NHANVIEN'}" 
                          HorizontalAlignment="Stretch"/>
-                    <Button Content="SinhVien"
-                         Tag="SinhVien"
+                    <Button Content="SINHVIEN"
+                         Tag="SINHVIEN"
                          Foreground="Black"
                          Click="OnTabViewChanged"
-                         Style="{x:Bind viewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='SinhVien'}"
+                         Style="{x:Bind viewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='SINHVIEN'}"
                          HorizontalAlignment="Stretch"/>
-                    <Button Content="DonVi"
-                         Tag="DonVi"
+                    <Button Content="DONVI"
+                         Tag="DONVI"
                          Click="OnTabViewChanged"
                          Foreground="Black"
-                         Style="{x:Bind viewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='DonVi'}" 
+                         Style="{x:Bind viewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='DONVI'}" 
                          HorizontalAlignment="Stretch"/>
-                    <Button Content="HocPhan"
-                         Tag="HocPhan"
+                    <Button Content="HOCPHAN"
+                         Tag="HOCPHAN"
                          Click="OnTabViewChanged"
                          Foreground="Black"
-                         Style="{x:Bind viewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='HocPhan'}"
+                         Style="{x:Bind viewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='HOCPHAN'}"
                          HorizontalAlignment="Stretch"/>
-                    <Button Content="MoMon" 
-                         Tag="MoMon"
+                    <Button Content="MOMON" 
+                         Tag="MOMON"
                          Click="OnTabViewChanged"
                          Foreground="Black"
-                         Style="{x:Bind viewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='MoMon'}"
+                         Style="{x:Bind viewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='MOMON'}"
                          HorizontalAlignment="Stretch"/>
-                    <Button Content="DangKy" 
-                         Tag="DangKy"
+                    <Button Content="DANGKY" 
+                         Tag="DANGKY"
                          Click="OnTabViewChanged"
                          Foreground="Black"
-                         Style="{x:Bind viewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='DangKy'}"
+                         Style="{x:Bind viewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='DANGKY'}"
                          HorizontalAlignment="Stretch"/>
                 </StackPanel>
             </StackPanel>
