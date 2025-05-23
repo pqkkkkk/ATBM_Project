@@ -77,6 +77,7 @@ namespace Application
                     connectionString = $"User Id={actual_username};Password={password};Data Source=localhost:1521/XEPDB1;DBA Privilege=SYSDBA";
                 else
                     connectionString = $"User Id={actual_username};Password={password};Data Source=localhost:1521/XEPDB1";
+
                 var sqlConnection = new OracleConnection(connectionString);
                 await sqlConnection.OpenAsync();
 
