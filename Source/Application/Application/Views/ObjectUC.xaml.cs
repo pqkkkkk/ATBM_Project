@@ -31,6 +31,8 @@ namespace Application.Views
     {
         public delegate void DetailClickedEventHandler();
         public event DetailClickedEventHandler? DetailClickedEvent;
+        public delegate void AddClickedOnNotificationEventHandler();
+        public event AddClickedOnNotificationEventHandler? AddClickedOnNotificationEvent;
         public string notificationTitle { get; set; } = string.Empty;
         public string notificationMessage { get; set; } = string.Empty;
 
@@ -45,6 +47,8 @@ namespace Application.Views
         public ProcedureFunctionViewModel procedureFunctionViewModel { get; set; }
 
         public RoleDataViewModel roleDataViewModel { get; set; }
+        public NotificationDataViewModel notificationDataViewModel { get; set; }
+
         public MainViewModel mainViewModel
         {
             get => (MainViewModel)GetValue(mainViewModelProperty);
@@ -57,6 +61,7 @@ namespace Application.Views
             tableViewViewModel = new TableViewViewModel();
             privilegeDataViewModel = new PrivilegeDataViewModel();
             procedureFunctionViewModel = new ProcedureFunctionViewModel();
+            notificationDataViewModel = new NotificationDataViewModel();
             this.InitializeComponent();
             notificationDialog.DataContext = this;
             this.Loaded += ObjectUC_Loaded;
@@ -96,6 +101,10 @@ namespace Application.Views
                     procedureFunctionViewModel.itemList = new ObservableCollection<OracleObject>(procedureFunctionViewModel.LoadData().Cast<OracleObject>());
                     dataList.SetDataSource(objectType);
                     break;
+                case "Notifications":
+                    this.DataContext = notificationDataViewModel;
+                    dataList.SetDataSource(objectType);
+                    break;
             }
         }
 
@@ -129,6 +138,10 @@ namespace Application.Views
                 case "Roles":
                     await createRoleDialog.ShowAsync();
                     break;
+                case "Notifications":
+                    AddClickedOnNotificationEvent?.Invoke();
+                    break;
+
                 default:
                     break;
             }
@@ -272,7 +285,7 @@ namespace Application.Views
                     deleteWarningDialog.Hide();
                     notificationDialog.Title = "Error";
                     notificationTextBlock.Text = "There was something wrong in deleting";
-                    await notificationDialog.ShowAsync();
+                    await notificationDialog.ShowAsync(); 
                 }
             }
             mainViewModel.UpdateSelectedItem(new CommonInfo { name = "", objectType = "" });
@@ -409,6 +422,14 @@ namespace Application.Views
                 notificationTextBlock.Text = $"{mainViewModel.selectedItem.name} was updated successfully";
                 mainViewModel.UpdateSelectedItem(new CommonInfo { name = "", objectType = "" });
                 await notificationDialog.ShowAsync();
+            }
+        }
+
+        public void reloadDataGrid()
+        {
+            if(mainViewModel.selectedTabView == "Notifications")
+            {
+                notificationDataViewModel.UpdateWhenBack(); 
             }
         }
     }

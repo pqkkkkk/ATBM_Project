@@ -61,6 +61,12 @@
                             Foreground="Black"
                             Style="{x:Bind mainViewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='Functions'}"
                             HorizontalAlignment="Stretch"/>
+                    <Button Content="Notifications" 
+                            Tag="Notifications"
+                            Click="OnTabViewChanged"
+                            Foreground="Black"
+                            Style="{x:Bind mainViewModel.selectedTabView, Mode=OneWay, Converter={StaticResource TabViewBGConverter}, ConverterParameter='Notifications'}"
+                            HorizontalAlignment="Stretch"/>
                 </StackPanel>
             </StackPanel>
         </Grid>
@@ -125,11 +131,16 @@
                 x:Name="objectUC"
                 Visibility="Visible"
                 DetailClickedEvent="ViewPrivsDetailOfSelectedObject"
+                AddClickedOnNotificationEvent="objectUC_AddClickedOnNotificationEvent"
                 mainViewModel="{x:Bind mainViewModel}"/>
             <local:ObjectDetailUC
                 Grid.Row="1"
                 x:Name="objectDetailUC"
                 mainViewModel="{x:Bind mainViewModel, Mode=OneWay}"
+                Visibility="Collapsed"/>
+            <local:ThongBaoUC
+                Grid.Row="1"
+                x:Name="notificationUC"
                 Visibility="Collapsed"/>
         </Grid>
     </Grid>

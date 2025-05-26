@@ -25,6 +25,7 @@ using Application.DataAccess.MetaData.Role;
 using Application.DataAccess.MetaData.User;
 using Application.DataAccess.MetaData.TableView;
 using Microsoft.Windows.ApplicationModel.WindowsAppRuntime;
+using Application.DataAccess.ThongBao;
 
 namespace Application
 {
@@ -89,6 +90,7 @@ namespace Application
                 services.AddSingleton<IRoleDao, RoleXAdminDao>();
                 services.AddSingleton<IUserDao, UserXAdminDao>();
                 services.AddSingleton<ITableViewDao, TableViewXAdminDao>();
+                services.AddSingleton<IThongBaoDao, ThongBaoXAdminDao>();
                 serviceProvider = services.BuildServiceProvider();
 
                 m_window.SignInSuccessHandler(role);

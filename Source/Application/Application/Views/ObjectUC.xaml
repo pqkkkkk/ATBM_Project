@@ -69,7 +69,8 @@
             userViewModel="{x:Bind userDataViewModel}"
             roleViewModel="{x:Bind roleDataViewModel}"
             tableViewViewModel="{x:Bind tableViewViewModel}"
-            procedureFunctionViewModel="{x:Bind procedureFunctionViewModel}"/>
+            procedureFunctionViewModel="{x:Bind procedureFunctionViewModel}"
+            notificationDataViewModel="{x:Bind notificationDataViewModel}"/>
         
         <!-- Create user dialog -->
         <ContentDialog
