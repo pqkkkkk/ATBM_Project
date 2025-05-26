@@ -49,13 +49,6 @@ namespace Application.Views.User
                 return;
             }
         }
-        private void OnTabViewChanged(object sender, RoutedEventArgs e)
-        {
-            string selectedTab = (sender as Button).Tag.ToString();
-            viewModel.UpdateSelectedTabView(selectedTab);
-            TabViewChanged?.Invoke(selectedTab);
-        }
-
         private async void OnDeleteClicked(object item)
         {
             int deleteResult = viewModel.DeleteItem();
