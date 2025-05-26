@@ -22,6 +22,7 @@
     <None Remove="Views\ObjectUC.xaml" />
     <None Remove="Views\SignInUC.xaml" />
     <None Remove="Views\TestUC.xaml" />
+    <None Remove="Views\ThongBaoUC.xaml" />
     <None Remove="Views\UserDashboardUC.xaml" />
     <None Remove="Views\User\DataContentUC.xaml" />
     <None Remove="Views\User\GVDashboardUC.xaml" />
@@ -66,6 +67,11 @@
     <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.3" />
     <PackageReference Include="System.Security.Permissions" Version="9.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\ThongBaoUC.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\TestUC.xaml">

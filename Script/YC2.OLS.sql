@@ -29,9 +29,9 @@
     /
   -- Tạo compartment
     BEGIN
-      SA_COMPONENTS.CREATE_COMPARTMENT('NOTIFICATION_POLICY', 1,'T','TOAN');
-      SA_COMPONENTS.CREATE_COMPARTMENT('NOTIFICATION_POLICY', 2, 'L','LY');
-      SA_COMPONENTS.CREATE_COMPARTMENT('NOTIFICATION_POLICY', 3, 'H','HOA');
+      SA_COMPONENTS.CREATE_COMPARTMENT('NOTIFICATION_POLICY', 1,'TOAN','KHOA TOAN');
+      SA_COMPONENTS.CREATE_COMPARTMENT('NOTIFICATION_POLICY', 2, 'VLY','KHOA VAT LY');
+      SA_COMPONENTS.CREATE_COMPARTMENT('NOTIFICATION_POLICY', 3, 'HOA','KHOA HOA');
       SA_COMPONENTS.CREATE_COMPARTMENT('NOTIFICATION_POLICY', 4, 'HC','HANHCHINH');
     END;
     /
@@ -74,7 +74,7 @@
   SA_LABEL_ADMIN.CREATE_LABEL  (
     policy_name     => 'NOTIFICATION_POLICY',
     label_tag       => '4',
-    label_value     => 'SV:H:CS1',
+    label_value     => 'SV:HOA:CS1',
     data_label      => TRUE);
   END;
   /
@@ -83,7 +83,7 @@
   SA_LABEL_ADMIN.CREATE_LABEL  (
     policy_name     => 'NOTIFICATION_POLICY',
     label_tag       => '5',
-    label_value     => 'SV:H:CS2',
+    label_value     => 'SV:HOA:CS2',
     data_label      => TRUE);
   END;
   /
@@ -92,7 +92,7 @@
   SA_LABEL_ADMIN.CREATE_LABEL  (
     policy_name     => 'NOTIFICATION_POLICY',
     label_tag       => '6',
-    label_value     => 'SV:H:CS1,CS2',
+    label_value     => 'SV:HOA:CS1,CS2',
     data_label      => TRUE);
   END;
   /
@@ -110,7 +110,7 @@
   SA_LABEL_ADMIN.CREATE_LABEL  (
     policy_name     => 'NOTIFICATION_POLICY',
     label_tag       => '8',
-    label_value     => 'TRGDV:H:CS1',
+    label_value     => 'TRGDV:HOA:CS1',
     data_label      => TRUE);
   END;
   /
@@ -119,7 +119,7 @@
   SA_LABEL_ADMIN.CREATE_LABEL  (
     policy_name     => 'NOTIFICATION_POLICY',
     label_tag       => '9',
-    label_value     => 'TRGDV:H:CS1,CS2',
+    label_value     => 'TRGDV:HOA:CS1,CS2',
     data_label      => TRUE);
   END;
   /
@@ -139,7 +139,7 @@
   SA_LABEL_ADMIN.CREATE_LABEL  (
     policy_name     => 'NOTIFICATION_POLICY',
     label_tag       => '10',
-    label_value     => 'TRGDV:T,L,H,HC:CS1,CS2');
+    label_value     => 'TRGDV:TOAN,VLY,HOA,HC:CS1,CS2');
   END;
   /
   -- u2: TRGDV:H:CS2: trưởng đơn vị phụ trách khoa hóa tại cơ sở 2
@@ -147,7 +147,7 @@
   SA_LABEL_ADMIN.CREATE_LABEL  (
     policy_name     => 'NOTIFICATION_POLICY',
     label_tag       => '11',
-    label_value     => 'TRGDV:H:CS2');
+    label_value     => 'TRGDV:HOA:CS2');
   END;
   /
   -- u3: TRGDV:L:CS2: truong đơn vị phụ trách khoa lý tại cơ sở 2
@@ -155,7 +155,7 @@
   SA_LABEL_ADMIN.CREATE_LABEL  (
     policy_name     => 'NOTIFICATION_POLICY',
     label_tag       => '12',
-    label_value     => 'TRGDV:L:CS2');
+    label_value     => 'TRGDV:VLY:CS2');
   END;
   /
   -- u4: NV:H:CS2: nhân viên thuộc khoa hóa tại cơ sở 2
@@ -163,7 +163,7 @@
   SA_LABEL_ADMIN.CREATE_LABEL  (
     policy_name     => 'NOTIFICATION_POLICY',
     label_tag       => '13',
-    label_value     => 'NV:H:CS2');
+    label_value     => 'NV:HOA:CS2');
   END;
   /
   -- u5: SV:H:CS2: sinh viên thuộc khoa hóa tại cơ sở 2 (đã có nhãn)
@@ -180,7 +180,7 @@
   SA_LABEL_ADMIN.CREATE_LABEL  (
     policy_name     => 'NOTIFICATION_POLICY',
     label_tag       => '15',
-    label_value     => 'NV:T,L,H,HC:CS1,CS2');
+    label_value     => 'NV:TOAN,VLY,HOA,HC:CS1,CS2');
   END;
   /
   -- u8: NV:HC:CS1: nhân viên đọc được thông báo hành chính tại cơ sở 1

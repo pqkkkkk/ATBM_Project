@@ -17,6 +17,7 @@ using System.ComponentModel;
 using Application.ViewModels;
 using Application.Model;
 using System.Threading.Tasks;
+using Application.Views.Components;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -76,11 +77,29 @@ namespace Application.Views
         private void Back_Click(object sender, RoutedEventArgs e)
         {
             mainViewModel.UpdateCanBack(false);
-
+            if(mainViewModel.selectedTabView == "Notifications")
+            {
+                notificationUC.Visibility = Visibility.Collapsed;
+                objectUC.reloadDataGrid();
+            }
+            else
+            {
             objectDetailUC.UpdateDataWhenBack();
             objectDetailUC.Visibility = Visibility.Collapsed;
-
+            }
             objectUC.Visibility = Visibility.Visible;
+        }
+
+        private void objectUC_AddClickedOnNotificationEvent()
+        {
+            if (mainViewModel.selectedItem != null)
+            {
+                mainViewModel.UpdateSelectedItem(null);
+            }
+            mainViewModel.UpdateCanBack(true);
+            objectUC.Visibility = Visibility.Collapsed;
+            notificationUC.Visibility = Visibility.Visible;
+
         }
     }
 }

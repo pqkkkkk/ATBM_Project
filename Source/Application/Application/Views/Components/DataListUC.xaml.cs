@@ -51,6 +51,11 @@ namespace Application.Views.Components
             typeof(ProcedureFunctionViewModel),
             typeof(DataListUC),
             new PropertyMetadata(null));
+        public static readonly DependencyProperty notificationDataViewModelProperty = DependencyProperty.Register(
+            nameof(notificationDataViewModel),
+            typeof(NotificationDataViewModel),
+            typeof(DataListUC),
+            new PropertyMetadata(null));
         public static readonly DependencyProperty mainViewModelProperty = DependencyProperty.Register(
             nameof(mainViewModel),
             typeof(MainViewModel),
@@ -86,6 +91,11 @@ namespace Application.Views.Components
             get => (ProcedureFunctionViewModel)GetValue(procedureFunctionViewModelProperty);
             set => SetValue(procedureFunctionViewModelProperty, value);
         }
+        public NotificationDataViewModel notificationDataViewModel
+        {
+            get => (NotificationDataViewModel)GetValue(notificationDataViewModelProperty);
+            set => SetValue(notificationDataViewModelProperty, value);
+        }
         public DataListUC()
         {
             this.InitializeComponent();
@@ -111,6 +121,9 @@ namespace Application.Views.Components
                 case "Procedures":
                 case "Functions":
                     this.DataContext = procedureFunctionViewModel;
+                    break;
+                case "Notifications":
+                    this.DataContext = notificationDataViewModel;
                     break;
                 default:
                     break;

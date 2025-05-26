@@ -75,8 +75,11 @@
         PhuCap IN INTEGER,
         SDT IN VARCHAR2,
         VaiTro IN VARCHAR2,
-        MaDV IN VARCHAR2)
+        MaDV IN VARCHAR2,
+        COSO IN VARCHAR2)
     AS
+        v_label VARCHAR2(100);
+        v_isKhoa NUMBER := 0;
     BEGIN
         INSERT INTO X_ADMIN.NHANVIEN 
             (MANV, HOTEN, PHAI, NGSINH, LUONG, PHUCAP, DT, VAITRO, MADV)
@@ -87,7 +90,20 @@
 
         X_ADMIN.X_ADMIN_CREATEUSER('X_' || MaNLD, '123');
         X_ADMIN.X_ADMIN_GRANTROLE('XR_' || VaiTro,'X_' || MaNLD, 'NO');
-        
+
+        -- Các nhân viên không phải là giáo viên và trưởng đơn vị các khoa sẽ thuộc department HC
+        SELECT COUNT(*) INTO v_isKhoa
+        FROM X_ADMIN.DONVI
+        WHERE LoaiDV = 'Khoa' AND MADV = MaDV;
+
+        if(UPPER(VaiTro) = 'TRGDV' AND v_isKhoa > 0) THEN
+            v_label := VAITRO || ':' || MADV || ':' || COSO;
+        ELSIF(UPPER(VaiTro) = 'GV') THEN
+            v_label := 'NV:' || MADV || ':' || COSO;
+        ELSE
+            v_label := 'NV:HC:' || COSO;
+        END IF;
+        X_ADMIN.X_ADMIN_SETUSERLABELS('NOTIFICATION_POLICY', 'X_' || MaNLD, v_label, v_label);
     EXCEPTION
     WHEN OTHERS THEN
         ROLLBACK;
@@ -98,3 +114,5 @@
     GRANT EXECUTE ON X_ADMIN_INSERT_NHANVIEN_TABLE_FOR_NVTCHC TO XR_NVTCHC;
 
 COMMIT;
+
+SELECT * FROM DONVI;
