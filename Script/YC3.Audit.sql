@@ -20,46 +20,72 @@
       );
     END;
     /
+    COMMIT;
   -- b. Hành vi của người dùng (không thuộc vai trò “NV TCHC”) có thể đọc trên
   --trường LUONG, PHUCAP của người khác hoặc cập nhật ở quan hệ NHANVIEN.
+    -- Tạo function để kiểm tra có vi phạm chính sách select bảng NHANVIEN hay không
+      CREATE OR REPLACE FUNCTION VIOLATE_SELECT_NHANVIEN_POLICY(
+        p_current_username IN VARCHAR2,
+        p_actual_username IN VARCHAR2
+      )
+        RETURN NUMBER DETERMINISTIC
+        AS
+          p_is_nvtchc NUMBER;
+        BEGIN
+          p_is_nvtchc := SYS_CONTEXT('X_UNIVERITY_CONTEXT', 'IS_NVTCHC');
+          IF p_is_nvtchc < 1 AND p_current_username != p_actual_username THEN
+            RETURN 1; -- Vi phạm chính sách
+          ELSE
+            RETURN 0; -- Không vi phạm chính sách
+          END IF;
+        END VIOLATE_SELECT_NHANVIEN_POLICY;
+        /
     BEGIN
       DBMS_FGA.add_policy(
         object_schema   => 'X_ADMIN',
         object_name     => 'NHANVIEN',
         policy_name     => 'AUDIT_SELECT_NHANVIEN',
-        audit_condition => 'SYS_CONTEXT(''X_UNIVERITY_CONTEXT'', ''IS_NVTCHC'') < 1',
+        audit_condition => 'X_ADMIN.VIOLATE_SELECT_NHANVIEN_POLICY(SYS_CONTEXT(''X_UNIVERITY_CONTEXT'', ''USER_NAME''), MANV) = 1',
         audit_column    => 'LUONG, PHUCAP',
         statement_types => 'SELECT',
         enable          => TRUE
       );
     END;
     /
+    COMMIT;
   -- c. Hành vi thêm, xóa, sửa trên quan hệ DANGKY của sinh viên nhưng trên dòng
   --dữ liệu của sinh viên khác hoặc thực hiện hiệu chỉnh đăng ký học phần ngoài
   --thời gian cho phép hiệu chỉnh đăng ký học phần.
 
     --Tạo function để kiểm tra có nằm trong thời gian hiệu chỉnh học phần hay không
-      CREATE OR REPLACE FUNCTION isInModifyTime
-      RETURN NUMBER DETERMINISTIC
-      AS   
-        v_today      DATE := SYSDATE;
-        v_startHK    DATE;
-        v_month      NUMBER := TO_NUMBER(TO_CHAR(SYSDATE, 'MM'));
-        v_year       NUMBER := TO_NUMBER(TO_CHAR(SYSDATE, 'YYYY'));
+      CREATE OR REPLACE FUNCTION isInModifyTime(
+        p_maMM IN VARCHAR2
+        )
+        RETURN NUMBER
+        DETERMINISTIC
+      AS
+        v_count NUMBER;
       BEGIN
-        IF v_month BETWEEN 9 AND 12 THEN
-              v_startHK := TO_DATE('01-09-' || v_year, 'DD-MM-YYYY');
-            ELSIF v_month = 1 THEN
-              v_startHK := TO_DATE('01-09-' || (v_year - 1), 'DD-MM-YYYY');
-            ELSIF v_month BETWEEN 2 AND 6 THEN
-              v_startHK := TO_DATE('01-02-' || v_year, 'DD-MM-YYYY');
-            ELSE
-              v_startHK := TO_DATE('01-07-' || v_year, 'DD-MM-YYYY');
-        END IF;
+        SELECT COUNT(*) INTO v_count
+        FROM X_ADMIN.MOMON
+        WHERE MaMM = p_maMM
+        AND CURRENT_DATE 
+              - TRUNC(
+                  TO_DATE(
+                    NAM || '-' ||
+                    CASE HK 
+                      WHEN 1 THEN '09'
+                      WHEN 2 THEN '01'
+                      WHEN 3 THEN '05'
+                    END,
+                  'YYYY-MM')
+                )
+            BETWEEN 0 AND 13;
         
-        IF v_today - v_startHK > 14 THEN
-            RETURN 1;
-        ELSE RETURN 0;
+        IF v_count > 0 THEN
+          RETURN 1;
+        ELSE
+          RETURN 0;
         END IF;
       END isInModifyTime;
       /
@@ -69,22 +95,21 @@
         object_schema   => 'X_ADMIN',
         object_name     => 'DANGKY',
         policy_name     => 'AUDIT_NOT_IN_MODIFY_TIME_DANGKY',
-        audit_condition => 'X_ADMIN.isInModifyTime = 1',
+        audit_condition => 'X_ADMIN.isInModifyTime(MAMM) = 0',
         statement_types => 'INSERT, UPDATE, DELETE',
         enable          => TRUE
       );
     END;
     /
+    COMMIT;
 
     --thêm xóa sửa trên dòng dữ liệu của sinh viên khác
       CREATE OR REPLACE FUNCTION get_audit_condition(
         v_is_student IN NUMBER,
         v_username IN VARCHAR2,
         v_masv IN VARCHAR2) RETURN NUMBER
-      AUTHID CURRENT_USER
       AS
       BEGIN
-      --RETURN 'MASV !=  SYS_CONTEXT(''X_UNIVERITY_CONTEXT'', ''USER_NAME'')';
         IF v_is_student >=1 AND v_masv != v_username THEN
           RETURN 1;
         ELSE 
@@ -103,6 +128,7 @@
       );
     END;
     /
+    COMMIT;
 
 
 
