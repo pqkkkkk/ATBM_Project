@@ -2,6 +2,7 @@
 
 ## Introduction
 X_University_IS is the basic information systems of a university. Manage basic data of a university such as student, employee, course, grade.
+- Using MVVM model approach
 - UI: window application built with WinUI 3
 - Database: Oracle
 ## Project structure
