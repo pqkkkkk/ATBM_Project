@@ -11,7 +11,6 @@
         NAME VARCHAR2(50),
         AGE NUMBER
     );
-
     INSERT INTO DATAPUMP_TEST_USER.DATA_TEST (ID, NAME, AGE) VALUES (1, 'John Doe', 30);
     INSERT INTO DATAPUMP_TEST_USER.DATA_TEST (ID, NAME, AGE) VALUES (2, 'Jane Smith', 25);
     INSERT INTO DATAPUMP_TEST_USER.DATA_TEST (ID, NAME, AGE) VALUES (3, 'Alice Johnson', 28);
@@ -22,12 +21,10 @@
     INSERT INTO DATAPUMP_TEST_USER.DATA_TEST (ID, NAME, AGE) VALUES (8, 'Fiona Green', 29);
     INSERT INTO DATAPUMP_TEST_USER.DATA_TEST (ID, NAME, AGE) VALUES (9, 'George Harris', 33);
     INSERT INTO DATAPUMP_TEST_USER.DATA_TEST (ID, NAME, AGE) VALUES (10, 'Hannah Ivers', 26);
-
     COMMIT;
 -- Tạo directory object
     CREATE OR REPLACE DIRECTORY datapump_dir AS 'C:\AppStorage\oracle-datadump-exports';
     GRANT READ, WRITE ON DIRECTORY datapump_dir TO datapump_test_user;
-
 
 -- Export dữ liệu từ schema của user datapump_test_user
     DECLARE
@@ -39,30 +36,24 @@
             job_mode    => 'SCHEMA',
             job_name    => 'datapump_test_job8'
         );
-
         -- Chỉ định nơi xuất file .dmp và .log
         DBMS_DATAPUMP.ADD_FILE(
             handle      => h1,
             filename    => 'datatestbackup.dmp',
             directory   => 'DATAPUMP_DIR'
         );
-
         DBMS_DATAPUMP.ADD_FILE(
             handle      => h1,
             filename    => 'datatestbackup.log',
             directory   => 'DATAPUMP_DIR',
             filetype    => DBMS_DATAPUMP.KU$_FILE_TYPE_LOG_FILE
         );
-
         -- Chỉ định schema cần export (cách đúng trong SCHEMA mode)
         DBMS_DATAPUMP.METADATA_FILTER(h1,
         'SCHEMA_EXPR',
         'IN (''DATAPUMP_TEST_USER'')');
-
-
         -- Bắt đầu chạy
         DBMS_DATAPUMP.START_JOB(h1);
-
         -- Đóng job
         DBMS_DATAPUMP.DETACH(h1);
     END;
@@ -84,14 +75,12 @@
             job_mode  => 'SCHEMA',
             job_name  => 'datapump_import_job4'
         );
-
         -- Gán file dump cần import
         DBMS_DATAPUMP.ADD_FILE(
             handle    => h2,
             filename  => 'datatestbackup.dmp',
             directory => 'DATAPUMP_DIR'
         );
-
         -- Gán file log để theo dõi quá trình import
         DBMS_DATAPUMP.ADD_FILE(
             handle    => h2,
@@ -104,10 +93,8 @@
                 name       => 'REMAP_SCHEMA',
                 old_value  => 'DATAPUMP_TEST_USER',
                 value      => 'DATAPUMP_TEST_USER_IMPORT');
-
         -- Bắt đầu job
         DBMS_DATAPUMP.START_JOB(h2);
-
         -- Tách khỏi job
         DBMS_DATAPUMP.DETACH(h2);
     END;
