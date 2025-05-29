@@ -1,5 +1,4 @@
 ﻿--Cài VPD cho từng vai trò với thao tác SELECT:
-
    CREATE OR REPLACE FUNCTION DANGKY_SELECT(
       p_schema VARCHAR2,
       p_object_name VARCHAR2
@@ -110,14 +109,14 @@
    END;
    /
 
-   BEGIN
-      DBMS_RLS.DROP_POLICY(
-          object_schema   => 'X_ADMIN',
-          object_name     => 'DANGKY',
-          policy_name     => 'DANGKY_INS_DEL_UPD'
-      );
-   END;
-   /
+   -- BEGIN
+   --    DBMS_RLS.DROP_POLICY(
+   --        object_schema   => 'X_ADMIN',
+   --        object_name     => 'DANGKY',
+   --        policy_name     => 'DANGKY_INS_DEL_UPD'
+   --    );
+   -- END;
+   -- /
 GRANT SELECT ON X_ADMIN.DANGKY TO XR_GV;
 GRANT SELECT, UPDATE(DIEMTH, DIEMCT, DIEMCK, DIEMTK) ON X_ADMIN.DANGKY TO XR_NVPKT;
 GRANT SELECT, UPDATE(MASV, MAMM), DELETE, INSERT ON X_ADMIN.DANGKY TO XR_SV;

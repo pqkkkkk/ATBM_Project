@@ -12,7 +12,7 @@
                 RAISE;
         END;
         /
-    GRANT EXECUTE ON X_ADMIN_Select_SINHVIEN_Table_ForSV TO PUBLIC;
+    GRANT EXECUTE ON X_ADMIN_Select_SINHVIEN_Table_ForSV TO XR_SV;
 -- Update trên bảng SINHVIEN
     CREATE OR REPLACE PROCEDURE X_ADMIN_Update_SINHVIEN_Table_ForSV(
         p_dChi IN VARCHAR2,
@@ -28,7 +28,7 @@
             RAISE;
     END;
     /
-    GRANT EXECUTE ON X_ADMIN_Update_SINHVIEN_Table_ForSV TO PUBLIC;
+    GRANT EXECUTE ON X_ADMIN_Update_SINHVIEN_Table_ForSV TO XR_SV;
 -- SELECT trên bảng DANGKY
     CREATE OR REPLACE PROCEDURE X_ADMIN_Select_DANGKY_Table_ForSV(
         p_result OUT SYS_REFCURSOR
@@ -43,7 +43,7 @@
                 RAISE;
         END;
         /
-    GRANT EXECUTE ON X_ADMIN_Select_DANGKY_Table_ForSV TO PUBLIC;
+    GRANT EXECUTE ON X_ADMIN_Select_DANGKY_Table_ForSV TO XR_SV;
 
 -- INSERT trên bảng DANGKY
     CREATE OR REPLACE PROCEDURE X_ADMIN_Insert_DANGKY_Table_ForSV(
@@ -60,7 +60,7 @@
                 RAISE;
         END;
         /
-    GRANT EXECUTE ON X_ADMIN_Insert_DANGKY_Table_ForSV TO PUBLIC;
+    GRANT EXECUTE ON X_ADMIN_Insert_DANGKY_Table_ForSV TO XR_SV;
 -- UPDATE trên bảng DANGKY
     CREATE OR REPLACE PROCEDURE X_ADMIN_Update_DANGKY_Table_ForSV(
         p_maSV IN VARCHAR2,
@@ -77,7 +77,7 @@
                 RAISE;
         END;
         /
-    GRANT EXECUTE ON X_ADMIN_Update_DANGKY_Table_ForSV TO PUBLIC;
+    GRANT EXECUTE ON X_ADMIN_Update_DANGKY_Table_ForSV TO XR_SV;
 -- DELETE trên bảng DANGKY
     CREATE OR REPLACE PROCEDURE X_ADMIN_Delete_DANGKY_Table_ForSV(
         p_maSV IN VARCHAR2,
@@ -95,7 +95,7 @@
                 RAISE;
         END;
         /
-    GRANT EXECUTE ON X_ADMIN_Delete_DANGKY_Table_ForSV TO PUBLIC;
+    GRANT EXECUTE ON X_ADMIN_Delete_DANGKY_Table_ForSV TO XR_SV;
 -- SELECT trên bảng MOMON
     CREATE OR REPLACE PROCEDURE X_ADMIN_Select_MOMON_Table_ForSV(
         p_result OUT SYS_REFCURSOR
@@ -110,6 +110,6 @@
                 RAISE;
         END;
         /
-    GRANT EXECUTE ON X_ADMIN_Select_MOMON_Table_ForSV TO PUBLIC;
+    GRANT EXECUTE ON X_ADMIN_Select_MOMON_Table_ForSV TO XR_SV;
 
 COMMIT;

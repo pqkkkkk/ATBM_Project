@@ -87,9 +87,7 @@
         VALUES (MaNLD, HoTen, PHAI, NgaySinh, Luong, PhuCap, SDT, VaiTro, MaDV, COSO);
 
         INSERT INTO X_ADMIN.USER_ROLES (USERNAME, ROLENAME)
-        VALUES (MaNLD, 'XR_' || VaiTro);
-
-        
+        VALUES (MaNLD, 'XR_' || VaiTro);    
     EXCEPTION
     WHEN OTHERS THEN
         ROLLBACK;
@@ -100,5 +98,3 @@
     GRANT EXECUTE ON X_ADMIN_INSERT_NHANVIEN_TABLE_FOR_NVTCHC TO XR_NVTCHC;
 
 COMMIT;
-
-SELECT * FROM DONVI;
