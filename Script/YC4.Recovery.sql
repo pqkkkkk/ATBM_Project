@@ -15,7 +15,6 @@
         NAME VARCHAR2(50),
         AGE NUMBER
     ) TABLESPACE RECOVERY_TEST;
-
     INSERT INTO RMAN_TEST.DATA_TEST (ID, NAME, AGE) VALUES (1, 'John Doe', 30);
     INSERT INTO RMAN_TEST.DATA_TEST (ID, NAME, AGE) VALUES (2, 'Jane Smith', 25);
     INSERT INTO RMAN_TEST.DATA_TEST (ID, NAME, AGE) VALUES (3, 'Alice Johnson', 28);
@@ -27,15 +26,19 @@
     INSERT INTO RMAN_TEST.DATA_TEST (ID, NAME, AGE) VALUES (9, 'George Harris', 33);
     INSERT INTO RMAN_TEST.DATA_TEST (ID, NAME, AGE) VALUES (10, 'Hannah Ivers', 26);
     INSERT INTO RMAN_TEST.DATA_TEST (ID, NAME, AGE) VALUES (11, 'Ian Johnson', 24);
-    
     COMMIT;
+-- Đóng tablespace
+    ALTER TABLESPACE RECOVERY_TEST OFFLINE IMMEDIATE;
+    STARTUP MOUNT;
+-- Xóa datafile của tablespace để giả lập tình huống mất mát dữ liệu
+    ALTER DATABASE DATAFILE 'RECOVERY_TEST.DBF' OFFLINE DROP;
+-- Thực hiện phục hồi với RMAN
+    -- RMAN> CONNECT TARGET /
+    -- RMAN> RESTORE TABLESPACE RECOVERY_TEST;
+    -- RMAN> RECOVER TABLESPACE RECOVERY_TEST;
+-- Mở lại database
+    ALTER DATABASE OPEN;
+    ALTER TABLESPACE RECOVERY_TEST ONLINE;   
 
-    DROP TABLESPACE RECOVERY_TEST INCLUDING CONTENTS AND DATAFILES;
+-- Két nối lại và truy vấn dữ liệu để kiểm tra kết quả phục hồi
     SELECT * FROM RMAN_TEST.DATA_TEST;
-
-
-SELECT file_name
-FROM dba_data_files
-WHERE tablespace_name = 'RECOVERY_TEST';
-
-select * from dba_data_files;

@@ -327,22 +327,22 @@
     BEGIN
         OPEN p_result FOR
         SELECT MATB, NOIDUNG FROM X_ADMIN.THONGBAO;
-END getNotification;
-/
+    END getNotification;
+    /
 -- Load bảng thông báo
-CREATE OR REPLACE PROCEDURE X_ADMIN_Select_THONGBAO_Table (
-    p_result OUT SYS_REFCURSOR
-)
-AS
-BEGIN
-    OPEN p_result FOR
-    SELECT MATB, NGAYTB ,NOIDUNG FROM X_ADMIN.THONGBAO;
-EXCEPTION
-    WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
-        OPEN p_result FOR SELECT 'Error occurred' AS MATB, 'Error occurred' AS NGAYTB, 'Error occurred' AS NOIDUNG FROM DUAL;
-END X_ADMIN_Select_THONGBAO_Table;
-
+    CREATE OR REPLACE PROCEDURE X_ADMIN_Select_THONGBAO_Table (
+        p_result OUT SYS_REFCURSOR
+    )
+    AS
+    BEGIN
+        OPEN p_result FOR
+        SELECT MATB, NGAYTB ,NOIDUNG FROM X_ADMIN.THONGBAO;
+    EXCEPTION
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+            OPEN p_result FOR SELECT 'Error occurred' AS MATB, 'Error occurred' AS NGAYTB, 'Error occurred' AS NOIDUNG FROM DUAL;
+    END X_ADMIN_Select_THONGBAO_Table;
+    /
 COMMIT;
 
 -- Lấy các level của policy
@@ -362,54 +362,55 @@ EXCEPTION
 END X_ADMIN_GetLevels;
 /
 -- Lấy các compartments của policy
-CREATE OR REPLACE PROCEDURE X_ADMIN_GetDepartments(
-    p_result OUT SYS_REFCURSOR
-)
-AS
-BEGIN
-    OPEN p_result FOR
-    SELECT SHORT_NAME, LONG_NAME FROM DBA_SA_COMPARTMENTS
-    WHERE POLICY_NAME = 'NOTIFICATION_POLICY';
-EXCEPTION
-    WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
-        OPEN p_result FOR SELECT 'Error occurred' AS COMPARTMENT_NAME FROM DUAL;
-END X_ADMIN_GetDepartments;
-/
+    CREATE OR REPLACE PROCEDURE X_ADMIN_GetDepartments(
+        p_result OUT SYS_REFCURSOR
+    )
+    AS
+    BEGIN
+        OPEN p_result FOR
+        SELECT SHORT_NAME, LONG_NAME FROM DBA_SA_COMPARTMENTS
+        WHERE POLICY_NAME = 'NOTIFICATION_POLICY';
+    EXCEPTION
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+            OPEN p_result FOR SELECT 'Error occurred' AS COMPARTMENT_NAME FROM DUAL;
+    END X_ADMIN_GetDepartments;
+    /
 -- Lấy các groups của policy
-CREATE OR REPLACE PROCEDURE X_ADMIN_GetGroups(
-    p_result OUT SYS_REFCURSOR
-)
-AS
-BEGIN
-    OPEN p_result FOR
-    SELECT SHORT_NAME, LONG_NAME FROM DBA_SA_GROUPS
-    WHERE POLICY_NAME = 'NOTIFICATION_POLICY';
-EXCEPTION
-    WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
-        OPEN p_result FOR SELECT 'Error occurred' AS GROUP_NAME FROM DUAL;
-END X_ADMIN_GetGroups;
-
+    CREATE OR REPLACE PROCEDURE X_ADMIN_GetGroups(
+        p_result OUT SYS_REFCURSOR
+    )
+    AS
+    BEGIN
+        OPEN p_result FOR
+        SELECT SHORT_NAME, LONG_NAME FROM DBA_SA_GROUPS
+        WHERE POLICY_NAME = 'NOTIFICATION_POLICY';
+    EXCEPTION
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+            OPEN p_result FOR SELECT 'Error occurred' AS GROUP_NAME FROM DUAL;
+    END X_ADMIN_GetGroups;
+    /
 -- Gán nhãn bảo mật cho người dùng
-CREATE OR REPLACE PROCEDURE X_ADMIN_SetUserLabels(
-    policy_name IN VARCHAR2,
-    user_name IN VARCHAR2,
-    max_read_label IN VARCHAR2,
-    def_label IN VARCHAR2
-)
-AS
-BEGIN
-    SA_USER_ADMIN.SET_USER_LABELS(
-        policy_name => policy_name,
-        user_name => user_name,
-        max_read_label => max_read_label,
-        def_label => def_label
-    );
-    DBMS_OUTPUT.PUT_LINE('User labels set successfully for ' || user_name);
-EXCEPTION
-    WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('Error setting user labels: ' || SQLERRM);
-        RAISE;
-END X_ADMIN_SetUserLabels;
-/
+    CREATE OR REPLACE PROCEDURE X_ADMIN_SetUserLabels(
+        policy_name IN VARCHAR2,
+        user_name IN VARCHAR2,
+        max_read_label IN VARCHAR2,
+        def_label IN VARCHAR2
+    )
+    AS
+    BEGIN
+        SA_USER_ADMIN.SET_USER_LABELS(
+            policy_name => policy_name,
+            user_name => user_name,
+            max_read_label => max_read_label,
+            def_label => def_label
+        );
+        DBMS_OUTPUT.PUT_LINE('User labels set successfully for ' || user_name);
+    EXCEPTION
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('Error setting user labels: ' || SQLERRM);
+            RAISE;
+    END X_ADMIN_SetUserLabels;
+    /
+COMMIT;
