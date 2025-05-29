@@ -37,8 +37,8 @@ BEGIN
   SA_USER_ADMIN.SET_USER_LABELS(
     policy_name     => 'NOTIFICATION_POLICY',
     user_name       => 'X_NV0019',
-    max_read_label  => 'TRGDV:T,L,H,HC:CS1,CS2',
-    def_label       => 'TRGDV:T,L,H,HC:CS1,CS2'
+    max_read_label  => 'TRGDV:TOAN,VLY,HOA,HC:CS1,CS2',
+    def_label       => 'TRGDV:TOAN,VLY,HOA,HC:CS1,CS2'
   );
 END;
 /
@@ -48,16 +48,17 @@ SELECT MATB, NOIDUNG FROM X_ADMIN.THONGBAO;
 -- Test quyền của người dùng trưởng khoa Hóa cơ sở 2 (u2)
 -- CẤP CHO NV0018 nhãn tương ứng
 -- u2: TRGDV:H:CS2: trưởng đơn vị phụ trách khoa hóa tại cơ sở 2
+CONNECT X_NV0003/123@localhost:11521/ORCLPDB1;
 BEGIN
   SA_USER_ADMIN.SET_USER_LABELS(
     policy_name     => 'NOTIFICATION_POLICY',
     user_name       => 'X_NV0018',
-    max_read_label  => 'TRGDV:H:CS2',
-    def_label       => 'TRGDV:H:CS2'
+    max_read_label  => 'TRGDV:HOA:CS2',
+    def_label       => 'TRGDV:HOA:CS2'
   );
 END;
 /
-
+GRANT XR_TRGDV TO X_NV0018 
 -- Kết nối với X_NV0018 và kiểm tra quyền truy cập
 CONNECT X_NV0018/123@localhost:11521/ORCLPDB1;
 SELECT MATB, NOIDUNG FROM X_ADMIN.THONGBAO;
@@ -69,11 +70,11 @@ BEGIN
   SA_USER_ADMIN.SET_USER_LABELS(
     policy_name     => 'NOTIFICATION_POLICY',
     user_name       => 'X_NV0020',
-    max_read_label  => 'TRGDV:L:CS2',
-    def_label       => 'TRGDV:L:CS2'
+    max_read_label  => 'TRGDV:VLY:CS2',
+    def_label       => 'TRGDV:VLY:CS2'
   );
 END;
-GRANT SELECT ON X_ADMIN.THONGBAO TO X_NV0020;
+select * from NHANVIEN;
 -- Đăng nhập vào X_NV0020 và kiểm tra quyền truy cập
 CONNECT X_NV0020/123@localhost:11521/ORCLPDB1;
 SELECT MATB, NOIDUNG FROM X_ADMIN.THONGBAO;
@@ -86,8 +87,8 @@ BEGIN
   SA_USER_ADMIN.SET_USER_LABELS(
     policy_name     => 'NOTIFICATION_POLICY',
     user_name       => 'X_NV0012',
-    max_read_label  => 'NV:H:CS2',
-    def_label       => 'NV:H:CS2'
+    max_read_label  => 'NV:HOA:CS2',
+    def_label       => 'NV:HOA:CS2'
   );
 END;
 -- Đăng nhập vào X_NV0012 và kiểm tra quyền truy cập
@@ -102,8 +103,8 @@ BEGIN
   SA_USER_ADMIN.SET_USER_LABELS(
     policy_name     => 'NOTIFICATION_POLICY',
     user_name       => 'X_SV0011',
-    max_read_label  => 'SV:H:CS2',
-    def_label       => 'SV:H:CS2'
+    max_read_label  => 'SV:HOA:CS2',
+    def_label       => 'SV:HOA:CS2'
   );
 END;
 -- Đăng nhập vào X_SV0011 và kiểm tra quyền truy cập
@@ -132,8 +133,8 @@ BEGIN
   SA_USER_ADMIN.SET_USER_LABELS(
     policy_name     => 'NOTIFICATION_POLICY',
     user_name       => 'X_NV0014',
-    max_read_label  => 'NV:T,L,H,HC:CS1,CS2',
-    def_label       => 'NV:T,L,H,HC:CS1,CS2'
+    max_read_label  => 'NV:TOAN,VLY,HOA,HC:CS1,CS2',
+    def_label       => 'NV:TOAN,VLY,HOA,HC:CS1,CS2'
   );
 END;
 -- Đăng nhập vào X_NV0014 và kiểm tra quyền truy cập
@@ -154,3 +155,36 @@ END;
 -- Đăng nhập vào X_NV0013 và kiểm tra quyền truy cập
 CONNECT X_NV0013/123@localhost:11521/ORCLPDB1;
 SELECT MATB, NOIDUNG FROM X_ADMIN.THONGBAO;
+
+-- Chưa set label cho người dùng khi tạo user được 
+GRANT EXECUTE ON LBACSYS.SA_USER_ADMIN TO XR_NVTCHC;
+GRANT EXECUTE ON LBACSYS.SA_LABEL_ADMIN TO XR_NVTCHC;
+GRANT EXECUTE ON CHAR_TO_LABEL TO XR_NVTCHC;
+GRANT EXECUTE ON SA_POLICY_ADMIN TO XR_NVTCHC;
+GRANT EXECUTE ON SA_SYSDBA TO XR_NVTCHC;
+GRANT EXECUTE ON TO_LBAC_DATA_LABEL TO XR_NVTCHC;
+GRANT LBAC_DBA TO XR_NVTCHC;
+GRANT INHERIT PRIVILEGES ON USER LBACSYS TO XR_NVTCHC;
+
+commit;
+SELECT * FROM ROLE_SYS_PRIVS WHERE ROLE = "XR_NVTCHC";
+SELECT * FROM ROLE_TAB_PRIVS WHERE ROLE = 'XR_NVTCHC';
+
+GRANT XR_NVTCHC TO X_NV0003;
+CONNECT X_NV0003/123@localhost:11521/ORCLPDB1;
+BEGIN
+  SA_USER_ADMIN.SET_USER_LABELS (
+    policy_name     => 'NOTIFICATION_POLICY',
+    user_name       => 'X_NV0047',
+    max_read_label  => 'TRGDV:TOAN,VLY,HOA,HC:CS1,CS2',
+    def_label       => 'TRGDV:TOAN,VLY,HOA,HC:CS1,CS2'
+  );
+END;
+BEGIN
+  SA_USER_ADMIN.SET_USER_PRIVS (
+    policy_name => 'NOTIFICATION_POLICY',
+    user_name   => 'X_ADMIN',
+    privileges  => 'FULL'
+  );
+END;
+/

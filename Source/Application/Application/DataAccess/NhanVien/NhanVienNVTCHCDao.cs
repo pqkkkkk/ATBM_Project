@@ -37,7 +37,7 @@ namespace Application.DataAccess.NhanVien
                     cmd.Parameters.Add("SDT", OracleDbType.Varchar2).Value = nv.dt;
                     cmd.Parameters.Add("VaiTro", OracleDbType.Varchar2).Value = nv.vaiTro;
                     cmd.Parameters.Add("MaDV", OracleDbType.Varchar2).Value = nv.maDV;
-
+                    cmd.Parameters.Add("COSO", OracleDbType.Varchar2).Value = "CS1";
                     cmd.ExecuteNonQuery();
                 }
             }

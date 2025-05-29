@@ -58,11 +58,17 @@ namespace Application.Views.User
                 typeof(ObservableCollection<Model.NhanVien>),
                 typeof(DataContentUC),
                 new PropertyMetadata(null));
-                
+        public static readonly DependencyProperty thongbaoListDependencyProperty =
+            DependencyProperty.Register(nameof(thongbaoList),
+                typeof(ObservableCollection<Model.ThongBao>),
+                typeof(DataContentUC),
+                new PropertyMetadata(null));
+
         public ObservableCollection<Model.SinhVien> sinhVienList { get; set; }
         public ObservableCollection<Model.DangKy> dangKyList { get; set; }
         public ObservableCollection<Model.MoMon> moMonList { get; set; }
         public ObservableCollection<Model.NhanVien> nhanvienList { get; set; }
+        public ObservableCollection<Model.ThongBao> thongbaoList { get; set; }
 
         public DataContentUC()
         {
@@ -84,6 +90,9 @@ namespace Application.Views.User
                     break;
                 case "NHANVIEN":
                     dataList.ItemsSource = nhanvienList;
+                    break;
+                case "THONGBAO":
+                    dataList.ItemsSource = thongbaoList;
                     break;
                 default:
                     break;

@@ -56,6 +56,7 @@
             <local:DataContentUC
             x:Name="dataContent"
             nhanvienList="{x:Bind viewModel.nhanVienList, Mode=OneWay}"
+            thongbaoList="{x:Bind viewModel.thongbaoList, Mode=OneWay}"
             DeleteClicked="OnDeleteClicked"
             AddClicked="OnAddClicked"
             UpdateClicked="OnUpdateClicked"

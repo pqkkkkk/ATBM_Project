@@ -15,6 +15,7 @@ using Application.DataAccess.MetaData.Privilege;
 using Application.DataAccess.MetaData.Role;
 using Application.DataAccess.MetaData.TableView;
 using Application.DataAccess.NhanVien;
+using Application.DataAccess.ThongBao;
 using Application.Helper;
 using Application.Model;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,6 +40,8 @@ namespace Application.ViewModels.User
         private readonly Dictionary<string, IList> permissionMap;
         private Dictionary<string, Func<object>> newItemFactoryMap;
         public ObservableCollection<Model.NhanVien> nhanVienList { get; set; }
+        public ObservableCollection<Model.ThongBao> thongbaoList { get; set; }
+
 
         public NVTCHCViewModel()
         {
@@ -52,14 +55,18 @@ namespace Application.ViewModels.User
             sqlConnection = serviceProvider?.GetService(typeof(OracleConnection)) as OracleConnection;
             daoList = new Dictionary<string, IBaseDao>();
             daoList?.Add("NHANVIEN", new NhanVienNVTCHCDao(sqlConnection));
+            daoList?.Add("THONGBAO", new ThongBaoXAdminDao(sqlConnection));
+
             tableViewDao = new TableViewUserDao(sqlConnection);
             privilegeDao = new PrivilegeUserDao(sqlConnection);
 
             nhanVienList = new ObservableCollection<Model.NhanVien>(daoList["NHANVIEN"].Load(null).Cast<Model.NhanVien>().ToList());
+            thongbaoList = new ObservableCollection<Model.ThongBao>(daoList["THONGBAO"].Load(null).Cast<Model.ThongBao>());
 
             listMap = new Dictionary<string, IList>
             {
                 { "NHANVIEN", nhanVienList },
+                { "THONGBAO", thongbaoList }
             };
             permissionMap = new Dictionary<string, IList>(LoadPrivilegesOfUser());
             editableColumnMap = new Dictionary<string, IList>(LoadEditableColumnsOfUser());

@@ -59,6 +59,7 @@
                 dangKyList="{x:Bind viewModel.dangKyList, Mode=OneWay}"
                 sinhVienList="{x:Bind viewModel.sinhVienList, Mode=OneWay}"
                 moMonList="{x:Bind viewModel.moMonList, Mode=OneWay}"
+                thongbaoList="{x:Bind viewModel.thongbaoList, Mode=OneWay}"
                 DeleteClicked="OnDeleteClicked"
                 AddClicked="OnAddClicked"
                 RowEditEnded="SaveItem"

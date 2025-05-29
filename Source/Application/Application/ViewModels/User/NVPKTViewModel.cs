@@ -17,6 +17,7 @@ using Application.DataAccess.MetaData.TableView;
 using Application.DataAccess.MoMon;
 using Application.DataAccess.NhanVien;
 using Application.DataAccess.SinhVien;
+using Application.DataAccess.ThongBao;
 using Application.Helper;
 using Application.Model;
 using Microsoft.UI.Xaml.Documents;
@@ -43,6 +44,8 @@ namespace Application.ViewModels.User
       
         public ObservableCollection<Model.DangKy> dangKyList { get; set; }
         public ObservableCollection<Model.NhanVien> nhanVienList { get; set; }
+        public ObservableCollection<Model.ThongBao> thongbaoList { get; set; }
+
         public NVPKTViewModel()
         {
             helper = new Helper.Helper();
@@ -58,9 +61,11 @@ namespace Application.ViewModels.User
             daoList = new Dictionary<string, IBaseDao>();
             daoList.Add("DANGKY", new DangKyNVPKTDao(sqlConnection));
             daoList.Add("NHANVIEN", new NhanVienNVCBDao(sqlConnection));
+            daoList.Add("THONGBAO", new ThongBaoXAdminDao(sqlConnection));
 
             dangKyList = new ObservableCollection<Model.DangKy>(daoList["DANGKY"].Load(null).Cast<Model.DangKy>().ToList());
             nhanVienList = new ObservableCollection<Model.NhanVien>(daoList["NHANVIEN"].Load(null).Cast<Model.NhanVien>().ToList());
+            thongbaoList = new ObservableCollection<Model.ThongBao>(daoList["THONGBAO"].Load(null).Cast<Model.ThongBao>());
 
             listMap = new Dictionary<string, IList>
             {

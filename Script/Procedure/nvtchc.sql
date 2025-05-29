@@ -77,6 +77,7 @@
         VaiTro IN VARCHAR2,
         MaDV IN VARCHAR2,
         COSO IN VARCHAR2)
+    AUTHID DEFINER
     AS
         v_label VARCHAR2(100);
         v_isKhoa NUMBER := 0;

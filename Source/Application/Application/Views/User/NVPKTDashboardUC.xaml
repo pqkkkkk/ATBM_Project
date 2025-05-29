@@ -58,6 +58,7 @@
                 x:Name="dataContent"
                 dangKyList="{x:Bind viewModel.dangKyList, Mode=OneWay}"
                 nhanvienList="{x:Bind viewModel.nhanVienList, Mode=OneWay}"
+                thongbaoList="{x:Bind viewModel.thongbaoList, Mode=OneWay}"
                 DeleteClicked="OnDeleteClicked"
                 AddClicked="OnAddClicked"
                 UpdateClicked="OnUpdateClicked"

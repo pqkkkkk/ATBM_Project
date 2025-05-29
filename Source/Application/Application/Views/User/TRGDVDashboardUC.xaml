@@ -59,6 +59,7 @@
                 sinhVienList="{x:Bind viewModel.sinhVienList, Mode=OneWay}"
                 moMonList="{x:Bind viewModel.moMonList, Mode=OneWay}"
                 nhanvienList="{x:Bind viewModel.nhanVienList, Mode=OneWay}"
+                thongbaoList="{x:Bind viewModel.thongbaoList, Mode=OneWay}"
                 DeleteClicked="OnDeleteClicked"
                 AddClicked="OnAddClicked"
                 BeginningEdit="CheckTheColumnOfRowIsEditable"

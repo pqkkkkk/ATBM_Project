@@ -342,7 +342,8 @@ EXCEPTION
         DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
         OPEN p_result FOR SELECT 'Error occurred' AS MATB, 'Error occurred' AS NGAYTB, 'Error occurred' AS NOIDUNG FROM DUAL;
 END X_ADMIN_Select_THONGBAO_Table;
-
+/
+GRANT EXECUTE ON X_ADMIN.X_ADMIN_Select_THONGBAO_Table TO PUBLIC;
 COMMIT;
 
 -- Lấy các level của policy
@@ -398,6 +399,7 @@ CREATE OR REPLACE PROCEDURE X_ADMIN_SetUserLabels(
     max_read_label IN VARCHAR2,
     def_label IN VARCHAR2
 )
+AUTHID DEFINER
 AS
 BEGIN
     SA_USER_ADMIN.SET_USER_LABELS(
