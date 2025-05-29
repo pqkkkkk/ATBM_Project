@@ -170,5 +170,10 @@ namespace Application.DataAccess.MetaData.User
           
             return userList;
         }
+
+        public bool CreateUser(string username, string password, string role)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

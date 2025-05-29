@@ -368,8 +368,9 @@ namespace Application.Views
         {
             string username = usernameTextBoxWhenCreateUser.Text.Trim();
             string password = passwordTextBoxWhenCreateUser.Password.Trim();
+            string role = roleComboBoxWhenCreateUser.SelectedItem?.ToString() ?? string.Empty;
 
-            int result = userDataViewModel.CreateItem(new Model.User(username, password));
+            int result = userDataViewModel.CreateItem(new Model.User(username, password, role));
             CreateUserResult exception = (CreateUserResult)result;
 
             if (exception != CreateUserResult.Success)

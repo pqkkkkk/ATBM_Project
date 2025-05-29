@@ -18,6 +18,7 @@ namespace Application.Model
         public string? khoa { get; set; }
         public string? TINHTRANG { get; set; }
         public bool? isInDB { get; set; }
+        public string? coSo { get; set; }
 
         public SinhVien()
         {
@@ -29,6 +30,7 @@ namespace Application.Model
             dt = "Điện thoại";
             khoa = "Khoa";
             TINHTRANG = "Tình trạng";
+            coSo = "Cơ sở";
         }
         public event PropertyChangedEventHandler? PropertyChanged;
     }

@@ -18,14 +18,18 @@ namespace Application.ViewModels
         public ObservableCollection<Model.User> itemList { get; set; }
         public Model.User? selectedUser { get; set; }
         public IUserDao? userDao { get; set; }
+        public List<string> roleList { get; set; } 
+        public string selectedRole { get; set; }
 
-        public UserDataViewModel()
+    public UserDataViewModel()
         {
             var serviceProvider = (Microsoft.UI.Xaml.Application.Current as App)?.serviceProvider;
             userDao = serviceProvider?.GetService<IUserDao>();
 
             itemList = new ObservableCollection<Model.User>(userDao.LoadData());
             selectedUser = null;
+            roleList = new List<string> { "NHANVIEN", "SINHVIEN" };
+            selectedRole = "NHANVIEN";
         }
         private string GetActualNameOfUser(string name)
         {
@@ -43,7 +47,7 @@ namespace Application.ViewModels
                 }
 
                 string username = GetActualNameOfUser(user.username);
-                if (userDao.CreateUser(username, user.password))
+                if (userDao.CreateUser(username, user.password, user.role))
                 {
                     itemList = new ObservableCollection<Model.User>(userDao.LoadData());
                     return (int)CreateUserResult.Success;

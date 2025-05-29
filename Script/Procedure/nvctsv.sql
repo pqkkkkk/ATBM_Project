@@ -19,17 +19,18 @@ CREATE OR REPLACE PROCEDURE X_ADMIN_Insert_SINHVIEN_Table_ForNVCTSV(
     p_ngSinh IN DATE,
     p_dChi IN VARCHAR2,
     p_dt IN VARCHAR2,
-    p_khoa IN VARCHAR2)
+    p_khoa IN VARCHAR2,
+    p_coso IN VARCHAR2)
     AS
     BEGIN
-        INSERT INTO X_ADMIN.SINHVIEN (MASV, HOTEN, PHAI, NGSINH, DCHI, DT, KHOA)
-        VALUES (p_maSV, p_hoTen, p_phai, p_ngSinh, p_dChi, p_dt, p_khoa);
+        INSERT INTO X_ADMIN.SINHVIEN (MASV, HOTEN, PHAI, NGSINH, DCHI, DT, KHOA, COSO)
+        VALUES (p_maSV, p_hoTen, p_phai, p_ngSinh, p_dChi, p_dt, p_khoa, p_coso);
 
         INSERT INTO X_ADMIN.USER_ROLES (USERNAME, ROLENAME)
         VALUES (p_maSV, 'XR_SV');
 
-        X_ADMIN.X_ADMIN_CREATEUSER('X_' || p_maSV, '123');
-        X_ADMIN.X_ADMIN_GRANTROLE('XR_SV','X_' || p_maSV, 'NO');
+        -- X_ADMIN.X_ADMIN_CREATEUSER('X_' || p_maSV, '123');
+        -- X_ADMIN.X_ADMIN_GRANTROLE('XR_SV','X_' || p_maSV, 'NO');
 
     EXCEPTION
         WHEN OTHERS THEN
@@ -46,11 +47,12 @@ CREATE OR REPLACE PROCEDURE X_ADMIN_Update_SINHVIEN_Table_ForNVCTSV(
     p_ngSinh IN DATE,
     p_dChi IN VARCHAR2,
     p_dt IN VARCHAR2,
-    p_khoa IN VARCHAR2)
+    p_khoa IN VARCHAR2,
+    P_coso IN VARCHAR2)
     AS
     BEGIN
         UPDATE X_ADMIN.SINHVIEN
-        SET HOTEN = p_hoTen, PHAI = p_phai, NGSINH = p_ngSinh, DCHI = p_dChi, DT = p_dt, KHOA = p_khoa
+        SET HOTEN = p_hoTen, PHAI = p_phai, NGSINH = p_ngSinh, DCHI = p_dChi, DT = p_dt, KHOA = p_khoa, COSO = p_coso
         WHERE MASV = p_maSV;
     EXCEPTION
         WHEN OTHERS THEN
