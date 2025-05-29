@@ -339,8 +339,8 @@
     BEGIN
         OPEN p_result FOR
         SELECT MATB, NOIDUNG FROM X_ADMIN.THONGBAO;
-END getNotification;
-/
+    END getNotification;
+    /
 -- Load bảng thông báo
 CREATE OR REPLACE PROCEDURE X_ADMIN_Select_THONGBAO_Table (
     p_result OUT SYS_REFCURSOR
@@ -357,7 +357,6 @@ END X_ADMIN_Select_THONGBAO_Table;
 /
 GRANT EXECUTE ON X_ADMIN.X_ADMIN_Select_THONGBAO_Table TO PUBLIC;
 COMMIT;
-
 -- Lấy các level của policy
 CREATE OR REPLACE PROCEDURE X_ADMIN_GetLevels(
     p_result OUT SYS_REFCURSOR
@@ -375,35 +374,35 @@ EXCEPTION
 END X_ADMIN_GetLevels;
 /
 -- Lấy các compartments của policy
-CREATE OR REPLACE PROCEDURE X_ADMIN_GetDepartments(
-    p_result OUT SYS_REFCURSOR
-)
-AS
-BEGIN
-    OPEN p_result FOR
-    SELECT SHORT_NAME, LONG_NAME FROM DBA_SA_COMPARTMENTS
-    WHERE POLICY_NAME = 'NOTIFICATION_POLICY';
-EXCEPTION
-    WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
-        OPEN p_result FOR SELECT 'Error occurred' AS COMPARTMENT_NAME FROM DUAL;
-END X_ADMIN_GetDepartments;
-/
+    CREATE OR REPLACE PROCEDURE X_ADMIN_GetDepartments(
+        p_result OUT SYS_REFCURSOR
+    )
+    AS
+    BEGIN
+        OPEN p_result FOR
+        SELECT SHORT_NAME, LONG_NAME FROM DBA_SA_COMPARTMENTS
+        WHERE POLICY_NAME = 'NOTIFICATION_POLICY';
+    EXCEPTION
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+            OPEN p_result FOR SELECT 'Error occurred' AS COMPARTMENT_NAME FROM DUAL;
+    END X_ADMIN_GetDepartments;
+    /
 -- Lấy các groups của policy
-CREATE OR REPLACE PROCEDURE X_ADMIN_GetGroups(
-    p_result OUT SYS_REFCURSOR
-)
-AS
-BEGIN
-    OPEN p_result FOR
-    SELECT SHORT_NAME, LONG_NAME FROM DBA_SA_GROUPS
-    WHERE POLICY_NAME = 'NOTIFICATION_POLICY';
-EXCEPTION
-    WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
-        OPEN p_result FOR SELECT 'Error occurred' AS GROUP_NAME FROM DUAL;
-END X_ADMIN_GetGroups;
-
+    CREATE OR REPLACE PROCEDURE X_ADMIN_GetGroups(
+        p_result OUT SYS_REFCURSOR
+    )
+    AS
+    BEGIN
+        OPEN p_result FOR
+        SELECT SHORT_NAME, LONG_NAME FROM DBA_SA_GROUPS
+        WHERE POLICY_NAME = 'NOTIFICATION_POLICY';
+    EXCEPTION
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+            OPEN p_result FOR SELECT 'Error occurred' AS GROUP_NAME FROM DUAL;
+    END X_ADMIN_GetGroups;
+    /
 -- Gán nhãn bảo mật cho người dùng
 CREATE OR REPLACE PROCEDURE X_ADMIN_SetUserLabels(
     policy_name IN VARCHAR2,
@@ -494,3 +493,4 @@ END X_ADMIN_SetUserLabels;
             RAISE;
     END X_ADMIN_CreateSecurityLabel;
     /
+    COMMIT;
