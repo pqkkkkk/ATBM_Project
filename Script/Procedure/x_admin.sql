@@ -44,7 +44,6 @@
             RAISE;
     END;
     /
-    GRANT EXECUTE ON X_ADMIN_createUser TO XR_NVTCHC;
 -- Xoá user
     CREATE OR REPLACE PROCEDURE X_ADMIN_deleteUser(user_name in VARCHAR2)
     AS
@@ -331,7 +330,7 @@
         VALUES (p_noidung, CHAR_TO_LABEL('NOTIFICATION_POLICY', p_label));
     COMMIT;
     END SendNotification;
-/
+    /
 -- GET NOTIFICATION
     CREATE OR REPLACE PROCEDURE getNotification (
         p_result OUT SYS_REFCURSOR)
