@@ -19,6 +19,7 @@ namespace Application.Model
         public string? dt { get; set; }
         public string? vaiTro { get; set; }
         public string? maDV { get; set; }
+        public string? coSo { get; set; }
         public bool? isInDB { get; set; }
         
         public NhanVien()
@@ -32,6 +33,7 @@ namespace Application.Model
             dt = "";
             vaiTro = "";
             maDV = "";
+            coSo = "";
         }
         public event PropertyChangedEventHandler? PropertyChanged;
     }

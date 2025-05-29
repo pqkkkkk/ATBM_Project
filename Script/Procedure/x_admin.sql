@@ -15,15 +15,27 @@
 -- TẠO USER
     CREATE OR REPLACE PROCEDURE X_ADMIN_createUser(
         user_name IN VARCHAR2, 
-        pwd IN VARCHAR2
+        pwd IN VARCHAR2,
+        p_role IN VARCHAR2
     )
     AS
+        v_exist NUMBER;
+        v_label VARCHAR2(100);
+        x_vaitro VARCHAR2(20);
     BEGIN
         EXECUTE IMMEDIATE 'CREATE USER ' || user_name || ' IDENTIFIED BY "' || pwd || '"';
 
         EXECUTE IMMEDIATE 'GRANT CREATE SESSION TO ' || user_name;
         EXECUTE IMMEDIATE 'GRANT CONNECT TO ' || user_name;
         EXECUTE IMMEDIATE 'GRANT RESOURCE TO ' || user_name;
+        X_ADMIN.X_ADMIN_checkExistInTable(SUBSTR(user_name, 3), p_role, v_exist);
+        IF v_exist != 0 THEN 
+            BEGIN
+                X_ADMIN.X_ADMIN_CREATESECURITYLABEL(SUBSTR(user_name, 3), p_role, v_label);
+                X_ADMIN.X_ADMIN_SETUSERLABELS('NOTIFICATION_POLICY', user_name, v_label, v_label);
+            END;
+        END IF;
+
         DBMS_OUTPUT.PUT_LINE('User ' || user_name || ' created successfully.');
         
     EXCEPTION
@@ -330,21 +342,21 @@
     END getNotification;
     /
 -- Load bảng thông báo
-    CREATE OR REPLACE PROCEDURE X_ADMIN_Select_THONGBAO_Table (
-        p_result OUT SYS_REFCURSOR
-    )
-    AS
-    BEGIN
-        OPEN p_result FOR
-        SELECT MATB, NGAYTB ,NOIDUNG FROM X_ADMIN.THONGBAO;
-    EXCEPTION
-        WHEN OTHERS THEN
-            DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
-            OPEN p_result FOR SELECT 'Error occurred' AS MATB, 'Error occurred' AS NGAYTB, 'Error occurred' AS NOIDUNG FROM DUAL;
-    END X_ADMIN_Select_THONGBAO_Table;
-    /
+CREATE OR REPLACE PROCEDURE X_ADMIN_Select_THONGBAO_Table (
+    p_result OUT SYS_REFCURSOR
+)
+AS
+BEGIN
+    OPEN p_result FOR
+    SELECT MATB, NGAYTB ,NOIDUNG FROM X_ADMIN.THONGBAO;
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+        OPEN p_result FOR SELECT 'Error occurred' AS MATB, 'Error occurred' AS NGAYTB, 'Error occurred' AS NOIDUNG FROM DUAL;
+END X_ADMIN_Select_THONGBAO_Table;
+/
+GRANT EXECUTE ON X_ADMIN.X_ADMIN_Select_THONGBAO_Table TO PUBLIC;
 COMMIT;
-
 -- Lấy các level của policy
 CREATE OR REPLACE PROCEDURE X_ADMIN_GetLevels(
     p_result OUT SYS_REFCURSOR
@@ -392,25 +404,93 @@ END X_ADMIN_GetLevels;
     END X_ADMIN_GetGroups;
     /
 -- Gán nhãn bảo mật cho người dùng
-    CREATE OR REPLACE PROCEDURE X_ADMIN_SetUserLabels(
-        policy_name IN VARCHAR2,
-        user_name IN VARCHAR2,
-        max_read_label IN VARCHAR2,
-        def_label IN VARCHAR2
+CREATE OR REPLACE PROCEDURE X_ADMIN_SetUserLabels(
+    policy_name IN VARCHAR2,
+    user_name IN VARCHAR2,
+    max_read_label IN VARCHAR2,
+    def_label IN VARCHAR2
+)
+AUTHID DEFINER
+AS
+BEGIN
+    SA_USER_ADMIN.SET_USER_LABELS(
+        policy_name => policy_name,
+        user_name => user_name,
+        max_read_label => max_read_label,
+        def_label => def_label
+    );
+    DBMS_OUTPUT.PUT_LINE('User labels set successfully for ' || user_name);
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error setting user labels: ' || SQLERRM);
+        RAISE;
+END X_ADMIN_SetUserLabels;
+/
+
+-- Kiểm tra user có tồn tại trong bảng
+    CREATE OR REPLACE PROCEDURE X_ADMIN_checkExistInTable(
+        p_name IN VARCHAR2,
+        p_table IN VARCHAR2,
+        p_exist OUT NUMBER
     )
     AS
     BEGIN
-        SA_USER_ADMIN.SET_USER_LABELS(
-            policy_name => policy_name,
-            user_name => user_name,
-            max_read_label => max_read_label,
-            def_label => def_label
-        );
-        DBMS_OUTPUT.PUT_LINE('User labels set successfully for ' || user_name);
+        IF p_table = 'NHANVIEN' THEN
+            EXECUTE IMMEDIATE 'SELECT COUNT(*) FROM ' || p_table || ' WHERE MANV = :name' INTO p_exist USING p_name;
+        ELSIF p_table = 'SINHVIEN' THEN
+            EXECUTE IMMEDIATE 'SELECT COUNT(*) FROM ' || p_table || ' WHERE MASV = :name' INTO p_exist USING p_name;
+        END IF;
+        EXCEPTION
+            WHEN NO_DATA_FOUND THEN
+                p_exist := 0;
+                DBMS_OUTPUT.PUT_LINE('No data found for ' || p_name || ' in ' || p_table);
+            WHEN OTHERS THEN
+                DBMS_OUTPUT.PUT_LINE('Error checking existence: ' || SQLERRM);
+                RAISE;
+    END X_ADMIN_checkExistInTable;
+    /
+
+-- tạo nhãn bảo mật
+    CREATE OR REPLACE PROCEDURE X_ADMIN_CreateSecurityLabel(
+        v_actual IN VARCHAR2,
+        role_name IN VARCHAR2,
+        v_label OUT VARCHAR2
+    )
+    AS
+        p_donvi VARCHAR2(10);
+        p_coso VARCHAR2(10);
+        p_vaitro VARCHAR2(10);
+        v_isKhoa NUMBER;
+    BEGIN
+        IF UPPER(role_name) = 'NHANVIEN' THEN
+            SELECT MADV, COSO, VAITRO INTO p_donvi, p_coso, p_vaitro
+            FROM X_ADMIN.NHANVIEN
+            WHERE MANV = v_actual;
+            -- Các nhân viên không phải là giáo viên và trưởng đơn vị các khoa sẽ thuộc department HC
+            SELECT COUNT(*) INTO v_isKhoa
+            FROM X_ADMIN.DONVI
+            WHERE LoaiDV = 'Khoa' AND MADV = p_donvi;
+
+            if UPPER(p_vaitro) = 'TRGDV' AND v_isKhoa > 0 THEN
+                v_label := p_vaitro || ':' || p_donvi || ':' || p_coso;
+            ELSIF UPPER(p_vaitro) = 'GV' THEN
+                v_label := 'NV:' || p_donvi || ':' || p_coso;
+            ELSE
+                v_label := 'NV:HC:' || p_coso;
+            END IF;
+
+        ELSIF UPPER(role_name) = 'SINHVIEN' THEN
+            
+            SELECT KHOA, COSO INTO p_donvi, p_coso
+            FROM X_ADMIN.SINHVIEN
+            WHERE MASV = v_actual;
+
+            v_label := 'SV:' || p_donvi || ':' || p_coso;
+        END IF;
     EXCEPTION
         WHEN OTHERS THEN
-            DBMS_OUTPUT.PUT_LINE('Error setting user labels: ' || SQLERRM);
+            DBMS_OUTPUT.PUT_LINE('Error creating security label: ' || SQLERRM);
             RAISE;
-    END X_ADMIN_SetUserLabels;
+    END X_ADMIN_CreateSecurityLabel;
     /
-COMMIT;
+    COMMIT;

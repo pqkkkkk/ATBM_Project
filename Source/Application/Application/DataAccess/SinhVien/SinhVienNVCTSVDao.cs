@@ -37,6 +37,7 @@ namespace Application.DataAccess.SinhVien
                 cmd.Parameters.Add("p_dChi", OracleDbType.Varchar2).Value = sv.dChi;
                 cmd.Parameters.Add("p_dt", OracleDbType.Varchar2).Value = sv.dt;
                 cmd.Parameters.Add("p_khoa", OracleDbType.Varchar2).Value = sv.khoa;
+                cmd.Parameters.Add("p_coSo", OracleDbType.Varchar2).Value = sv.coSo;
                 cmd.ExecuteNonQuery();
                 return true;
             }
@@ -93,7 +94,8 @@ namespace Application.DataAccess.SinhVien
                             dChi = reader["dChi"].ToString(),
                             dt = reader["dt"].ToString(),
                             khoa = reader["khoa"].ToString(),
-                            TINHTRANG = reader["tinhTrang"].ToString(),
+                            TINHTRANG = reader[reader.GetOrdinal("tinhTrang")] != DBNull.Value ? reader["tinhtrang"].ToString() : null,
+                            coSo = reader["COSO"].ToString(),
                             isInDB = true
                         };
 
@@ -124,6 +126,7 @@ namespace Application.DataAccess.SinhVien
                 cmd.Parameters.Add("p_dChi", OracleDbType.Varchar2).Value = sv.dChi;
                 cmd.Parameters.Add("p_dt", OracleDbType.Varchar2).Value = sv.dt;
                 cmd.Parameters.Add("p_khoa", OracleDbType.Varchar2).Value = sv.khoa;
+                cmd.Parameters.Add("p_coSo", OracleDbType.Varchar2).Value = sv.coSo;
                 cmd.ExecuteNonQuery();
                 sqlConnection.Close();
                 return true;

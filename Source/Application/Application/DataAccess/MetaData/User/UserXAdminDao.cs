@@ -45,7 +45,7 @@ namespace Application.DataAccess.MetaData.User
             }
         }
 
-        public bool CreateUser(string username, string password)
+        public bool CreateUser(string username, string password, string role)
         {
             string actual_username = "X_" +  username.ToUpper();
             if (CheckExist("USER", actual_username))
@@ -63,6 +63,7 @@ namespace Application.DataAccess.MetaData.User
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("user_name", OracleDbType.Varchar2).Value = username;
                     cmd.Parameters.Add("pwd", OracleDbType.Varchar2).Value = password;
+                    cmd.Parameters.Add("p_role", OracleDbType.Varchar2).Value = role;
                     cmd.ExecuteNonQuery();
                     sqlConnection.Close();
                     return true;

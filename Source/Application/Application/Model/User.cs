@@ -18,6 +18,7 @@ namespace Application.Model
         public string? authenticationType { get; set; }
         public string? common { get; set; }
         public DateOnly? passwordChangeDate { get; set; }
+        public string? role { get; set; }
 
         public User()
         {
@@ -30,6 +31,13 @@ namespace Application.Model
             this.username = username;
             this.password = password;
         }
+        public User(string username, string password, string role)
+        {
+            this.username = username;
+            this.password = password;
+            this.role = role;
+        }
+
 
         public event PropertyChangedEventHandler? PropertyChanged;
     }

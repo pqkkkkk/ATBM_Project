@@ -52,7 +52,8 @@ namespace Application.DataAccess.SinhVien
                             dChi = reader["dChi"].ToString(),
                             dt = reader["dt"].ToString(),
                             khoa = reader["khoa"].ToString(),
-                            TINHTRANG = reader["tinhTrang"].ToString()
+                            TINHTRANG = reader[reader.GetOrdinal("tinhTrang")] != DBNull.Value ? reader["tinhtrang"].ToString() : null,
+                            coSo = reader["COSO"].ToString(),
                         };
                         sv.isInDB = true;
                         result.Add(sv);

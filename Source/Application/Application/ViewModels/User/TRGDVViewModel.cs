@@ -20,6 +20,7 @@ using Application.Helper;
 using Application.Model;
 using System.Diagnostics;
 using Microsoft.UI.Xaml.Documents;
+using Application.DataAccess.ThongBao;
 
 namespace Application.ViewModels.User
 {
@@ -38,6 +39,8 @@ namespace Application.ViewModels.User
         public ObservableCollection<Model.MoMon> moMonList { get; set; }
         public ObservableCollection<Model.NhanVien> nhanVienList { get; set; }
         public ObservableCollection<Model.SinhVien> sinhVienList { get; set; }
+        public ObservableCollection<Model.ThongBao> thongbaoList { get; set; }
+
 
         private readonly Dictionary<string, IList> editableColumnMap;
         private readonly Dictionary<string, IList> listMap;
@@ -64,6 +67,7 @@ namespace Application.ViewModels.User
             daoList.Add("MOMON", new MoMonTRGDVDao(sqlConnection));
             daoList.Add("NHANVIEN", new NhanVienTRGDVDao(sqlConnection));
             daoList.Add("SINHVIEN", new SinhVienTRGDVDao());
+            daoList.Add("THONGBAO", new ThongBaoXAdminDao(sqlConnection));
 
             dangKyList = new ObservableCollection<Model.DangKy>();
 
@@ -72,7 +76,8 @@ namespace Application.ViewModels.User
             moMonList = new ObservableCollection<Model.MoMon>(daoList["MOMON"].Load(null).Cast<Model.MoMon>().ToList());
             nhanVienList = new ObservableCollection<Model.NhanVien>(daoList["NHANVIEN"].Load(null).Cast<Model.NhanVien>().ToList());
             sinhVienList = new ObservableCollection<Model.SinhVien>();
-         
+            thongbaoList = new ObservableCollection<Model.ThongBao>(daoList["THONGBAO"].Load(null).Cast<Model.ThongBao>());
+
             listMap = new Dictionary<string, IList>
             {
                 { "DANGKY", dangKyList },
@@ -80,7 +85,8 @@ namespace Application.ViewModels.User
                 { "HOCPHAN", hocPhanList },
                 { "MOMON", moMonList },
                 { "NHANVIEN", nhanVienList },
-                {"SINHVIEN", sinhVienList}
+                {"SINHVIEN", sinhVienList},
+                {"THONGBAO", thongbaoList}
             };
             editableColumnMap = LoadEditableColumnsOfUser();
             permissionMap = LoadPrivilegesOfUser();

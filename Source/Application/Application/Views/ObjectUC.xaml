@@ -96,6 +96,13 @@
                         Header="Password" 
                         PlaceholderText="Enter password" 
                         Width="300"/>
+                    <ComboBox
+                        x:Name="roleComboBoxWhenCreateUser"
+                        Header="Role"
+                        PlaceholderText="Select role"
+                        Width="300"
+                        ItemsSource="{x:Bind userDataViewModel.roleList, Mode=OneWay}"
+                        SelectedItem="{x:Bind userDataViewModel.selectedRole, Mode=TwoWay}"/>
                     <TextBlock
                         Foreground="Red"
                         Visibility="Collapsed"

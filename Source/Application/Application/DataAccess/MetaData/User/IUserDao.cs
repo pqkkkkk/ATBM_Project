@@ -9,7 +9,7 @@ namespace Application.DataAccess.MetaData.User
     public interface IUserDao
     {
         public bool CheckExist(string type, string name);
-        public bool CreateUser(string username, string password);
+        public bool CreateUser(string username, string password, string role);
         public bool DeleteUser(string username);
         public bool UpdatePassword(string username, string password);
         public List<Model.User> LoadData();

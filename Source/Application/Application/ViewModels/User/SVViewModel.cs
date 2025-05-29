@@ -16,6 +16,7 @@ using Application.DataAccess.MetaData.TableView;
 using Application.DataAccess.MoMon;
 using Application.DataAccess.NhanVien;
 using Application.DataAccess.SinhVien;
+using Application.DataAccess.ThongBao;
 using Application.Model;
 using Oracle.ManagedDataAccess.Client;
 
@@ -37,6 +38,8 @@ namespace Application.ViewModels.User
         public ObservableCollection<Model.MoMon> moMonList { get; set; }
         public ObservableCollection<Model.NhanVien> nhanVienList { get; set; }
         public ObservableCollection<Model.SinhVien> sinhVienList { get; set; }
+        public ObservableCollection<Model.ThongBao> thongbaoList { get; set; }
+
 
         private Dictionary<string, Func<object>> newItemFactoryMap;
         private readonly Dictionary<string, IList> editableColumnMap;
@@ -62,6 +65,7 @@ namespace Application.ViewModels.User
             daoList.Add("MOMON", new MoMonSVDao(sqlConnection));
             daoList.Add("NHANVIEN", new NhanVienSVDao());
             daoList.Add("SINHVIEN", new SinhVienSVDao(sqlConnection));
+            daoList.Add("THONGBAO", new ThongBaoXAdminDao(sqlConnection));
 
             dangKyList = new ObservableCollection<Model.DangKy>(daoList["DANGKY"].Load(null).Cast<Model.DangKy>().ToList());
             donViList = new ObservableCollection<Model.DonVi>();
@@ -69,7 +73,7 @@ namespace Application.ViewModels.User
             moMonList = new ObservableCollection<Model.MoMon>(daoList["MOMON"].Load(null).Cast<Model.MoMon>().ToList());
             nhanVienList = new ObservableCollection<Model.NhanVien>();
             sinhVienList = new ObservableCollection<Model.SinhVien>(daoList["SINHVIEN"].Load(null).Cast<Model.SinhVien>().ToList());
-
+            thongbaoList = new ObservableCollection<ThongBao>(daoList["THONGBAO"].Load(null).Cast<Model.ThongBao>());
             listMap = new Dictionary<string, IList>
             {
                 { "DANGKY", dangKyList },
@@ -77,7 +81,8 @@ namespace Application.ViewModels.User
                 { "HOCPHAN", hocPhanList },
                 { "MOMON", moMonList },
                 { "NHANVIEN", nhanVienList },
-                {"SINHVIEN", sinhVienList}
+                {"SINHVIEN", sinhVienList},
+                {"THONGBAO", thongbaoList},
             };
 
             newItemFactoryMap = new Dictionary<string, Func<object>>
