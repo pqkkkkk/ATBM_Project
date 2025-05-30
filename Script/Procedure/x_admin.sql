@@ -491,5 +491,4 @@ END X_ADMIN_SetUserLabels;
     END;
     /
 
-
     COMMIT;

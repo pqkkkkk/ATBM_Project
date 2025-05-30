@@ -23,7 +23,7 @@ BEGIN
    DBMS_OUTPUT.PUT_LINE('isNVCB: ' || isNVCB);
    DBMS_OUTPUT.PUT_LINE('isAdmin: ' || isAdmin);
 END;
-
+/
 SELECT MaMM 
        FROM X_ADMIN.MOMON
        WHERE CURRENT_DATE - TRUNC(TO_DATE(NAM || '-' || 
