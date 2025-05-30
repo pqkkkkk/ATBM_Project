@@ -88,7 +88,7 @@ namespace Application.DataAccess.MetaData.User
                 {
                     sqlConnection.Open();
                 }
-                using (OracleCommand cmd = new OracleCommand("X_ADMIN_deleteUser", sqlConnection))
+                using (OracleCommand cmd = new OracleCommand("X_ADMIN.X_ADMIN_deleteUser", sqlConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("user_name", OracleDbType.Varchar2).Value = username;

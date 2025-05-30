@@ -34,7 +34,7 @@ namespace Application.DataAccess.SinhVien
                 sqlConnection.Open();
             }
             List<Model.SinhVien> result = new List<Model.SinhVien>();
-            using (var cmd = new OracleCommand("X_ADMIN.X_ADMIN_Select_SINHVIEN_Table_ForSV", sqlConnection))
+            using (var cmd = new OracleCommand("X_ADMIN.X_ADMIN_Select_SINHVIEN_Table_ForNVPDT", sqlConnection))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.Add("p_result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;

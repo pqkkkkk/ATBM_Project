@@ -1,0 +1,9 @@
+CONNECT x_admin/123@localhost:1521/XEPDB1;
+BEGIN
+  SA_SYSDBA.CREATE_POLICY (
+    policy_name      => 'NOTIFICATION_POLICY',
+    column_name      => 'LABEL'
+  );
+  END;
+  /
+EXEC SA_SYSDBA.ENABLE_POLICY ('NOTIFICATION_POLICY');

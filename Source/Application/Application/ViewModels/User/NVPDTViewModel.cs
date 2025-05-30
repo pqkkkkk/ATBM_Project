@@ -310,30 +310,43 @@ namespace Application.ViewModels.User
         }
         public int SaveItem(object obj)
         {
-            if(obj is IPersistable item)
+            try
             {
-                if(item.isInDB == true)
+                if (obj is IPersistable item)
                 {
-                    if (daoList[selectedTabView.ToUpper()].Update(item)) return 1;
-                }
-                else
-                {
-                    if(daoList[selectedTabView.ToUpper()].Add(item))
+                    if (item.isInDB == true)
                     {
-                        item.isInDB = true;
-                        return 1;
+                        if (daoList[selectedTabView.ToUpper()].Update(item))
+                        {
+                            moMonList = new ObservableCollection<Model.MoMon>(daoList["MOMON"].Load(null).Cast<Model.MoMon>().ToList());
+                            return 1;
+                        }
                     }
                     else
                     {
-                        if(listMap.TryGetValue(selectedTabView.ToUpper(), out var list))
+                        if (daoList[selectedTabView.ToUpper()].Add(item))
                         {
-                            list.Remove(item);
+                            item.isInDB = true;
+                            return 1;
                         }
-                        throw new System.Exception("Add failed");
+                        else
+                        {
+                            if (listMap.TryGetValue(selectedTabView.ToUpper(), out var list))
+                            {
+                                list.Remove(item);
+                            }
+                            throw new System.Exception("Add failed");
+                        }
                     }
                 }
+
+                return 1;
             }
-            return 0;
+            catch (System.Exception ex)
+            {
+                return 0;
+            }
+            
         }
         public int AddItem()
         {
