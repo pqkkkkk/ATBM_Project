@@ -59,7 +59,21 @@
 
     GRANT EXECUTE ON X_ADMIN_update_view_PDT_MOMON TO XR_NVPDT;
 
-
+-- Procedure để lấy danh sách sinh viên
+-- đã đăng ký môn học theo mã môn học
+    CREATE OR REPLACE PROCEDURE X_ADMIN_Select_SINHVIEN_Table_ForNVPDT(
+        p_result OUT SYS_REFCURSOR)
+    AS
+      BEGIN
+        OPEN p_result FOR
+        SELECT * FROM X_ADMIN.SINHVIEN;
+    EXCEPTION
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+            RAISE;
+    END;
+    /
+    GRANT EXECUTE ON X_ADMIN_Select_SINHVIEN_Table_ForNVPDT TO XR_NVPDT;
 --Tạo procedure để NVPDT update trường TinhTrang trên bảng SINHVIEN
     CREATE OR REPLACE PROCEDURE X_ADMIN_update_TT_SV (
         MaSV_ IN VARCHAR2,

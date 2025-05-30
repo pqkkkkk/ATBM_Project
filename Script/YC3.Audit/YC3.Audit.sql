@@ -13,7 +13,7 @@
         object_schema   => 'X_ADMIN',
         object_name     => 'DANGKY',
         policy_name     => 'AUDIT_UPDATE_DIEM',
-        audit_condition => 'SYS_CONTEXT(''X_UNIVERITY_CONTEXT'', ''IS_NVPKT'') < 1',
+        audit_condition => 'SYS_CONTEXT(''X_UNIVERSITY_CONTEXT'', ''IS_NVPKT'') < 1',
         audit_column    => 'DIEMTH, DIEMCT, DIEMCK, DIEMTK',
         statement_types => 'UPDATE',
         enable          => TRUE
@@ -32,7 +32,7 @@
         AS
           p_is_nvtchc NUMBER;
         BEGIN
-          p_is_nvtchc := SYS_CONTEXT('X_UNIVERITY_CONTEXT', 'IS_NVTCHC');
+          p_is_nvtchc := SYS_CONTEXT('X_UNIVERSITY_CONTEXT', 'IS_NVTCHC');
           IF p_is_nvtchc < 1 AND p_current_username != p_actual_username THEN
             RETURN 1; -- Vi phạm chính sách
           ELSE
@@ -45,7 +45,7 @@
         object_schema   => 'X_ADMIN',
         object_name     => 'NHANVIEN',
         policy_name     => 'AUDIT_SELECT_NHANVIEN',
-        audit_condition => 'X_ADMIN.VIOLATE_SELECT_NHANVIEN_POLICY(SYS_CONTEXT(''X_UNIVERITY_CONTEXT'', ''USER_NAME''), MANV) = 1',
+        audit_condition => 'X_ADMIN.VIOLATE_SELECT_NHANVIEN_POLICY(SYS_CONTEXT(''X_UNIVERSITY_CONTEXT'', ''USER_NAME''), MANV) = 1',
         audit_column    => 'LUONG, PHUCAP',
         statement_types => 'SELECT',
         enable          => TRUE
@@ -123,7 +123,7 @@
         object_schema   => 'X_ADMIN',
         object_name     => 'DANGKY',
         policy_name     => 'AUDIT_INSERT_UPDATE_DELETE_DANGKY',
-        audit_condition => 'X_ADMIN.get_audit_condition(SYS_CONTEXT(''X_UNIVERITY_CONTEXT'', ''IS_SV''), SYS_CONTEXT(''X_UNIVERITY_CONTEXT'', ''USER_NAME''), MASV) = 1',
+        audit_condition => 'X_ADMIN.get_audit_condition(SYS_CONTEXT(''X_UNIVERSITY_CONTEXT'', ''IS_SV''), SYS_CONTEXT(''X_UNIVERSITY_CONTEXT'', ''USER_NAME''), MASV) = 1',
         statement_types => 'INSERT, UPDATE, DELETE'
       );
     END;

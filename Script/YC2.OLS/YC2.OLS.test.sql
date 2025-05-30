@@ -1,7 +1,7 @@
 SELECT * FROM DBA_SA_LEVELS;
 SELECT * FROM DBA_SA_COMPARTMENTS;
 SELECT * FROM DBA_SA_GROUPS;
-
+SELECT * FROM DBA_SA_POLICIES;
 SELECT * from DBA_SA_LABELS;
 
 -- Gỡ bỏ chính sách khỏi bảng (không xóa)
@@ -75,9 +75,6 @@ BEGIN
   );
 END;
 select * from NHANVIEN;
--- Đăng nhập vào X_NV0020 và kiểm tra quyền truy cập
-CONNECT X_NV0020/123@localhost:11521/ORCLPDB1;
-SELECT MATB, NOIDUNG FROM X_ADMIN.THONGBAO;
 
 -- Test quyền của người dùng nhân viên khoa Hóa cơ sở 2 (u4)
 -- CẤP CHO NV0012 nhãn tương ứng

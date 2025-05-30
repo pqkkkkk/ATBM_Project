@@ -77,7 +77,7 @@ namespace Application.DataAccess.NhanVien
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add("newDt", OracleDbType.Varchar2).Value = nv.dt;
-
+                    cmd.Parameters.Add("username", OracleDbType.Varchar2).Value = nv.maNV;
                     var rowParam = cmd.Parameters.Add("ROW_AFFECTED", OracleDbType.Int32);
                     rowParam.Direction = ParameterDirection.Output;
 

@@ -47,10 +47,10 @@ namespace Application.DataAccess.DangKy
                             {
                                 maMM = reader["MAMM"].ToString(),
                                 maSV = reader["MASV"].ToString(),
-                                diemTH = Convert.ToDouble(reader["DIEMTH"]),
-                                diemCT = Convert.ToDouble(reader["DIEMCT"]),
-                                diemCK = Convert.ToDouble(reader["DIEMCK"]),
-                                diemTK = Convert.ToDouble(reader["DIEMTK"]),
+                                diemTH = reader["DIEMTH"] == DBNull.Value ? null : Convert.ToDouble(reader["DIEMTH"]),
+                                diemCT = reader["DIEMTH"] == DBNull.Value ? null : Convert.ToDouble(reader["DIEMCT"]),
+                                diemCK = reader["DIEMTH"] == DBNull.Value ? null : Convert.ToDouble(reader["DIEMCK"]),
+                                diemTK = reader["DIEMTH"] == DBNull.Value ? null : Convert.ToDouble(reader["DIEMTK"]),
                                 isInDB = true
                             };
 

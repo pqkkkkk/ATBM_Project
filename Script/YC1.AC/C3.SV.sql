@@ -11,14 +11,18 @@
       isGV INTEGER;
       isNVPDT INTEGER;
       isNVCTSV INTEGER;
+      isAdmin INTEGER;
    begin
-      username := SYS_CONTEXT('X_UNIVERITY_CONTEXT','USER_NAME');
-      isSV := SYS_CONTEXT('X_UNIVERITY_CONTEXT','IS_SV');
-      isGV := SYS_CONTEXT('X_UNIVERITY_CONTEXT','IS_GV');
-      isNVPDT := SYS_CONTEXT('X_UNIVERITY_CONTEXT','IS_NVPDT');
-      isNVCTSV := SYS_CONTEXT('X_UNIVERITY_CONTEXT','IS_NVCTSV');
+      username := SYS_CONTEXT('X_UNIVERSITY_CONTEXT','USER_NAME');
+      isSV := SYS_CONTEXT('X_UNIVERSITY_CONTEXT','IS_SV');
+      isGV := SYS_CONTEXT('X_UNIVERSITY_CONTEXT','IS_GV');
+      isNVPDT := SYS_CONTEXT('X_UNIVERSITY_CONTEXT','IS_NVPDT');
+      isNVCTSV := SYS_CONTEXT('X_UNIVERSITY_CONTEXT','IS_NVCTSV');
+      isAdmin := SYS_CONTEXT('X_UNIVERSITY_CONTEXT','IS_ADMIN');
 
-      if isNVPDT >= 1 or isNVCTSV >= 1 then
+      IF isAdmin >= 1 then
+         RETURN '1=1';
+      ELSIF isNVPDT >= 1 or isNVCTSV >= 1 then
          RETURN '1=1';
       ELSIF isGV >= 1 then
          SELECT MADV INTO facultyOfTeacher FROM X_ADMIN.NHANVIEN WHERE MANV = username;
@@ -57,13 +61,16 @@
       isSV INTEGER;
       isNVPDT INTEGER;
       isNVCTSV INTEGER;
+      isAdmin INTEGER;
    begin
-      username := SYS_CONTEXT('X_UNIVERITY_CONTEXT','USER_NAME');
-      isSV := SYS_CONTEXT('X_UNIVERITY_CONTEXT','IS_SV');
-      isNVPDT := SYS_CONTEXT('X_UNIVERITY_CONTEXT','IS_NVPDT');
-      isNVCTSV := SYS_CONTEXT('X_UNIVERITY_CONTEXT','IS_NVCTSV');
-
-      if isSV >= 1 then
+      username := SYS_CONTEXT('X_UNIVERSITY_CONTEXT','USER_NAME');
+      isSV := SYS_CONTEXT('X_UNIVERSITY_CONTEXT','IS_SV');
+      isNVPDT := SYS_CONTEXT('X_UNIVERSITY_CONTEXT','IS_NVPDT');
+      isNVCTSV := SYS_CONTEXT('X_UNIVERSITY_CONTEXT','IS_NVCTSV');
+      isAdmin := SYS_CONTEXT('X_UNIVERSITY_CONTEXT','IS_ADMIN');
+      if isAdmin >= 1 then
+         RETURN '1=1';
+      ELSIF isSV >= 1 then
          RETURN 'MASV = ''' || username || '''';
       ELSIF isNVPDT >= 1 or isNVCTSV >= 1  then
          return '1=1';

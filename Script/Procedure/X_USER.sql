@@ -47,7 +47,6 @@ DECLARE
     v_result CLOB;
 BEGIN
     X_ADMIN.X_ADMIN_GETTEXTOFVIEW('VIEW_NVCB_NV', v_result);
-    DBMS_OUTPUT.PUT_LINE('Text of view: ' || v_result);
 END;
 /
 
