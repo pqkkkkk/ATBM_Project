@@ -63,6 +63,17 @@ namespace Application.Views.User
                 };
                 await notification.ShowAsync();
             }
+            else
+            {
+                var notification = new ContentDialog
+                {
+                    XamlRoot = this.XamlRoot,
+                    Title = "Success",
+                    Content = "Item deleted successfully.",
+                    CloseButtonText = "OK"
+                };
+                await notification.ShowAsync();
+            }
         }
 
         private void CheckTheColumnOfRowIsEditable(object sender, Event.BeginningEditEvent e)

@@ -138,6 +138,7 @@ namespace Application.Views.User
         }
         private void OnBeginningEdit(object sender, CommunityToolkit.WinUI.UI.Controls.DataGridBeginningEditEventArgs e)
         {
+
             var column = e.Column.Header.ToString();
             var eventArg = new BeginningEditEvent()
             {

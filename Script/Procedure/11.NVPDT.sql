@@ -124,5 +124,22 @@
     /
 
     GRANT EXECUTE ON X_ADMIN_insert_DANGKY_NVPDT TO XR_NVPDT;
+-- Tạo procedure để update 1 dòng DANGKY dành cho NVPDT
+    CREATE OR REPLACE PROCEDURE X_ADMIN_update_DANGKY_NVPDT(
+        p_MaSV IN VARCHAR2,
+        p_MaMM IN VARCHAR2,
+        ROW_AFFECTED OUT NUMBER
+    )
+    AS
+    BEGIN
+        UPDATE X_ADMIN.DANGKY
+        SET MASV = p_MaSV,
+            MAMM = p_MaMM
+        WHERE MASV = p_MaSV AND MAMM = p_MaMM;
 
+        ROW_AFFECTED := SQL%ROWCOUNT;
+    END X_ADMIN_update_DANGKY_NVPDT;
+    /
+
+    GRANT EXECUTE ON X_ADMIN_update_DANGKY_NVPDT TO XR_NVPDT;
 COMMIT;
