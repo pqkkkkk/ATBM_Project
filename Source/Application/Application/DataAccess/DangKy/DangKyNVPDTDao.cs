@@ -114,7 +114,7 @@ namespace Application.DataAccess.DangKy
 
         public bool Update(object obj)
         {
-            return true;
+            return false;
         }
     }
 }

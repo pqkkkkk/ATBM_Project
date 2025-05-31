@@ -1,5 +1,5 @@
 -- Trước tiên cần tạo pdb để test, tránh ảnh hưởng đến dữ liệu thực tế
--- Tạo tablespace để test trên pdb mới tạo
+-- Tạo tablespace để test trên pdb mới tạo (thay đổi đường dẫn theo hệ thống của bạn)
     create tablespace users datafile 'c:\AppStorage\oracle-db\oradata\XE\XEPDB3\users01.dbf' 
     size 10M autoextend on next 10M maxsize unlimited;
     CREATE USER local_user_xepdb3 IDENTIFIED BY 123;
@@ -34,7 +34,7 @@
     COMMIT;
 -- Đóng PDB để thực hiện recovery
     ALTER PLUGGABLE DATABASE XEPDB3 CLOSE IMMEDIATE;
--- Chạy recovery với RMAN
+-- Chạy recovery PITR để khôi phục dữ liệu trước thời điểm xóa DL với RMAN  (chạy trên CLI RMAN, không phải trong SQL*Plus)
     -- RMAN> CONNECT TARGET /
     -- RMAN> run{
     -- 2> set until scn = 29823471;

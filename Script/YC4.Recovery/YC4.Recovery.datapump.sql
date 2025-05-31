@@ -22,7 +22,7 @@
     INSERT INTO DATAPUMP_TEST_USER.DATA_TEST (ID, NAME, AGE) VALUES (9, 'George Harris', 33);
     INSERT INTO DATAPUMP_TEST_USER.DATA_TEST (ID, NAME, AGE) VALUES (10, 'Hannah Ivers', 26);
     COMMIT;
--- Tạo directory object
+-- Tạo directory object (thay đổi đường dẫn theo hệ thống của bạn)
     CREATE OR REPLACE DIRECTORY datapump_dir AS 'C:\AppStorage\oracle-datadump-exports';
     GRANT READ, WRITE ON DIRECTORY datapump_dir TO datapump_test_user;
 

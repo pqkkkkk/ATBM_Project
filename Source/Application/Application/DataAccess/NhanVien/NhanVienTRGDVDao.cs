@@ -53,6 +53,8 @@ namespace Application.DataAccess.NhanVien
                             dt = reader["dt"].ToString(),
                             vaiTro = reader["vaiTro"].ToString(),
                             maDV = reader["maDV"].ToString(),
+                            luong = reader["luong"] != DBNull.Value ? Convert.ToInt32(reader["luong"]) : null,
+                            phuCap = reader["phuCap"] != DBNull.Value ? Convert.ToInt32(reader["phuCap"]) : null,
                             isInDB = true
                         };
 

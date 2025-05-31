@@ -227,71 +227,6 @@ namespace Application.ViewModels.User
             return result;
         }
 
-        public void LoadPrivilegeOfRole()
-        {
-
-            var tableList = (Microsoft.UI.Xaml.Application.Current as App)?.tableList;
-
-            if (tableList == null)
-                return;
-
-            foreach (var table in tableList)
-            {
-                permissionMap.Add(table.objectName.ToUpper(), new List<string> { });
-                editableColumnMap.Add(table.objectName.ToUpper(), new List<string> { });
-            }
-
-            List<Model.Privilege> privileges = privilegeDao.GetPrivilegesOfUserOnSpecificObjectType("XR_GV", "TABLE");
-
-            foreach (var privilege in privileges)
-            {
-                string tableName = privilege.tableName.ToUpper();
-                if (permissionMap.TryGetValue(tableName, out var permissionList))
-                {
-                    if (permissionList.Contains(privilege.privilege) == false)
-                        permissionList.Add(privilege.privilege);
-                }
-
-                if (editableColumnMap.TryGetValue(tableName, out var columnList))
-                {
-                    if (privilege.privilege == "UPDATE")
-                    {
-                        if (privilege.columnName != null)
-                            columnList.Add(privilege.columnName);
-                    }
-                }
-            }
-            foreach (var privilege in privileges)
-            {
-                string viewName = privilege.tableName;
-                string? textOfView = tableViewDao.GetTextOfView(viewName);
-                if (textOfView == null)
-                    continue;
-
-                string tableName = helper.GetTableNameFromTextOfView(textOfView).ToUpper();
-                if (tableName.Contains("X_ADMIN"))
-                {
-                    tableName = tableName.Replace("X_ADMIN.", "");
-                }
-
-                if (permissionMap.TryGetValue(tableName, out var permissionList))
-                {
-                    if (permissionList.Contains(privilege.privilege) == false)
-                        permissionList.Add(privilege.privilege);
-                }
-
-                if (editableColumnMap.TryGetValue(tableName, out var columnList))
-                {
-                    if (privilege.privilege == "UPDATE")
-                    {
-                        if (privilege.columnName != null)
-                            columnList.Add(privilege.columnName);
-                    }
-                }
-
-            }
-            return;
-        }
         public int DeleteItem(object item)
         {
             if (daoList[selectedTabView.ToUpper()].Delete(item))
@@ -320,6 +255,10 @@ namespace Application.ViewModels.User
                         {
                             moMonList = new ObservableCollection<Model.MoMon>(daoList["MOMON"].Load(null).Cast<Model.MoMon>().ToList());
                             return 1;
+                        }
+                        else
+                        {
+                            throw new System.Exception("Update failed");
                         }
                     }
                     else
@@ -379,18 +318,6 @@ namespace Application.ViewModels.User
             }
 
             return false;
-        }
-        private void updateItemList(Dictionary<string, object> itemList)
-        {
-            itemList["DangKy"] = new Model.DangKy()
-            {
-                isInDB = false
-            };
-            itemList["DonVi"] = new Model.DonVi();
-            itemList["HocPhan"] = new Model.HocPhan();
-            itemList["MoMon"] = new Model.MoMon();
-            itemList["NhanVien"] = new Model.NhanVien();
-            itemList["SinhVien"] = new Model.SinhVien();
         }
         public event PropertyChangedEventHandler? PropertyChanged;
     }

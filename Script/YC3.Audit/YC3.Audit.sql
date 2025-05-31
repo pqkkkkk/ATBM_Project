@@ -1,10 +1,12 @@
 ﻿-- 1. Bật tắt audit
-  ALTER SYSTEM SET audit_sys_operations=TRUE SCOPE=SPFILE;
+  ALTER SESSION SET CONTAINER =CDB$ROOT;
+  ALTER SYSTEM SET audit_trail=DB SCOPE=SPFILE;
+  ALTER SESSION SET CONTAINER =CDB$ROOT;
+  ALTER SYSTEM SET audit_trail=NONE SCOPE=SPFILE;
 
 -- 2. Dùng Standard Audit
   AUDIT SELECT ON X_ADMIN.DANGKY BY ACCESS;
   COMMIT;
-
 -- 3. Dùng Fine-Grained Audit
   -- a. Hành vi cập nhật quan hệ ĐANGKY tại các trường liên quan đến điểm số nhưng
   --người đó không thuộc vai trò “NV PKT”.

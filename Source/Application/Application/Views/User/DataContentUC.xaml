@@ -20,7 +20,7 @@
         Padding="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <!-- Action Buttons and Search -->
         <StackPanel 
@@ -72,6 +72,7 @@
             VerticalScrollBarVisibility="Auto"
             HorizontalScrollBarVisibility="Auto">
             <controls:DataGrid
+                Height="550"
                 x:Name="dataList"
                 IsReadOnly="False"
                 AutoGeneratingColumn="OnAutoGeneratingColumn"
