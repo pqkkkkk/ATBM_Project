@@ -23,8 +23,16 @@
          RETURN '1=1';
       ELSIF isSV >= 1 THEN
          RETURN 'MASV = ''' || username || '''';
-      ELSIF isNVPKT >= 1 or isNVPDT >= 1 THEN
+      ELSIF isNVPKT >= 1 THEN
          RETURN '1=1';
+      ELSIF isNVPDT >= 1 THEN
+         RETURN 'MAMM IN (
+            SELECT MaMM 
+            FROM X_ADMIN.MOMON
+            WHERE CURRENT_DATE - TRUNC(TO_DATE(NAM || ''-'' || 
+               CASE HK WHEN 1 THEN ''09'' WHEN 2 THEN ''01'' WHEN 3 THEN ''05'' END, ''YYYY-MM'')) 
+               BETWEEN 0 AND 13
+            )';
       ELSIF isGV >= 1 THEN
          RETURN  'MAMM IN (SELECT MAMM FROM X_ADMIN.MOMON WHERE MAGV = ''' || username || ''')';
       ELSE
